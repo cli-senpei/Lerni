@@ -36,12 +36,20 @@ When they struggle, Lerni slows down, adjusts feedback, and provides targeted pr
 
 🏗️ Tech Stack (Example Setup)
 Layer	Technology
-Frontend	HTML5, CSS3, JavaScript, React (optional)
-Backend	Node.js / Laravel API
-Database	MySQL / PostgreSQL
+Frontend	Typescript
+Backend	Node.js 
+Database	Supabase
 AI Logic	TensorFlow.js / Custom Predictive Engine
 Game Engine	Phaser.js or Vanilla JS mini-games
-Deployment	Vercel / Netlify / AWS
+Deployment	Vercel 
+
+
+---OUTSTANDING ISSUES---
+1- The 'I already have an account' button redirects to the login page, but the button that populates is 'get started' button, which requires you to click the link below.
+2. Need API to help with AI bot, with more rich context and responses.
+3. When Logged in, the header icon, redirects to home, instead of dashboard.
+4. Need to improve the dynamic game generation to have more rich games, currently generated games are very simple.
+
 
 
 
