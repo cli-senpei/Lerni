@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import heroImage from "@/assets/hero.svg";
+import heroImage from "@/assets/hero.png";
 
 const Hero = () => {
   return (
@@ -10,7 +10,7 @@ const Hero = () => {
           <div className="w-full max-w-[500px]">
             <img
               src={heroImage}
-              alt="Diverse learners celebrating achievements"
+              alt="Lerni - A structured, science-based way for dyslexic learners to read with confidence"
               className="w-full"
             />
           </div>
