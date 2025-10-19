@@ -16,7 +16,7 @@ const Learning = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center px-6 py-8 md:py-12 md:px-12 bg-background">
+    <div className="flex items-center px-6 py-6 md:py-8 md:px-12 bg-background">
       <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
         {/* Image - Left Side */}
         <div className="flex justify-center lg:justify-start">
