@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
+import { Separator } from "@/components/ui/separator";
 import readingImage from "@/assets/reading-experience.png";
 
 const Index = () => {
@@ -10,8 +11,10 @@ const Index = () => {
       <main>
         <Hero />
         
+        <Separator className="mx-auto w-[90%] max-w-screen-xl opacity-30" />
+        
         {/* Second Section - Reading Experience */}
-        <section className="flex min-h-[600px] items-center px-6 py-16 md:px-12">
+        <section className="flex min-h-[600px] items-center px-6 py-16 md:px-12 animate-fade-in">
           <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
             {/* Text Content - Left Side */}
             <div className="flex flex-col items-center space-y-6 lg:items-start">
