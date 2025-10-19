@@ -9,24 +9,14 @@ const Learning = () => {
 
   const learningOptions = [
     {
-      icon: BookOpen,
-      title: "Interactive Lessons",
-      description: "Adaptive reading exercises tailored to your level"
-    },
-    {
       icon: Brain,
-      title: "AI-Powered Support",
-      description: "Personalized help that adapts to how you learn"
+      title: "Start AI Learning",
+      description: "Personalized lessons that adapt to how you learn"
     },
     {
       icon: Gamepad2,
-      title: "Game-Based Practice",
-      description: "Learn through engaging, research-backed games"
-    },
-    {
-      icon: Trophy,
-      title: "Track Progress",
-      description: "See your improvement and celebrate wins"
+      title: "AI Mini Games",
+      description: "Fun, interactive games designed for learning"
     }
   ];
 
@@ -50,30 +40,24 @@ const Learning = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {learningOptions.map((option, index) => (
-            <Card key={index} className="p-6 hover:shadow-lg transition-all hover:scale-105 border-2">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10">
-                  <option.icon className="w-6 h-6 text-primary" />
+            <Card 
+              key={index} 
+              className="p-8 hover:shadow-lg transition-all hover:scale-105 border-2 cursor-pointer"
+              onClick={() => setShowChat(true)}
+            >
+              <div className="flex flex-col items-center text-center gap-4">
+                <div className="p-4 rounded-full bg-gradient-to-br from-primary to-accent">
+                  <option.icon className="w-10 h-10 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg mb-2">{option.title}</h3>
-                  <p className="text-sm text-muted-foreground">{option.description}</p>
+                  <h3 className="font-bold text-2xl mb-3">{option.title}</h3>
+                  <p className="text-muted-foreground">{option.description}</p>
                 </div>
               </div>
             </Card>
           ))}
-        </div>
-
-        <div className="flex justify-center pt-8">
-          <Button 
-            onClick={() => setShowChat(true)}
-            size="lg"
-            className="bg-green-600 hover:bg-green-700 text-white text-xl px-12 py-8 h-auto rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-105"
-          >
-            Start Learning
-          </Button>
         </div>
       </div>
     </div>
