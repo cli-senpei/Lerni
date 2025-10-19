@@ -42,3 +42,8 @@ Database	MySQL / PostgreSQL
 AI Logic	TensorFlow.js / Custom Predictive Engine
 Game Engine	Phaser.js or Vanilla JS mini-games
 Deployment	Vercel / Netlify / AWS
+
+
+
+![Uploading Screenshot 2025-10-19 092036.png…]()
+<img width="1894" height="883" alt="Screenshot 2025-10-19 092025" src="https://github.com/user-attachments/assets/d2575022-5725-4832-96c8-a94b0b2a1aea" />
