@@ -38,7 +38,7 @@ const Index = () => {
         <section className="flex min-h-screen items-center px-6 py-2 md:py-4 md:px-12 animate-fade-in">
           <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
             {/* Image - Left Side */}
-            <div className="flex justify-center lg:justify-start">
+            <div className="order-2 flex justify-center lg:order-1 lg:justify-start">
               <div className="w-full max-w-[850px]">
                 <img
                   src={ortonGillinghamImage}
@@ -49,7 +49,7 @@ const Index = () => {
             </div>
             
             {/* Text Content - Right Side */}
-            <div className="flex flex-col items-center space-y-6 lg:items-start">
+            <div className="order-1 flex flex-col items-center space-y-6 lg:order-2 lg:items-start">
               <h2 className="max-w-xl text-center text-2xl font-bold leading-tight text-foreground md:text-3xl lg:text-left lg:text-4xl">
                 Every game on LERNI is built on the Orton–Gillingham method—structured, multisensory, and proven to help dyslexic learners succeed.
               </h2>
