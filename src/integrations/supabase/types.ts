@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      leaderboard_entries: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number | null
+          score: number
+          updated_at: string
+          user_id: string
+          user_name: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number | null
+          score?: number
+          updated_at?: string
+          user_id: string
+          user_name: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number | null
+          score?: number
+          updated_at?: string
+          user_id?: string
+          user_name?: string
+        }
+        Relationships: []
+      }
       user_learning_profiles: {
         Row: {
           baseline_score: number | null
