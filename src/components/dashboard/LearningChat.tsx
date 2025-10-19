@@ -540,89 +540,9 @@ const LearningChat = () => {
 
       {/* Input Area */}
       {preferredMode === 'mic' ? (
-        /* Mic Mode: Centered initially, then floating after 2 responses */
-        successfulResponses < 2 ? (
-          /* Initial Centered Layout */
-          <div className="relative w-full px-3 md:px-6 py-8 md:py-12 flex flex-col items-center justify-center gap-8">
-            {/* Keyboard Switch Button - Bottom Left */}
-            <Button
-              onClick={() => setPreferredMode('text')}
-              variant="ghost"
-              size="sm"
-              className="absolute bottom-4 left-4 md:bottom-6 md:left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <Keyboard className="h-4 w-4" />
-              <span className="hidden md:inline">Keyboard</span>
-            </Button>
-
-            {/* Modern Mic Icon with pulse animation */}
-            <div className="relative">
-              {/* Outer pulse ring when recording */}
-              {isRecording && (
-                <div className="absolute inset-0 -m-8">
-                  <div className="w-full h-full rounded-full bg-primary/20 animate-ping" />
-                </div>
-              )}
-              
-              {/* Inner glow when listening */}
-              {isListening && (
-                <div className="absolute inset-0 -m-4">
-                  <div className="w-full h-full rounded-full bg-primary/10 blur-xl animate-pulse" />
-                </div>
-              )}
-              
-              {/* Mic Icon */}
-              <div 
-                onClick={toggleVoiceInput}
-                className={`relative cursor-pointer transition-all duration-300 p-8 rounded-full ${
-                  isListening 
-                    ? 'bg-primary/5 shadow-lg shadow-primary/20' 
-                    : 'bg-muted/50 hover:bg-muted'
-                } ${isRecording ? 'scale-105' : 'hover:scale-105'}`}
-              >
-                {isListening ? (
-                  <Mic className="h-24 w-24 md:h-28 md:w-28 text-primary" strokeWidth={1.5} />
-                ) : (
-                  <MicOff className="h-24 w-24 md:h-28 md:w-28 text-muted-foreground" strokeWidth={1.5} />
-                )}
-              </div>
-            </div>
-            
-            {/* Status Messages */}
-            <div className="text-center space-y-2">
-              {isRecording && (
-                <div className="animate-fade-in">
-                  <div className="inline-flex items-center gap-2 text-primary">
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                    <span className="text-base md:text-lg font-medium">Speaking...</span>
-                  </div>
-                </div>
-              )}
-              
-              {isListening && !isRecording && (
-                <div className="animate-fade-in">
-                  <p className="text-sm md:text-base text-muted-foreground">
-                    Listening...
-                  </p>
-                </div>
-              )}
-              
-              {!isListening && (
-                <div className="animate-fade-in space-y-1">
-                  <p className="text-sm md:text-base text-muted-foreground">
-                    Tap to speak
-                  </p>
-                  <p className="text-xs text-muted-foreground/60">
-                    or say "keyboard" to type
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          /* Floating Layout after 2 responses */
-          <>
-            {/* Keyboard Switch Button - Bottom Left */}
+        /* Mic Mode: Floating Layout */
+        <>
+          {/* Keyboard Switch Button - Bottom Left */}
             <Button
               onClick={() => setPreferredMode('text')}
               variant="ghost"
@@ -692,7 +612,6 @@ const LearningChat = () => {
               )}
             </div>
           </>
-        )
       ) : (
         /* Text Mode: Normal Input */
         <div className="w-full px-3 md:px-6 py-3 md:py-4 border-t backdrop-blur-sm bg-background/50">
