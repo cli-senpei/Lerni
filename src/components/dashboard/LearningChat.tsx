@@ -466,20 +466,20 @@ const LearningChat = () => {
   return (
     <div className="w-full h-full bg-gradient-to-br from-primary/5 via-background to-accent/5 flex flex-col">
       {/* Compact Header - Points & Speech Controls */}
-      <div className="w-full px-2 md:px-4 py-2 md:py-3 flex items-center justify-end gap-2 md:gap-3 border-b backdrop-blur-sm bg-background/50">
+      <div className="w-full px-2 md:px-3 py-1 md:py-1.5 flex items-center justify-end gap-2 backdrop-blur-sm bg-background/50">
         {isSpeaking && (
           <Button
             onClick={toggleSpeech}
             variant="outline"
             size="icon"
-            className="h-8 w-8 md:h-10 md:w-10 rounded-full"
+            className="h-7 w-7 md:h-8 md:w-8 rounded-full"
           >
-            <Volume2 className="w-4 h-4 text-primary" />
+            <Volume2 className="w-3 h-3 md:w-4 md:h-4 text-primary" />
           </Button>
         )}
-        <div className="flex items-center gap-2 bg-primary/10 px-3 md:px-4 py-1.5 md:py-2 rounded-full">
-          <Star className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-          <span className="text-base md:text-lg font-bold">{points}</span>
+        <div className="flex items-center gap-1.5 bg-primary/10 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full">
+          <Star className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary" />
+          <span className="text-sm md:text-base font-bold">{points}</span>
         </div>
       </div>
 
