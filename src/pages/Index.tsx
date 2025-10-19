@@ -6,9 +6,9 @@ import ortonGillinghamImage from "@/assets/orton-gillingham.png";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background snap-y snap-mandatory overflow-y-scroll">
+    <div className="min-h-screen bg-background">
       <Header />
-      <main>
+      <main className="snap-y snap-mandatory overflow-y-scroll h-[calc(100vh-5rem)] md:h-[calc(100vh-6rem)]">
         <Hero />
         
         {/* Second Section - Reading Experience */}
