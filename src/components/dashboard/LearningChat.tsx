@@ -536,86 +536,81 @@ const LearningChat = () => {
 
       {/* Input Area */}
       {preferredMode === 'mic' ? (
-        /* Mic Mode: Sleek Modern Design */
-        <div className="relative w-full px-3 md:px-6 py-8 md:py-12 flex flex-col items-center justify-center gap-8">
+        /* Mic Mode: Floating Mic in Corner */
+        <>
           {/* Keyboard Switch Button - Bottom Left */}
           <Button
             onClick={() => setPreferredMode('text')}
             variant="ghost"
             size="sm"
-            className="absolute bottom-4 left-4 md:bottom-6 md:left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="fixed bottom-6 left-6 z-50 flex items-center gap-2 bg-background/80 backdrop-blur-sm border shadow-lg text-muted-foreground hover:text-foreground transition-colors"
           >
             <Keyboard className="h-4 w-4" />
             <span className="hidden md:inline">Keyboard</span>
           </Button>
 
-          {/* Modern Mic Icon with pulse animation */}
-          <div className="relative">
-            {/* Outer pulse ring when recording */}
+          {/* Floating Mic Button - Bottom Right */}
+          <div className="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-3">
+            {/* Status Text Above Mic */}
             {isRecording && (
-              <div className="absolute inset-0 -m-8">
-                <div className="w-full h-full rounded-full bg-primary/20 animate-ping" />
-              </div>
-            )}
-            
-            {/* Inner glow when listening */}
-            {isListening && (
-              <div className="absolute inset-0 -m-4">
-                <div className="w-full h-full rounded-full bg-primary/10 blur-xl animate-pulse" />
-              </div>
-            )}
-            
-            {/* Mic Icon */}
-            <div 
-              onClick={toggleVoiceInput}
-              className={`relative cursor-pointer transition-all duration-300 p-8 rounded-full ${
-                isListening 
-                  ? 'bg-primary/5 shadow-lg shadow-primary/20' 
-                  : 'bg-muted/50 hover:bg-muted'
-              } ${isRecording ? 'scale-105' : 'hover:scale-105'}`}
-            >
-              {isListening ? (
-                <Mic className="h-24 w-24 md:h-28 md:w-28 text-primary" strokeWidth={1.5} />
-              ) : (
-                <MicOff className="h-24 w-24 md:h-28 md:w-28 text-muted-foreground" strokeWidth={1.5} />
-              )}
-            </div>
-          </div>
-          
-          {/* Status Messages */}
-          <div className="text-center space-y-2">
-            {isRecording && (
-              <div className="animate-fade-in">
-                <div className="inline-flex items-center gap-2 text-primary">
+              <div className="animate-fade-in bg-background/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border">
+                <div className="flex items-center gap-2 text-primary">
                   <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                  <span className="text-base md:text-lg font-medium">Speaking...</span>
+                  <span className="text-sm font-medium">Speaking...</span>
                 </div>
               </div>
             )}
             
             {isListening && !isRecording && (
-              <div className="animate-fade-in">
-                <p className="text-sm md:text-base text-muted-foreground">
-                  Listening...
-                </p>
+              <div className="animate-fade-in bg-background/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border">
+                <p className="text-sm text-muted-foreground">Listening...</p>
               </div>
             )}
+
+            {/* Mic Button with Pulse Rings */}
+            <div className="relative">
+              {/* Outer pulse ring when recording */}
+              {isRecording && (
+                <div className="absolute inset-0 -m-4">
+                  <div className="w-full h-full rounded-full bg-primary/20 animate-ping" />
+                </div>
+              )}
+              
+              {/* Inner glow when listening */}
+              {isListening && (
+                <div className="absolute inset-0 -m-2">
+                  <div className="w-full h-full rounded-full bg-primary/10 blur-lg animate-pulse" />
+                </div>
+              )}
+              
+              {/* Mic Button */}
+              <button
+                onClick={toggleVoiceInput}
+                className={`relative p-6 rounded-full shadow-2xl transition-all duration-300 ${
+                  isListening 
+                    ? 'bg-primary text-primary-foreground shadow-primary/30' 
+                    : 'bg-background/90 backdrop-blur-sm border-2 border-border hover:border-primary text-muted-foreground hover:text-primary'
+                } ${isRecording ? 'scale-110' : 'hover:scale-105'}`}
+              >
+                {isListening ? (
+                  <Mic className="h-8 w-8" strokeWidth={2} />
+                ) : (
+                  <MicOff className="h-8 w-8" strokeWidth={2} />
+                )}
+              </button>
+            </div>
             
+            {/* Hint text when not active */}
             {!isListening && (
-              <div className="animate-fade-in space-y-1">
-                <p className="text-sm md:text-base text-muted-foreground">
-                  Tap to speak
-                </p>
-                <p className="text-xs text-muted-foreground/60">
-                  or say "keyboard" to type
-                </p>
+              <div className="animate-fade-in text-center bg-background/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg border">
+                <p className="text-xs text-muted-foreground">Tap to speak</p>
               </div>
             )}
           </div>
-        </div>
+        </>
       ) : (
         /* Text Mode: Normal Input */
-        <div className="relative w-full px-3 md:px-6 py-3 md:py-4 border-t backdrop-blur-sm bg-background/50">
+        <div className="w-full px-3 md:px-6 py-3 md:py-4 border-t backdrop-blur-sm bg-background/50">
           <div className="max-w-4xl mx-auto">
             <div className="flex gap-2 md:gap-3">
               <Input
