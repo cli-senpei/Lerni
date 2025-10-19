@@ -12,8 +12,8 @@ const Index = () => {
         <Hero />
         
         {/* Second Section - Reading Experience */}
-        <section className="flex items-center p-0 animate-fade-in">
-          <div className="mx-auto grid w-full max-w-screen-xl items-center gap-4 lg:grid-cols-2 lg:gap-8">
+        <section className="flex items-center px-6 py-12 md:px-12 md:py-16 animate-fade-in">
+          <div className="mx-auto grid w-full max-w-screen-xl items-center gap-6 lg:grid-cols-2 lg:gap-12">
             {/* Text Content - Left Side */}
             <div className="flex flex-col items-center space-y-6 lg:items-start">
               <h2 className="max-w-xl text-center text-2xl font-bold leading-tight text-foreground md:text-3xl lg:text-left lg:text-4xl">
@@ -35,8 +35,8 @@ const Index = () => {
         </section>
         
         {/* Third Section - Orton-Gillingham Method */}
-        <section className="flex items-center p-0 animate-fade-in">
-          <div className="mx-auto grid w-full max-w-screen-xl items-center gap-4 lg:grid-cols-2 lg:gap-8">
+        <section className="flex items-center px-6 py-12 md:px-12 md:py-16 animate-fade-in">
+          <div className="mx-auto grid w-full max-w-screen-xl items-center gap-6 lg:grid-cols-2 lg:gap-12">
             {/* Image - Left Side */}
             <div className="order-2 flex justify-center lg:order-1 lg:justify-start">
               <div className="w-full max-w-[1100px]">
