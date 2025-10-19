@@ -31,6 +31,7 @@ const LearningChat = () => {
   const [showRhymeGame, setShowRhymeGame] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -146,8 +147,18 @@ const LearningChat = () => {
         // Auto-submit the recording
         setTimeout(() => {
           setMessages(prev => [...prev, { text: transcript, isUser: true }]);
+          setInput("");
           setTimeout(() => {
             handleConversationFlow(transcript);
+            // Auto-restart listening if in mic mode
+            if (preferredMode === 'mic') {
+              setTimeout(() => {
+                if (recognitionRef.current && !isListening) {
+                  setIsListening(true);
+                  recognitionRef.current.start();
+                }
+              }, 2000); // Wait 2s after bot responds
+            }
           }, 600);
         }, 100);
       };
@@ -164,6 +175,7 @@ const LearningChat = () => {
 
       recognitionRef.current.onend = () => {
         setIsListening(false);
+        setIsRecording(false);
       };
     }
 
@@ -183,6 +195,16 @@ const LearningChat = () => {
     setTimeout(() => {
       addBotMessage("Hi my name is Lerni, what's your name?");
     }, 500);
+
+    // Auto-start voice input if mic mode selected
+    if (mode === 'mic') {
+      setTimeout(() => {
+        if (recognitionRef.current) {
+          setIsListening(true);
+          recognitionRef.current.start();
+        }
+      }, 2500); // Start after welcome message
+    }
   };
 
   const speak = (text: string) => {
@@ -312,8 +334,10 @@ const LearningChat = () => {
     if (isListening) {
       recognitionRef.current.stop();
       setIsListening(false);
+      setIsRecording(false);
     } else {
       setIsListening(true);
+      setIsRecording(true);
       recognitionRef.current.start();
     }
   };
