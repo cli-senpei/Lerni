@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import LearningChat from "@/components/dashboard/LearningChat";
 import learningGameImage from "@/assets/learning-game.png";
+import { useSidebar } from "@/components/ui/sidebar";
 
 const Learning = () => {
   const [showChat, setShowChat] = useState(false);
+  const { setOpen } = useSidebar();
+
+  useEffect(() => {
+    if (showChat) {
+      setOpen(false); // Collapse sidebar when chat starts
+    }
+  }, [showChat, setOpen]);
 
   if (showChat) {
     return (

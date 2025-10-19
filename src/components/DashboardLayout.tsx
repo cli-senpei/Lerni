@@ -68,7 +68,7 @@ const DashboardLayout = () => {
         <header className="w-full border-b border-border bg-background">
           <div className="flex h-16 md:h-20 items-center justify-between px-4 md:px-12">
             <div className="flex items-center gap-2">
-              <SidebarTrigger className="lg:hidden">
+              <SidebarTrigger>
                 <Menu className="h-6 w-6" />
               </SidebarTrigger>
               <Link to="/" className="flex items-center">

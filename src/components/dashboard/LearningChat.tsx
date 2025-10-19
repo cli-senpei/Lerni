@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Star, Sparkles, Award, Mic, MicOff, Volume2, MessageSquare, Keyboard } from "lucide-react";
+import { Send, Star, Sparkles, Award, Mic, MicOff, Volume2, Keyboard } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Message {
@@ -85,10 +85,7 @@ const LearningChat = () => {
     
     // Initial welcome message
     setTimeout(() => {
-      addBotMessage("Hi! Welcome!");
-      setTimeout(() => {
-        addBotMessage("What's your name?");
-      }, 1500);
+      addBotMessage("Hi my name is Lerni, what's your name?");
     }, 500);
   };
 
@@ -267,34 +264,21 @@ const LearningChat = () => {
 
   return (
     <div className="w-full h-full bg-gradient-to-br from-primary/5 via-background to-accent/5 flex flex-col">
-      {/* Gamified Header */}
-      <div className="w-full px-4 md:px-8 py-4 md:py-6 flex items-center justify-between border-b backdrop-blur-sm bg-background/50 animate-fade-in">
-        <div className="flex items-center gap-3 md:gap-4">
-          <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg">
-            <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-white" />
-          </div>
-          <div>
-            <h2 className="text-xl md:text-2xl font-bold">Learning Helper</h2>
-            <p className="text-sm md:text-base text-muted-foreground">Let's go!</p>
-          </div>
-        </div>
-        
-        {/* Points Display & Speech Controls */}
-        <div className="flex items-center gap-2 md:gap-4">
-          {isSpeaking && (
-            <Button
-              onClick={toggleSpeech}
-              variant="outline"
-              size="icon"
-              className="h-10 w-10 md:h-12 md:w-12 rounded-full border-2 border-primary/20"
-            >
-              <Volume2 className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-            </Button>
-          )}
-          <div className="flex items-center gap-2 md:gap-3 bg-primary/10 px-3 md:px-6 py-2 md:py-3 rounded-full border-2 border-primary/20">
-            <Star className="w-4 h-4 md:w-6 md:h-6 text-primary" />
-            <span className="text-lg md:text-2xl font-bold">{points}</span>
-          </div>
+      {/* Compact Header - Points & Speech Controls */}
+      <div className="w-full px-2 md:px-4 py-2 md:py-3 flex items-center justify-end gap-2 md:gap-3 border-b backdrop-blur-sm bg-background/50">
+        {isSpeaking && (
+          <Button
+            onClick={toggleSpeech}
+            variant="outline"
+            size="icon"
+            className="h-8 w-8 md:h-10 md:w-10 rounded-full"
+          >
+            <Volume2 className="w-4 h-4 text-primary" />
+          </Button>
+        )}
+        <div className="flex items-center gap-2 bg-primary/10 px-3 md:px-4 py-1.5 md:py-2 rounded-full">
+          <Star className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+          <span className="text-base md:text-lg font-bold">{points}</span>
         </div>
       </div>
 
@@ -309,8 +293,8 @@ const LearningChat = () => {
       )}
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-12 max-w-5xl mx-auto w-full">
-        <div className="space-y-4 md:space-y-6">
+      <div className="flex-1 overflow-y-auto px-3 md:px-6 py-4 md:py-6 max-w-4xl mx-auto w-full">
+        <div className="space-y-3 md:space-y-4">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -318,7 +302,7 @@ const LearningChat = () => {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div
-                className={`max-w-[85%] md:max-w-[75%] px-4 md:px-6 py-3 md:py-4 ${
+                className={`max-w-[85%] md:max-w-[75%] px-3 md:px-4 py-2 md:py-3 ${
                   message.isUser
                     ? 'bg-primary/10 text-foreground border-l-4 border-primary'
                     : 'bg-muted text-foreground border-l-4 border-muted-foreground/20'
@@ -333,7 +317,7 @@ const LearningChat = () => {
           
           {isTyping && (
             <div className="flex justify-start animate-fade-in">
-              <div className="bg-muted px-4 md:px-6 py-3 md:py-4 border-l-4 border-muted-foreground/20">
+              <div className="bg-muted px-3 md:px-4 py-2 md:py-3 border-l-4 border-muted-foreground/20">
                 <div className="flex gap-2">
                   <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                   <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '200ms' }} />
@@ -348,30 +332,30 @@ const LearningChat = () => {
       </div>
 
       {/* Input Area */}
-      <div className="w-full px-4 md:px-8 py-4 md:py-6 border-t backdrop-blur-sm bg-background/50">
+      <div className="w-full px-3 md:px-6 py-3 md:py-4 border-t backdrop-blur-sm bg-background/50">
         <div className="max-w-4xl mx-auto">
           {isListening && (
-            <div className="mb-3 md:mb-4 text-center animate-fade-in">
-              <div className="inline-flex items-center gap-2 md:gap-3 bg-primary/10 px-4 md:px-6 py-2 md:py-3 rounded-full border-2 border-primary/20">
-                <div className="w-2 h-2 md:w-3 md:h-3 bg-primary rounded-full animate-pulse" />
-                <span className="text-sm md:text-lg font-medium">Listening...</span>
+            <div className="mb-2 md:mb-3 text-center animate-fade-in">
+              <div className="inline-flex items-center gap-2 bg-primary/10 px-3 md:px-4 py-1.5 md:py-2 rounded-full">
+                <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                <span className="text-sm md:text-base font-medium">Listening...</span>
               </div>
             </div>
           )}
-          <div className="flex gap-2 md:gap-4">
+          <div className="flex gap-2 md:gap-3">
             <Button 
               onClick={toggleVoiceInput}
               size="icon"
               variant={isListening ? "default" : "outline"}
-              className={`h-12 w-12 md:h-16 md:w-16 rounded-xl shadow-lg hover:scale-110 transition-all ${
+              className={`h-10 w-10 md:h-12 md:w-12 rounded-lg ${
                 isListening ? 'animate-pulse' : ''
               }`}
               disabled={isTyping}
             >
               {isListening ? (
-                <MicOff className="h-5 w-5 md:h-6 md:w-6" />
+                <MicOff className="h-4 w-4 md:h-5 md:w-5" />
               ) : (
-                <Mic className="h-5 w-5 md:h-6 md:w-6" />
+                <Mic className="h-4 w-4 md:h-5 md:w-5" />
               )}
             </Button>
             <Input
@@ -379,16 +363,16 @@ const LearningChat = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder={isListening ? "Speak now..." : "Type your answer..."}
-              className="flex-1 h-12 md:h-16 text-base md:text-lg px-4 md:px-6 rounded-xl border-2 border-primary/20 focus:border-primary transition-all"
+              className="flex-1 h-10 md:h-12 text-sm md:text-base px-3 md:px-4 rounded-lg"
               disabled={isTyping || isListening}
             />
             <Button 
               onClick={handleSend}
               size="icon"
-              className="h-12 w-12 md:h-16 md:w-16 rounded-xl shadow-lg hover:scale-110 transition-all"
+              className="h-10 w-10 md:h-12 md:w-12 rounded-lg"
               disabled={isTyping || !input.trim() || isListening}
             >
-              <Send className="h-5 w-5 md:h-6 md:w-6" />
+              <Send className="h-4 w-4 md:h-5 md:w-5" />
             </Button>
           </div>
         </div>
