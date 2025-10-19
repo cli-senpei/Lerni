@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import authLogo from "@/assets/auth-logo.png";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(false);
@@ -78,13 +79,12 @@ const Auth = () => {
       <Header hideButton={true} />
       <main className="flex-1 flex items-center justify-center px-6 py-16">
         <div className="w-full max-w-md space-y-10">
-          <div className="text-center space-y-6">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
-              {isLogin ? "Welcome Back" : "Because every mind learns differently—and every win matters."}
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              {isLogin ? "Sign in to your account" : "Create your account"}
-            </p>
+          <div className="flex justify-center">
+            <img 
+              src={authLogo} 
+              alt="Lerni" 
+              className="w-32 h-32 md:w-40 md:h-40"
+            />
           </div>
 
           <form onSubmit={handleAuth} className="space-y-6">
