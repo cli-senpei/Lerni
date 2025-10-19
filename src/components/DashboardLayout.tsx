@@ -89,11 +89,16 @@ const DashboardLayout = () => {
 
         {/* Main Content with Sidebar */}
         <div className="flex flex-1 w-full">
-          <Sidebar className="hidden lg:flex border-r w-72">
-            <SidebarContent className="pt-6">
+          <Sidebar className="hidden lg:flex border-r w-80 bg-sidebar">
+            {/* Logo Section */}
+            <div className="border-b border-sidebar-border p-6 flex justify-center">
+              <img src={logo} alt="Lerni Logo" className="h-20 w-auto" />
+            </div>
+
+            <SidebarContent className="pt-8">
               <SidebarGroup>
                 <SidebarGroupContent>
-                  <SidebarMenu className="space-y-3">
+                  <SidebarMenu className="space-y-4 px-4">
                     {menuItems.map((item) => (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild>
@@ -101,15 +106,15 @@ const DashboardLayout = () => {
                             to={item.url}
                             end={item.url === "/dashboard"}
                             className={({ isActive }) =>
-                              `flex items-center gap-4 px-6 py-4 rounded-xl text-lg font-semibold transition-all ${
+                              `flex items-center gap-5 px-6 py-5 rounded-xl text-lg font-bold transition-all shadow-sm border-2 ${
                                 isActive
-                                  ? "bg-primary/10 text-primary shadow-sm"
-                                  : "hover:bg-muted/50 text-foreground"
+                                  ? "bg-primary text-primary-foreground border-primary shadow-md"
+                                  : "bg-muted/50 text-foreground border-transparent hover:bg-muted hover:border-border hover:shadow"
                               }`
                             }
                           >
-                            <item.icon className="h-7 w-7 stroke-[2.5]" />
-                            <span className="tracking-wide">{item.title}</span>
+                            <item.icon className="h-8 w-8 stroke-[2.5]" />
+                            <span className="tracking-wider">{item.title}</span>
                           </NavLink>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -119,13 +124,17 @@ const DashboardLayout = () => {
               </SidebarGroup>
             </SidebarContent>
 
-            <SidebarFooter className="border-t p-6">
+            <div className="px-6 mb-4">
+              <div className="border-t border-sidebar-border" />
+            </div>
+
+            <SidebarFooter className="p-6 pb-8">
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-4 w-full px-6 py-4 text-lg font-semibold rounded-xl hover:bg-destructive/10 hover:text-destructive transition-all"
+                className="flex items-center gap-5 w-full px-6 py-5 text-lg font-bold rounded-xl bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all shadow-sm border-2 border-transparent hover:border-destructive hover:shadow-md"
               >
-                <LogOut className="h-7 w-7 stroke-[2.5]" />
-                <span className="tracking-wide">Sign Out</span>
+                <LogOut className="h-8 w-8 stroke-[2.5]" />
+                <span className="tracking-wider">Sign Out</span>
               </button>
             </SidebarFooter>
           </Sidebar>

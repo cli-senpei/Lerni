@@ -9,32 +9,32 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 20%;
+    --foreground: 0 0% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 20%;
+    --card-foreground: 0 0% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 20%;
+    --popover-foreground: 0 0% 15%;
 
-    --primary: 145 85% 45%;
+    --primary: 220 15% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 200 90% 50%;
+    --secondary: 220 10% 50%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 200 90% 50%;
+    --accent: 220 10% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 145 85% 45%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 220 15% 40%;
 
     --radius: 1rem;
     
@@ -43,19 +43,19 @@ All colors MUST be HSL.
 
     --sidebar-background: 0 0% 98%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-foreground: 0 0% 20%;
 
-    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary: 0 0% 15%;
 
     --sidebar-primary-foreground: 0 0% 98%;
 
-    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent: 0 0% 94%;
 
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-accent-foreground: 0 0% 15%;
 
-    --sidebar-border: 220 13% 91%;
+    --sidebar-border: 0 0% 90%;
 
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 220 15% 40%;
   }
 
   .dark {
@@ -68,35 +68,35 @@ All colors MUST be HSL.
     --popover: 0 0% 12%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 145 85% 50%;
+    --primary: 220 15% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 200 90% 55%;
+    --secondary: 220 10% 55%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 18%;
     --muted-foreground: 0 0% 65%;
 
-    --accent: 200 90% 55%;
+    --accent: 220 10% 55%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 50%;
+    --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 0 0% 20%;
     --input: 0 0% 20%;
-    --ring: 145 85% 50%;
+    --ring: 220 15% 50%;
     
     --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.3);
     --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.4);
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 220 15% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 220 15% 50%;
   }
 }
 
@@ -107,5 +107,26 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    /* Accessibility improvements for reading disabilities */
+    font-size: 16px;
+    line-height: 1.8;
+    letter-spacing: 0.02em;
+  }
+  
+  /* Improved readability */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    font-weight: 700;
+  }
+  
+  p {
+    line-height: 1.8;
+    letter-spacing: 0.02em;
+    margin-bottom: 1em;
+  }
+  
+  button, a {
+    letter-spacing: 0.03em;
   }
 }
