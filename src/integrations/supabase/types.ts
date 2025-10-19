@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      user_learning_profiles: {
+        Row: {
+          baseline_score: number | null
+          created_at: string | null
+          has_completed_baseline: boolean | null
+          id: string
+          last_interaction_at: string | null
+          total_points: number | null
+          updated_at: string | null
+          user_id: string
+          user_name: string
+          weaknesses: string[] | null
+        }
+        Insert: {
+          baseline_score?: number | null
+          created_at?: string | null
+          has_completed_baseline?: boolean | null
+          id?: string
+          last_interaction_at?: string | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id: string
+          user_name: string
+          weaknesses?: string[] | null
+        }
+        Update: {
+          baseline_score?: number | null
+          created_at?: string | null
+          has_completed_baseline?: boolean | null
+          id?: string
+          last_interaction_at?: string | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string
+          user_name?: string
+          weaknesses?: string[] | null
+        }
+        Relationships: []
+      }
       user_progress: {
         Row: {
           created_at: string | null

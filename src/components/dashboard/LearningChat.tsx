@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Star, Sparkles, Award, Mic, MicOff, Volume2, Keyboard } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import BaselineGame from "./BaselineGame";
 import FullGameMode from "./FullGameMode";
 import RhymeGameMode from "./RhymeGameMode";
@@ -31,6 +32,8 @@ const LearningChat = () => {
   const [showFullGame, setShowFullGame] = useState(false);
   const [showRhymeGame, setShowRhymeGame] = useState(false);
   const [currentGameType, setCurrentGameType] = useState<"word-match" | "rhyme-match" | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -42,6 +45,93 @@ const LearningChat = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Load user profile on mount
+  useEffect(() => {
+    loadUserProfile();
+  }, []);
+
+  const loadUserProfile = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setIsLoadingProfile(false);
+        return;
+      }
+
+      setUserId(user.id);
+
+      // Check if user has existing profile
+      const { data: profile } = await supabase
+        .from('user_learning_profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (profile) {
+        // User has chatted before - restore state
+        setUserName(profile.user_name);
+        setBaselineComplete(profile.has_completed_baseline);
+        setUserWeaknesses(profile.weaknesses || []);
+        setPoints(profile.total_points || 0);
+        setShowModeSelection(false);
+
+        if (profile.has_completed_baseline) {
+          setStep(2);
+          // Skip straight to conversation
+          addBotMessage(`Welcome back, ${profile.user_name}! Ready for another game?`, false);
+        } else {
+          // Continue from where they left off
+          addBotMessage(`Hi my name is Lerni, what's your name?`, false);
+        }
+      }
+
+      setIsLoadingProfile(false);
+    } catch (error) {
+      console.error("Error loading profile:", error);
+      setIsLoadingProfile(false);
+    }
+  };
+
+  const saveUserProfile = async (updates: Partial<{
+    user_name: string;
+    has_completed_baseline: boolean;
+    baseline_score: number;
+    weaknesses: string[];
+    total_points: number;
+  }>) => {
+    if (!userId) return;
+
+    try {
+      // First check if profile exists
+      const { data: existingProfile } = await supabase
+        .from('user_learning_profiles')
+        .select('user_name')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      // Prepare upsert data - ensure user_name is always present
+      const upsertData = {
+        user_id: userId,
+        user_name: updates.user_name || existingProfile?.user_name || 'User',
+        ...updates,
+        last_interaction_at: new Date().toISOString(),
+      };
+
+      const { error } = await supabase
+        .from('user_learning_profiles')
+        .upsert(upsertData);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      toast({
+        title: "Failed to save progress",
+        description: "Your progress might not be saved.",
+        variant: "destructive",
+      });
+    }
+  };
 
   useEffect(() => {
     // Initialize Speech Recognition
@@ -156,6 +246,14 @@ const LearningChat = () => {
     const hasRhymingWeakness = weaknesses.includes("basic-words") || score <= 3;
     setCurrentGameType(hasRhymingWeakness ? "rhyme-match" : "word-match");
     
+    // Save to database
+    saveUserProfile({
+      has_completed_baseline: true,
+      baseline_score: score,
+      weaknesses,
+      total_points: points + 50,
+    });
+    
     addBotMessage(`Great job! You got ${score} out of 6 correct!`);
     setTimeout(() => {
       const gameType = hasRhymingWeakness ? "Rhyme Match" : "Word Match";
@@ -168,6 +266,13 @@ const LearningChat = () => {
     if (step === 0) {
       setUserName(userInput);
       addPoints(10);
+      
+      // Save name to database
+      saveUserProfile({
+        user_name: userInput,
+        total_points: points + 10,
+      });
+      
       addBotMessage(`Nice to meet you, ${userInput}!`);
       setTimeout(() => {
         addBotMessage(`Let's play a quick game to see what you're good at!`);
@@ -180,6 +285,12 @@ const LearningChat = () => {
       const response = userInput.toLowerCase().includes('yes');
       if (response) {
         addPoints(15);
+        
+        // Save updated points
+        saveUserProfile({
+          total_points: points + 15,
+        });
+        
         addBotMessage(`Awesome! Starting your game now...`);
         setTimeout(() => {
           if (currentGameType === "rhyme-match") {
@@ -226,6 +337,18 @@ const LearningChat = () => {
     }
   };
 
+  // Loading state
+  if (isLoadingProfile) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-lg text-muted-foreground">Loading your profile...</p>
+        </div>
+      </div>
+    );
+  }
+
   // Mode selection screen
   if (showModeSelection) {
     return (
@@ -269,9 +392,13 @@ const LearningChat = () => {
         weaknesses={userWeaknesses}
         points={points}
         onPointsEarned={(amount) => {
-          setPoints(prev => prev + amount);
+          const newPoints = points + amount;
+          setPoints(newPoints);
           setShowReward(true);
           setTimeout(() => setShowReward(false), 2000);
+          
+          // Save points to database
+          saveUserProfile({ total_points: newPoints });
         }}
         onExitToChat={() => setShowRhymeGame(false)}
       />
@@ -286,9 +413,13 @@ const LearningChat = () => {
         weaknesses={userWeaknesses}
         points={points}
         onPointsEarned={(amount) => {
-          setPoints(prev => prev + amount);
+          const newPoints = points + amount;
+          setPoints(newPoints);
           setShowReward(true);
           setTimeout(() => setShowReward(false), 2000);
+          
+          // Save points to database
+          saveUserProfile({ total_points: newPoints });
         }}
         onExitToChat={() => setShowFullGame(false)}
       />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -21,6 +21,7 @@ const BaselineGame = ({ onComplete }: BaselineGameProps) => {
   const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
   const [shuffledLetters, setShuffledLetters] = useState<string[]>([]);
   const [mistakes, setMistakes] = useState<{ [key: string]: number }>({});
+  const gameRef = useRef<HTMLDivElement>(null);
 
   const currentWord = WORDS[currentWordIndex];
 
@@ -30,6 +31,15 @@ const BaselineGame = ({ onComplete }: BaselineGameProps) => {
     const shuffled = [...letters].sort(() => Math.random() - 0.5);
     setShuffledLetters(shuffled);
     setSelectedLetters([]);
+    
+    // Scroll game into view centered in chat
+    setTimeout(() => {
+      gameRef.current?.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center',
+        inline: 'center'
+      });
+    }, 100);
   }, [currentWordIndex]);
 
   const handleLetterClick = (letter: string, index: number) => {
@@ -80,7 +90,7 @@ const BaselineGame = ({ onComplete }: BaselineGameProps) => {
                   selectedLetters.join("") !== currentWord.word;
 
   return (
-    <Card className="p-4 md:p-6 bg-background border-2 border-primary/20">
+    <Card ref={gameRef} className="p-4 md:p-6 bg-background border-2 border-primary/20">
       <div className="space-y-4">
         <div className="text-center">
           <p className="text-sm text-muted-foreground mb-2">
