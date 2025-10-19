@@ -12,7 +12,7 @@ const Index = () => {
         <Hero />
         
         {/* Second Section - Reading Experience */}
-        <section className="flex min-h-screen items-center px-6 py-4 md:py-6 md:px-12 animate-fade-in">
+        <section className="flex min-h-screen items-center px-6 py-16 md:py-24 md:px-12 animate-fade-in">
           <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
             {/* Text Content - Left Side */}
             <div className="flex flex-col items-center space-y-6 lg:items-start">
@@ -23,7 +23,7 @@ const Index = () => {
             
             {/* Image - Right Side */}
             <div className="flex justify-center lg:justify-end">
-              <div className="w-full max-w-[850px]">
+              <div className="w-full max-w-[1100px]">
                 <img
                   src={readingImage}
                   alt="Interactive learning experience with brain character and learner"
@@ -35,11 +35,11 @@ const Index = () => {
         </section>
         
         {/* Third Section - Orton-Gillingham Method */}
-        <section className="flex min-h-screen items-center px-6 py-2 md:py-4 md:px-12 animate-fade-in">
+        <section className="flex min-h-screen items-center px-6 py-16 md:py-24 md:px-12 animate-fade-in">
           <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
             {/* Image - Left Side */}
             <div className="order-2 flex justify-center lg:order-1 lg:justify-start">
-              <div className="w-full max-w-[850px]">
+              <div className="w-full max-w-[1100px]">
                 <img
                   src={ortonGillinghamImage}
                   alt="Orton-Gillingham Method with multisensory learning symbols"
