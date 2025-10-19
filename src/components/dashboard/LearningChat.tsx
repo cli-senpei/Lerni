@@ -493,51 +493,67 @@ const LearningChat = () => {
       </div>
 
       {/* Input Area */}
-      <div className="w-full px-3 md:px-6 py-3 md:py-4 border-t backdrop-blur-sm bg-background/50">
-        <div className="max-w-4xl mx-auto">
+      {preferredMode === 'mic' ? (
+        /* Mic Mode: Large Centered Button */
+        <div className="w-full px-3 md:px-6 py-8 md:py-12 flex flex-col items-center justify-center gap-6">
+          <Button
+            onClick={toggleVoiceInput}
+            size="icon"
+            variant={isListening ? "default" : "outline"}
+            className={`h-32 w-32 md:h-40 md:w-40 rounded-full shadow-2xl transition-all duration-300 ${
+              isListening 
+                ? 'bg-primary animate-pulse scale-110 shadow-primary/50' 
+                : 'hover:scale-105 border-4 border-primary/30'
+            }`}
+            disabled={isTyping}
+          >
+            {isListening ? (
+              <MicOff className="h-16 w-16 md:h-20 md:w-20" />
+            ) : (
+              <Mic className="h-16 w-16 md:h-20 md:w-20" />
+            )}
+          </Button>
+          
           {isListening && (
-            <div className="mb-2 md:mb-3 text-center animate-fade-in">
-              <div className="inline-flex items-center gap-2 bg-primary/10 px-3 md:px-4 py-1.5 md:py-2 rounded-full">
-                <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                <span className="text-sm md:text-base font-medium">Listening...</span>
+            <div className="text-center animate-fade-in">
+              <div className="inline-flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-full">
+                <div className="w-3 h-3 bg-primary rounded-full animate-pulse" />
+                <span className="text-lg md:text-xl font-medium">Listening...</span>
               </div>
             </div>
           )}
-          <div className="flex gap-2 md:gap-3">
-            <Button 
-              onClick={toggleVoiceInput}
-              size="icon"
-              variant={isListening ? "default" : "outline"}
-              className={`h-10 w-10 md:h-12 md:w-12 rounded-lg ${
-                isListening ? 'animate-pulse' : ''
-              }`}
-              disabled={isTyping}
-            >
-              {isListening ? (
-                <MicOff className="h-4 w-4 md:h-5 md:w-5" />
-              ) : (
-                <Mic className="h-4 w-4 md:h-5 md:w-5" />
-              )}
-            </Button>
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder={isListening ? "Speak now..." : "Type your answer..."}
-              className="flex-1 h-10 md:h-12 text-sm md:text-base px-3 md:px-4 rounded-lg"
-              disabled={isTyping || isListening}
-            />
-            <Button 
-              onClick={handleSend}
-              size="icon"
-              className="h-10 w-10 md:h-12 md:w-12 rounded-lg"
-              disabled={isTyping || !input.trim() || isListening}
-            >
-              <Send className="h-4 w-4 md:h-5 md:w-5" />
-            </Button>
+          
+          {!isListening && (
+            <p className="text-sm md:text-base text-muted-foreground text-center animate-fade-in">
+              Tap the mic to speak
+            </p>
+          )}
+        </div>
+      ) : (
+        /* Text Mode: Normal Input */
+        <div className="w-full px-3 md:px-6 py-3 md:py-4 border-t backdrop-blur-sm bg-background/50">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex gap-2 md:gap-3">
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Type your answer..."
+                className="flex-1 h-10 md:h-12 text-sm md:text-base px-3 md:px-4 rounded-lg"
+                disabled={isTyping}
+              />
+              <Button 
+                onClick={handleSend}
+                size="icon"
+                className="h-10 w-10 md:h-12 md:w-12 rounded-lg"
+                disabled={isTyping || !input.trim()}
+              >
+                <Send className="h-4 w-4 md:h-5 md:w-5" />
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
