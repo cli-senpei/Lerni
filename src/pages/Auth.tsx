@@ -124,22 +124,8 @@ const Auth = () => {
             </Button>
           </form>
 
-         <div className="text-center space-y-4">
-  {!isLogin ? (
-    <button
-      type="button"
-      onClick={() => setIsLogin(true)}
-      className="duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 
-        disabled:pointer-events-none disabled:opacity-50 
-        [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 
-        border-2 border-border bg-background 
-        hover:bg-[hsl(var(--primary-hover))] hover:text-[hsl(var(--primary-hover-foreground))] hover:border-[hsl(var(--primary-hover))] 
-        text-foreground transition-all hover:scale-105 
-        px-8 h-12 w-full rounded-2xl text-base font-bold uppercase tracking-wide md:h-14"
-    >
-      I Already Have an Account
-    </button>
-  ) : (
+        <div className="text-center">
+  {isLogin ? (
     <button
       type="button"
       onClick={() => setIsLogin(false)}
@@ -147,8 +133,23 @@ const Auth = () => {
     >
       Need an account? Get started
     </button>
+  ) : (
+    <button
+      type="button"
+      onClick={() => setIsLogin(true)}
+      className="inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background duration-300 
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 
+        disabled:pointer-events-none disabled:opacity-50 
+        [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 
+        bg-primary text-primary-foreground hover:bg-[hsl(var(--primary-hover))] 
+        hover:text-[hsl(var(--primary-hover-foreground))] hover:scale-105 
+        transition-all px-4 py-2 w-full h-14 rounded-2xl text-base font-bold uppercase tracking-wide"
+    >
+      I Already Have an Account
+    </button>
   )}
 </div>
+
 
         </div>
       </main>
