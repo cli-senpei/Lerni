@@ -8,18 +8,18 @@ const Hero = () => {
         {/* Hero Image - Left Side */}
         <div className="order-2 flex justify-center lg:order-1 lg:justify-start">
           <div className="w-full max-w-[500px]">
-            <img
-              src={heroImage}
-              alt="Lerni - A structured, science-based way for dyslexic learners to read with confidence"
-              className="w-full"
-            />
+          <img
+            src={heroImage}
+            alt="Lerni - Learning platform showing diverse learners celebrating their achievements"
+            className="w-full"
+          />
           </div>
         </div>
         
         {/* Text Content - Right Side */}
         <div className="order-1 flex flex-col items-center space-y-10 lg:order-2 lg:items-start">
           <h1 className="max-w-xl text-center text-3xl font-bold leading-tight text-foreground md:text-4xl lg:text-left lg:text-5xl">
-            The free, fun, and effective way to learn—designed for every mind!
+            Because every mind learns differently—and every win matters.
           </h1>
           
           <div className="flex w-full max-w-md flex-col gap-4">
