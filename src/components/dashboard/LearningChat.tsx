@@ -5,7 +5,6 @@ import { Send, Star, Sparkles, Award, Mic, MicOff, Volume2, Keyboard } from "luc
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import BaselineGame from "./BaselineGame";
-import FullGameMode from "./FullGameMode";
 import RhymeGameMode from "./RhymeGameMode";
 
 interface Message {
@@ -29,9 +28,7 @@ const LearningChat = () => {
   const [showBaselineGame, setShowBaselineGame] = useState(false);
   const [baselineComplete, setBaselineComplete] = useState(false);
   const [userWeaknesses, setUserWeaknesses] = useState<string[]>([]);
-  const [showFullGame, setShowFullGame] = useState(false);
   const [showRhymeGame, setShowRhymeGame] = useState(false);
-  const [currentGameType, setCurrentGameType] = useState<"word-match" | "rhyme-match" | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -242,10 +239,6 @@ const LearningChat = () => {
     setShowBaselineGame(false);
     addPoints(50);
     
-    // Determine which game to recommend based on weaknesses
-    const hasRhymingWeakness = weaknesses.includes("basic-words") || score <= 3;
-    setCurrentGameType(hasRhymingWeakness ? "rhyme-match" : "word-match");
-    
     // Save to database
     saveUserProfile({
       has_completed_baseline: true,
@@ -256,8 +249,7 @@ const LearningChat = () => {
     
     addBotMessage(`Great job! You got ${score} out of 6 correct!`);
     setTimeout(() => {
-      const gameType = hasRhymingWeakness ? "Rhyme Match" : "Word Match";
-      addBotMessage(`I've created a ${gameType} game just for you. Ready to play?`);
+      addBotMessage(`I've created a Rhyme Match game just for you. Ready to play?`);
       setStep(2);
     }, 2000);
   };
@@ -293,11 +285,7 @@ const LearningChat = () => {
         
         addBotMessage(`Awesome! Starting your game now...`);
         setTimeout(() => {
-          if (currentGameType === "rhyme-match") {
-            setShowRhymeGame(true);
-          } else {
-            setShowFullGame(true);
-          }
+          setShowRhymeGame(true);
         }, 2000);
       } else {
         addBotMessage(`No problem! Let me know when you're ready!`);
@@ -401,27 +389,6 @@ const LearningChat = () => {
           saveUserProfile({ total_points: newPoints });
         }}
         onExitToChat={() => setShowRhymeGame(false)}
-      />
-    );
-  }
-
-  // Show full game mode
-  if (showFullGame) {
-    return (
-      <FullGameMode
-        userName={userName}
-        weaknesses={userWeaknesses}
-        points={points}
-        onPointsEarned={(amount) => {
-          const newPoints = points + amount;
-          setPoints(newPoints);
-          setShowReward(true);
-          setTimeout(() => setShowReward(false), 2000);
-          
-          // Save points to database
-          saveUserProfile({ total_points: newPoints });
-        }}
-        onExitToChat={() => setShowFullGame(false)}
       />
     );
   }
