@@ -10,14 +10,14 @@ const Hero = () => {
       <div className="mx-auto grid w-full max-w-screen-xl items-center gap-6 lg:grid-cols-2 lg:gap-12">
         {/* Hero Image - Left Side */}
         <div className="order-2 flex justify-center lg:order-1 lg:justify-start">
-          <div className="w-full max-w-[1400px]">
+          <div className="w-full max-w-[600px]">
           <video
             src={heroVideo}
             autoPlay
             loop
             muted
             playsInline
-            className="w-full"
+            className="w-full rounded-lg"
             aria-label="Lerni - Learning platform showing diverse learners celebrating their achievements"
           />
           </div>

@@ -27,7 +27,7 @@ const Learning = () => {
       <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
         {/* Video - Left Side */}
         <div className="flex justify-center lg:justify-start">
-          <div className="w-full max-w-[500px]">
+          <div className="w-full max-w-[350px]">
             <video
               src={marioVideo}
               autoPlay

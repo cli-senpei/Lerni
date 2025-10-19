@@ -377,7 +377,11 @@ const LearningChat = () => {
         let gameChoice: string;
         
         // Map focus area to game type
-        if (focusArea === 'rhyming' || recommendation.focus === 'rhyming') {
+        // After baseline, show rhyme game first, then adapt to focus areas
+        if (successfulResponses === 0 && baselineComplete) {
+          // First full-screen game after chatbox mini game
+          gameChoice = 'rhyme';
+        } else if (focusArea === 'rhyming' || recommendation.focus === 'rhyming') {
           gameChoice = 'rhyme';
         } else if (focusArea === 'phonics' || recommendation.focus === 'phonics') {
           gameChoice = 'phonics';
