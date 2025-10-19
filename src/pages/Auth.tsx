@@ -75,21 +75,21 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Header />
+      <Header hideButton={true} />
       <main className="flex-1 flex items-center justify-center px-6 py-16">
-        <div className="w-full max-w-md space-y-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-foreground">
-              {isLogin ? "Welcome Back" : "Get Started"}
+        <div className="w-full max-w-md space-y-10">
+          <div className="text-center space-y-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
+              {isLogin ? "Welcome Back" : "Because every mind learns differently—and every win matters."}
             </h1>
-            <p className="mt-2 text-muted-foreground">
+            <p className="text-lg text-muted-foreground">
               {isLogin ? "Sign in to your account" : "Create your account"}
             </p>
           </div>
 
           <form onSubmit={handleAuth} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-base">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -97,11 +97,12 @@ const Auth = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="h-12 text-base"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-base">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -110,12 +111,13 @@ const Auth = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
+                className="h-12 text-base"
               />
             </div>
 
             <Button
               type="submit"
-              className="w-full h-12 rounded-2xl text-base font-bold uppercase tracking-wide"
+              className="w-full h-14 rounded-2xl text-base font-bold uppercase tracking-wide"
               disabled={loading}
             >
               {loading ? "Loading..." : isLogin ? "Sign In" : "Get Started"}
@@ -126,7 +128,7 @@ const Auth = () => {
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="text-base font-medium text-foreground hover:text-[hsl(340,75%,45%)] transition-colors duration-200"
             >
               {isLogin ? "Need an account? Get started" : "Already have an account? Sign in"}
             </button>

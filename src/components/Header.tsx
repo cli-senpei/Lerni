@@ -2,7 +2,11 @@ import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 
-const Header = () => {
+interface HeaderProps {
+  hideButton?: boolean;
+}
+
+const Header = ({ hideButton = false }: HeaderProps) => {
   const navigate = useNavigate();
 
   return (
@@ -16,13 +20,15 @@ const Header = () => {
           />
         </Link>
         
-        <Button 
-          size="lg"
-          className="font-bold uppercase tracking-wide"
-          onClick={() => navigate("/auth")}
-        >
-          Start Learning
-        </Button>
+        {!hideButton && (
+          <Button 
+            size="lg"
+            className="font-bold uppercase tracking-wide"
+            onClick={() => navigate("/auth")}
+          >
+            Start Learning
+          </Button>
+        )}
       </div>
     </header>
   );
