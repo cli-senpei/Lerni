@@ -5,6 +5,7 @@ import { Send, Star, Sparkles, Award, Mic, MicOff, Volume2, Keyboard } from "luc
 import { useToast } from "@/hooks/use-toast";
 import BaselineGame from "./BaselineGame";
 import FullGameMode from "./FullGameMode";
+import RhymeGameMode from "./RhymeGameMode";
 
 interface Message {
   text: string;
@@ -28,6 +29,8 @@ const LearningChat = () => {
   const [baselineComplete, setBaselineComplete] = useState(false);
   const [userWeaknesses, setUserWeaknesses] = useState<string[]>([]);
   const [showFullGame, setShowFullGame] = useState(false);
+  const [showRhymeGame, setShowRhymeGame] = useState(false);
+  const [currentGameType, setCurrentGameType] = useState<"word-match" | "rhyme-match" | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -149,9 +152,14 @@ const LearningChat = () => {
     setShowBaselineGame(false);
     addPoints(50);
     
+    // Determine which game to recommend based on weaknesses
+    const hasRhymingWeakness = weaknesses.includes("basic-words") || score <= 3;
+    setCurrentGameType(hasRhymingWeakness ? "rhyme-match" : "word-match");
+    
     addBotMessage(`Great job! You got ${score} out of 6 correct!`);
     setTimeout(() => {
-      addBotMessage(`I've created a special game just for you. Ready to play?`);
+      const gameType = hasRhymingWeakness ? "Rhyme Match" : "Word Match";
+      addBotMessage(`I've created a ${gameType} game just for you. Ready to play?`);
       setStep(2);
     }, 2000);
   };
@@ -174,7 +182,11 @@ const LearningChat = () => {
         addPoints(15);
         addBotMessage(`Awesome! Starting your game now...`);
         setTimeout(() => {
-          setShowFullGame(true);
+          if (currentGameType === "rhyme-match") {
+            setShowRhymeGame(true);
+          } else {
+            setShowFullGame(true);
+          }
         }, 2000);
       } else {
         addBotMessage(`No problem! Let me know when you're ready!`);
@@ -249,6 +261,24 @@ const LearningChat = () => {
     );
   }
 
+  // Show rhyme game mode
+  if (showRhymeGame) {
+    return (
+      <RhymeGameMode
+        userName={userName}
+        weaknesses={userWeaknesses}
+        points={points}
+        onPointsEarned={(amount) => {
+          setPoints(prev => prev + amount);
+          setShowReward(true);
+          setTimeout(() => setShowReward(false), 2000);
+        }}
+        onExitToChat={() => setShowRhymeGame(false)}
+      />
+    );
+  }
+
+  // Show full game mode
   if (showFullGame) {
     return (
       <FullGameMode
