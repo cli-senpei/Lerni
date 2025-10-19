@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import heroImage from "@/assets/hero.png";
+import heroVideo from "@/assets/hero.mp4";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -11,10 +11,14 @@ const Hero = () => {
         {/* Hero Image - Left Side */}
         <div className="order-2 flex justify-center lg:order-1 lg:justify-start">
           <div className="w-full max-w-[1400px]">
-          <img
-            src={heroImage}
-            alt="Lerni - Learning platform showing diverse learners celebrating their achievements"
+          <video
+            src={heroVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
             className="w-full"
+            aria-label="Lerni - Learning platform showing diverse learners celebrating their achievements"
           />
           </div>
         </div>
