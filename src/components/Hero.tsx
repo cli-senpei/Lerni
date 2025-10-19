@@ -10,7 +10,7 @@ const Hero = () => {
       <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
         {/* Hero Image - Left Side */}
         <div className="order-2 flex justify-center lg:order-1 lg:justify-start">
-          <div className="w-full max-w-[850px]">
+          <div className="w-full max-w-[1100px]">
           <img
             src={heroImage}
             alt="Lerni - Learning platform showing diverse learners celebrating their achievements"
