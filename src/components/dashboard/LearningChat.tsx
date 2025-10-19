@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Star, Sparkles, Award, Mic, MicOff, Volume2, Keyboard } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import BaselineGame from "./BaselineGame";
+import FullGameMode from "./FullGameMode";
 
 interface Message {
   text: string;
@@ -22,6 +24,10 @@ const LearningChat = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [showModeSelection, setShowModeSelection] = useState(true);
   const [preferredMode, setPreferredMode] = useState<'mic' | 'text' | null>(null);
+  const [showBaselineGame, setShowBaselineGame] = useState(false);
+  const [baselineComplete, setBaselineComplete] = useState(false);
+  const [userWeaknesses, setUserWeaknesses] = useState<string[]>([]);
+  const [showFullGame, setShowFullGame] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -137,39 +143,42 @@ const LearningChat = () => {
     }, 600);
   };
 
+  const handleBaselineComplete = (score: number, weaknesses: string[]) => {
+    setUserWeaknesses(weaknesses);
+    setBaselineComplete(true);
+    setShowBaselineGame(false);
+    addPoints(50);
+    
+    addBotMessage(`Great job! You got ${score} out of 6 correct!`);
+    setTimeout(() => {
+      addBotMessage(`I've created a special game just for you. Ready to play?`);
+      setStep(2);
+    }, 2000);
+  };
+
   const handleConversationFlow = (userInput: string) => {
     if (step === 0) {
       setUserName(userInput);
       addPoints(10);
       addBotMessage(`Nice to meet you, ${userInput}!`);
       setTimeout(() => {
-        addBotMessage(`How are you feeling today?`);
-        setStep(1);
+        addBotMessage(`Let's play a quick game to see what you're good at!`);
+        setTimeout(() => {
+          setShowBaselineGame(true);
+          setStep(1);
+        }, 1500);
       }, 2000);
-    } else if (step === 1) {
-      addPoints(10);
-      addBotMessage(`Great! I'm here to help you.`);
-      setTimeout(() => {
-        addBotMessage(`Ready to play a game? Yes or No`);
-        setStep(2);
-      }, 2000);
-    } else if (step === 2) {
-      addPoints(15);
-      const response = userInput.toLowerCase().includes('yes') 
-        ? `Awesome! You'll love this.`
-        : `No worries! We'll go slow.`;
-      
-      addBotMessage(response);
-      setTimeout(() => {
-        addBotMessage(`Let's start! Ready?`);
-        setStep(3);
-      }, 2000);
-    } else if (step === 3) {
-      addPoints(25);
-      addBotMessage(`Perfect! Loading your game...`);
-      setTimeout(() => {
-        setStep(4);
-      }, 2000);
+    } else if (step === 2 && baselineComplete) {
+      const response = userInput.toLowerCase().includes('yes');
+      if (response) {
+        addPoints(15);
+        addBotMessage(`Awesome! Starting your game now...`);
+        setTimeout(() => {
+          setShowFullGame(true);
+        }, 2000);
+      } else {
+        addBotMessage(`No problem! Let me know when you're ready!`);
+      }
     }
   };
 
@@ -240,25 +249,18 @@ const LearningChat = () => {
     );
   }
 
-  if (step === 4) {
+  if (showFullGame) {
     return (
-      <div className="w-full h-full bg-gradient-to-br from-primary/5 via-background to-accent/5 flex items-center justify-center animate-fade-in">
-        <div className="text-center space-y-8 p-8">
-          <div className="animate-pulse">
-            <Sparkles className="w-24 h-24 mx-auto text-primary animate-bounce" />
-          </div>
-          <h2 className="text-5xl md:text-6xl font-bold tracking-wider animate-fade-in">
-            Loading Your Game
-          </h2>
-          <p className="text-2xl md:text-3xl text-muted-foreground font-light tracking-wide animate-fade-in">
-            Great job, {userName}!
-          </p>
-          <div className="flex items-center justify-center gap-2 text-lg text-muted-foreground animate-fade-in">
-            <Award className="w-6 h-6 text-primary" />
-            <span>You earned {points} points!</span>
-          </div>
-        </div>
-      </div>
+      <FullGameMode
+        userName={userName}
+        weaknesses={userWeaknesses}
+        points={points}
+        onPointsEarned={(amount) => {
+          setPoints(prev => prev + amount);
+          setShowReward(true);
+          setTimeout(() => setShowReward(false), 2000);
+        }}
+      />
     );
   }
 
@@ -314,6 +316,12 @@ const LearningChat = () => {
               </div>
             </div>
           ))}
+          
+          {showBaselineGame && (
+            <div className="animate-fade-in">
+              <BaselineGame onComplete={handleBaselineComplete} />
+            </div>
+          )}
           
           {isTyping && (
             <div className="flex justify-start animate-fade-in">
