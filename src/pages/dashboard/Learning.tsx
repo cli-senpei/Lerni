@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import LearningChat from "@/components/dashboard/LearningChat";
-import learningGameImage from "@/assets/learning-game.png";
+import marioVideo from "@/assets/mario.mp4";
 import { useSidebar } from "@/components/ui/sidebar";
 
 const Learning = () => {
@@ -25,13 +25,16 @@ const Learning = () => {
   return (
     <div className="flex items-center px-6 py-6 md:py-8 md:px-12 bg-background">
       <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
-        {/* Image - Left Side */}
+        {/* Video - Left Side */}
         <div className="flex justify-center lg:justify-start">
           <div className="w-full max-w-[500px]">
-            <img
-              src={learningGameImage}
-              alt="AI Learning Game Character"
-              className="w-full animate-fade-in"
+            <video
+              src={marioVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full animate-fade-in rounded-lg"
             />
           </div>
         </div>
