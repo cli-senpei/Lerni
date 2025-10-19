@@ -92,7 +92,7 @@ const DashboardLayout = () => {
           <Sidebar className="hidden lg:flex border-r w-80 bg-sidebar">
             {/* Logo Section */}
             <div className="border-b border-sidebar-border p-6 flex justify-center">
-              <img src={logo} alt="Lerni Logo" className="h-20 w-auto" />
+              <img src={logo} alt="Lerni Logo" className="h-32 w-auto" />
             </div>
 
             <SidebarContent className="pt-8">

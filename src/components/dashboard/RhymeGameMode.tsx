@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, X, Star, Award, Home, ArrowLeft, Volume2 } from "lucide-react";
+import { X, Star, Award, Home, ArrowLeft, Volume2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import lerniIcon from "@/assets/lerni.png";
 
 interface RhymeGameModeProps {
   userName: string;
@@ -216,16 +217,16 @@ const RhymeGameMode = ({ userName, weaknesses, points, onPointsEarned, onExitToC
           <Button
             onClick={() => setAiMinimized(false)}
             size="icon"
-            className="w-14 h-14 rounded-full shadow-lg animate-pulse"
+            className="w-14 h-14 rounded-full shadow-lg animate-pulse bg-white hover:bg-white/90 p-1"
           >
-            <MessageSquare className="w-6 h-6" />
+            <img src={lerniIcon} alt="Lerni" className="w-full h-full rounded-full" />
           </Button>
         ) : (
           <Card className="p-4 bg-background/95 backdrop-blur shadow-xl max-w-xs">
             <div className="flex justify-between items-start mb-2">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                  <MessageSquare className="w-4 h-4 text-primary" />
+                <div className="w-8 h-8 rounded-full overflow-hidden">
+                  <img src={lerniIcon} alt="Lerni" className="w-full h-full object-cover" />
                 </div>
                 <span className="font-bold text-sm">Lerni</span>
               </div>
