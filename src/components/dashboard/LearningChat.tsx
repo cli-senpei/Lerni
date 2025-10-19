@@ -464,7 +464,7 @@ const LearningChat = () => {
   }
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full bg-gradient-to-br from-primary/5 via-background to-accent/5 flex flex-col">
       {/* Compact Header - Points & Speech Controls */}
       <div className="w-full px-2 md:px-3 py-1 md:py-1.5 flex items-center justify-end gap-2 backdrop-blur-sm bg-background/50">
         {isSpeaking && (
@@ -494,8 +494,8 @@ const LearningChat = () => {
       )}
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto px-3 md:px-6 py-4 md:py-6 max-w-7xl mx-auto w-full">
-        <div className="space-y-3 md:space-y-4 bg-background/80 backdrop-blur-sm rounded-2xl border shadow-2xl p-4 md:p-8">
+      <div className="flex-1 overflow-y-auto px-3 md:px-6 py-4 md:py-6 max-w-4xl mx-auto w-full">
+        <div className="space-y-3 md:space-y-4">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -543,7 +543,7 @@ const LearningChat = () => {
         /* Mic Mode: Centered initially, then floating after 2 responses */
         successfulResponses < 2 ? (
           /* Initial Centered Layout */
-          <div className="relative w-full px-3 md:px-6 py-8 md:py-12 flex flex-col items-center justify-center gap-8 bg-transparent">
+          <div className="relative w-full px-3 md:px-6 py-8 md:py-12 flex flex-col items-center justify-center gap-8">
             {/* Keyboard Switch Button - Bottom Left */}
             <Button
               onClick={() => setPreferredMode('text')}
@@ -576,8 +576,8 @@ const LearningChat = () => {
                 onClick={toggleVoiceInput}
                 className={`relative cursor-pointer transition-all duration-300 p-8 rounded-full ${
                   isListening 
-                    ? 'bg-transparent shadow-lg shadow-primary/20' 
-                    : 'bg-transparent hover:bg-primary/5'
+                    ? 'bg-primary/5 shadow-lg shadow-primary/20' 
+                    : 'bg-muted/50 hover:bg-muted'
                 } ${isRecording ? 'scale-105' : 'hover:scale-105'}`}
               >
                 {isListening ? (
@@ -673,7 +673,7 @@ const LearningChat = () => {
                   className={`relative p-6 rounded-full shadow-2xl transition-all duration-300 ${
                     isListening 
                       ? 'bg-primary text-primary-foreground shadow-primary/30' 
-                      : 'bg-background/70 backdrop-blur-sm border-2 border-border hover:border-primary text-muted-foreground hover:text-primary'
+                      : 'bg-background/90 backdrop-blur-sm border-2 border-border hover:border-primary text-muted-foreground hover:text-primary'
                   } ${isRecording ? 'scale-110' : 'hover:scale-105'}`}
                 >
                   {isListening ? (
