@@ -6,13 +6,25 @@ interface BaselineGameProps {
   onComplete: (score: number, weaknesses: string[]) => void;
 }
 
-const WORDS = [
-  { word: "cat", difficulty: "easy" },
-  { word: "dog", difficulty: "easy" },
-  { word: "run", difficulty: "easy" },
-  { word: "jump", difficulty: "medium" },
-  { word: "play", difficulty: "medium" },
-  { word: "friend", difficulty: "hard" },
+const QUESTIONS = [
+  { 
+    type: "spell",
+    word: "cat", 
+    prompt: "Spell the word",
+    difficulty: "easy" 
+  },
+  { 
+    type: "visual",
+    word: "dog",
+    prompt: "Which letters spell 'dog'?",
+    difficulty: "easy" 
+  },
+  { 
+    type: "interactive",
+    word: "run",
+    prompt: "Tap the letters to spell what you do fast",
+    difficulty: "easy" 
+  },
 ];
 
 const BaselineGame = ({ onComplete }: BaselineGameProps) => {
@@ -23,11 +35,11 @@ const BaselineGame = ({ onComplete }: BaselineGameProps) => {
   const [mistakes, setMistakes] = useState<{ [key: string]: number }>({});
   const gameRef = useRef<HTMLDivElement>(null);
 
-  const currentWord = WORDS[currentWordIndex];
+  const currentQuestion = QUESTIONS[currentWordIndex];
 
   useEffect(() => {
-    // Shuffle letters for the current word
-    const letters = currentWord.word.split("");
+    // Shuffle letters for the current question
+    const letters = currentQuestion.word.split("");
     const shuffled = [...letters].sort(() => Math.random() - 0.5);
     setShuffledLetters(shuffled);
     setSelectedLetters([]);
@@ -50,20 +62,20 @@ const BaselineGame = ({ onComplete }: BaselineGameProps) => {
     setShuffledLetters(newShuffled);
 
     // Check if word is complete
-    if (newSelected.length === currentWord.word.length) {
+    if (newSelected.length === currentQuestion.word.length) {
       const formedWord = newSelected.join("");
-      if (formedWord === currentWord.word) {
+      if (formedWord === currentQuestion.word) {
         setScore(score + 1);
         setTimeout(moveToNext, 800);
       } else {
         // Track mistakes by difficulty
         setMistakes({
           ...mistakes,
-          [currentWord.difficulty]: (mistakes[currentWord.difficulty] || 0) + 1,
+          [currentQuestion.difficulty]: (mistakes[currentQuestion.difficulty] || 0) + 1,
         });
         // Reset after wrong attempt
         setTimeout(() => {
-          setShuffledLetters(currentWord.word.split("").sort(() => Math.random() - 0.5));
+          setShuffledLetters(currentQuestion.word.split("").sort(() => Math.random() - 0.5));
           setSelectedLetters([]);
         }, 800);
       }
@@ -71,33 +83,31 @@ const BaselineGame = ({ onComplete }: BaselineGameProps) => {
   };
 
   const moveToNext = () => {
-    if (currentWordIndex < WORDS.length - 1) {
+    if (currentWordIndex < QUESTIONS.length - 1) {
       setCurrentWordIndex(currentWordIndex + 1);
     } else {
       // Game complete - analyze weaknesses
       const weaknesses: string[] = [];
-      if ((mistakes.easy || 0) > 1) weaknesses.push("basic-words");
-      if ((mistakes.medium || 0) > 1) weaknesses.push("medium-words");
-      if ((mistakes.hard || 0) > 1) weaknesses.push("complex-words");
+      if ((mistakes.easy || 0) > 0) weaknesses.push("phonics");
       
       onComplete(score, weaknesses.length > 0 ? weaknesses : ["none"]);
     }
   };
 
-  const isCorrect = selectedLetters.length === currentWord.word.length && 
-                    selectedLetters.join("") === currentWord.word;
-  const isWrong = selectedLetters.length === currentWord.word.length && 
-                  selectedLetters.join("") !== currentWord.word;
+  const isCorrect = selectedLetters.length === currentQuestion.word.length && 
+                    selectedLetters.join("") === currentQuestion.word;
+  const isWrong = selectedLetters.length === currentQuestion.word.length && 
+                  selectedLetters.join("") !== currentQuestion.word;
 
   return (
     <Card ref={gameRef} className="p-4 md:p-6 bg-background border-2 border-primary/20">
       <div className="space-y-4">
         <div className="text-center">
           <p className="text-sm text-muted-foreground mb-2">
-            Word {currentWordIndex + 1} of {WORDS.length}
+            Question {currentWordIndex + 1} of {QUESTIONS.length}
           </p>
           <p className="text-base md:text-lg font-medium mb-4">
-            Spell the word: <span className="font-bold text-primary">{currentWord.word}</span>
+            {currentQuestion.prompt}: <span className="font-bold text-primary">{currentQuestion.word}</span>
           </p>
         </div>
 
@@ -134,7 +144,7 @@ const BaselineGame = ({ onComplete }: BaselineGameProps) => {
         </div>
 
         <div className="text-center text-sm text-muted-foreground">
-          Score: {score} / {WORDS.length}
+          Score: {score} / {QUESTIONS.length}
         </div>
       </div>
     </Card>

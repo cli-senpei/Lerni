@@ -300,10 +300,14 @@ const LearningChat = () => {
       total_points: points + 50,
     });
     
-    addBotMessage(`Great job! You got ${score} out of 6 correct!`);
+    addBotMessage(`Great job! You got ${score} out of 3 correct!`);
     setTimeout(() => {
-      addBotMessage(`I've created a Rhyme Match game just for you. Ready to play?`);
-      setStep(2);
+      addBotMessage(`Based on your results, here is a game to sharpen your skills.`);
+      setTimeout(() => {
+        // Auto-start the game based on weaknesses
+        handleConversationFlow('yes');
+        setStep(2);
+      }, 1500);
     }, 2000);
   };
 
@@ -351,12 +355,9 @@ const LearningChat = () => {
       
       addBotMessage(`Nice to meet you, ${userInput}!`);
       setTimeout(() => {
-        addBotMessage(`Let's play a quick game to see what you're good at!`);
-        setTimeout(() => {
-          setShowBaselineGame(true);
-          setStep(1);
-        }, 1500);
-      }, 2000);
+        setShowBaselineGame(true);
+        setStep(1);
+      }, 1500);
     } else if (step === 2 && baselineComplete) {
       const response = userInput.toLowerCase();
       if (response.includes('yes') || response.includes('sure') || response.includes('ok')) {
