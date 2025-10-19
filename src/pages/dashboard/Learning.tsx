@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Gamepad2 } from "lucide-react";
 import LearningChat from "@/components/dashboard/LearningChat";
 import learningGameImage from "@/assets/learning-game.png";
 
@@ -32,11 +31,11 @@ const Learning = () => {
         {/* Content - Right Side */}
         <div className="flex flex-col items-center space-y-6 lg:items-start">
           <h2 className="max-w-xl text-center text-2xl font-bold leading-tight text-foreground md:text-3xl lg:text-left lg:text-4xl">
-            Choose Your Learning Path
+            Start Your Reading Adventure
           </h2>
           
           <p className="text-center text-base text-muted-foreground lg:text-left max-w-xl">
-            Unlock your potential with AI-powered learning tools designed to make reading fun and effective. Start your journey today!
+            Chat with AI to play fun reading games! Your personal reading coach makes learning exciting and easy. Let's start!
           </p>
           
           <div className="flex flex-col gap-4 w-full max-w-md">
@@ -46,15 +45,6 @@ const Learning = () => {
               className="w-full bg-[hsl(142,76%,36%)] hover:bg-[hsl(142,76%,30%)] text-white font-bold text-lg h-14"
             >
               Improve Reading with AI
-            </Button>
-            
-            <Button
-              onClick={() => setShowChat(true)}
-              size="lg"
-              className="w-full bg-[hsl(142,76%,36%)] hover:bg-[hsl(142,76%,30%)] text-white font-bold text-lg h-14"
-            >
-              <Gamepad2 className="w-5 h-5 mr-2" />
-              Play Games and Learn
             </Button>
           </div>
         </div>
