@@ -260,6 +260,7 @@ const LearningChat = () => {
           setShowReward(true);
           setTimeout(() => setShowReward(false), 2000);
         }}
+        onExitToChat={() => setShowFullGame(false)}
       />
     );
   }

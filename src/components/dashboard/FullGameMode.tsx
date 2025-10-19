@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, X, Star, Award } from "lucide-react";
+import { MessageSquare, X, Star, Award, Home, ArrowLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 interface FullGameModeProps {
   userName: string;
   weaknesses: string[];
   points: number;
   onPointsEarned: (amount: number) => void;
+  onExitToChat: () => void;
 }
 
-const FullGameMode = ({ userName, weaknesses, points, onPointsEarned }: FullGameModeProps) => {
+const FullGameMode = ({ userName, weaknesses, points, onPointsEarned, onExitToChat }: FullGameModeProps) => {
+  const navigate = useNavigate();
   const [showHint, setShowHint] = useState(false);
   const [hintMessage, setHintMessage] = useState("");
   const [currentRound, setCurrentRound] = useState(1);
@@ -61,6 +64,18 @@ const FullGameMode = ({ userName, weaknesses, points, onPointsEarned }: FullGame
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5 z-50">
+      {/* Navigation Buttons */}
+      <div className="fixed top-4 left-4 flex gap-2 z-50">
+        <Button
+          onClick={() => navigate("/dashboard/home")}
+          size="icon"
+          variant="outline"
+          className="w-10 h-10 rounded-full shadow-lg"
+        >
+          <Home className="w-5 h-5" />
+        </Button>
+      </div>
+
       {/* AI Assistant Toggle */}
       <div className="fixed top-4 right-4 z-50">
         {aiMinimized ? (
@@ -89,15 +104,24 @@ const FullGameMode = ({ userName, weaknesses, points, onPointsEarned }: FullGame
                 <X className="w-4 h-4" />
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground mb-3">
               I'm here if you need help! Keep going!
             </p>
+            <Button
+              onClick={onExitToChat}
+              variant="outline"
+              size="sm"
+              className="w-full"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Chat
+            </Button>
           </Card>
         )}
       </div>
 
       {/* Points Display */}
-      <div className="fixed top-4 left-4 flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full">
+      <div className="fixed top-20 left-4 flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full">
         <Star className="w-5 h-5 text-primary" />
         <span className="text-lg font-bold">{points}</span>
       </div>
