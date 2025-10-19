@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,8 @@ import Footer from "@/components/Footer";
 import authLogo from "@/assets/auth-logo.png";
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(false);
+  const location = useLocation();
+  const [isLogin, setIsLogin] = useState(location.state?.isLogin || false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

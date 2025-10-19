@@ -37,11 +37,11 @@ const Hero = () => {
             >
               Get Started
             </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
+            <Button
+              variant="outline"
+              size="lg"
               className="h-12 w-full rounded-2xl text-base font-bold uppercase tracking-wide md:h-14"
-              onClick={() => navigate("/auth")}
+              onClick={() => navigate("/auth", { state: { isLogin: true } })}
             >
               I Already Have an Account
             </Button>
