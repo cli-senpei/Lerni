@@ -17,10 +17,10 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 15%;
 
-    --primary: 220 15% 40%;
+    --primary: 0 0% 45%;
     --primary-foreground: 0 0% 100%;
     
-    --primary-hover: 340 82% 52%;
+    --primary-hover: 340 75% 45%;
     --primary-hover-foreground: 0 0% 100%;
 
     --secondary: 220 10% 50%;
@@ -71,10 +71,10 @@ All colors MUST be HSL.
     --popover: 0 0% 12%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 220 15% 50%;
+    --primary: 0 0% 50%;
     --primary-foreground: 0 0% 100%;
     
-    --primary-hover: 340 82% 52%;
+    --primary-hover: 340 75% 45%;
     --primary-hover-foreground: 0 0% 100%;
 
     --secondary: 220 10% 55%;
