@@ -1,8 +1,22 @@
+import InteractiveAvatar from "@/components/dashboard/InteractiveAvatar";
+import UserStats from "@/components/dashboard/UserStats";
+
 const DashboardHome = () => {
   return (
-    <div className="p-8">
-      <h1 className="text-4xl font-bold mb-4">Welcome to Lerni</h1>
-      <p className="text-muted-foreground">Start your learning journey today.</p>
+    <div className="p-4 md:p-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 max-w-7xl mx-auto">
+        {/* Left Side - Interactive 3D Avatar */}
+        <div className="flex items-center justify-center">
+          <div className="w-full relative">
+            <InteractiveAvatar />
+          </div>
+        </div>
+
+        {/* Right Side - User Stats */}
+        <div className="flex items-center">
+          <UserStats />
+        </div>
+      </div>
     </div>
   );
 };
