@@ -138,40 +138,55 @@ const LearningChat = () => {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
+      recognitionRef.current.interimResults = true; // Enable interim results to detect speaking
       recognitionRef.current.lang = 'en-US';
 
       recognitionRef.current.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
+        // Set recording to true when actually speaking (interim or final)
+        setIsRecording(true);
+        
+        const transcript = Array.from(event.results)
+          .map((result: any) => result[0])
+          .map((result: any) => result.transcript)
+          .join('');
+          
         setInput(transcript);
-        setIsListening(false);
-        // Auto-submit the recording
-        setTimeout(() => {
-          setMessages(prev => [...prev, { text: transcript, isUser: true }]);
-          setInput("");
+        
+        // Only process final results
+        const isFinal = event.results[event.results.length - 1].isFinal;
+        if (isFinal) {
+          setIsListening(false);
+          setIsRecording(false);
+          // Auto-submit the recording
           setTimeout(() => {
-            handleConversationFlow(transcript);
-            // Auto-restart listening if in mic mode
-            if (preferredMode === 'mic') {
-              setTimeout(() => {
-                if (recognitionRef.current && !isListening) {
-                  setIsListening(true);
-                  recognitionRef.current.start();
-                }
-              }, 2000); // Wait 2s after bot responds
-            }
-          }, 600);
-        }, 100);
+            setMessages(prev => [...prev, { text: transcript, isUser: true }]);
+            setInput("");
+            setTimeout(() => {
+              handleConversationFlow(transcript);
+              // Auto-restart listening if in mic mode
+              if (preferredMode === 'mic') {
+                setTimeout(() => {
+                  if (recognitionRef.current && !isListening) {
+                    setIsListening(true);
+                    recognitionRef.current.start();
+                  }
+                }, 2000); // Wait 2s after bot responds
+              }
+            }, 600);
+          }, 100);
+        }
       };
 
       recognitionRef.current.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
-        toast({
-          title: "Voice input error",
-          description: "Please try again or type your response.",
-          variant: "destructive",
-        });
+        setIsRecording(false);
+        
+        // Handle errors conversationally
+        if (event.error === 'not-allowed' || event.error === 'no-speech') {
+          addBotMessage("I'm having trouble hearing you. Have you connected your microphone properly? Would you like to switch to keyboard mode?");
+          setPendingModeSwitch(true);
+        }
       };
 
       recognitionRef.current.onend = () => {
@@ -352,11 +367,9 @@ const LearningChat = () => {
 
   const toggleVoiceInput = () => {
     if (!recognitionRef.current) {
-      toast({
-        title: "Voice input not supported",
-        description: "Your browser doesn't support voice input. Please type your response.",
-        variant: "destructive",
-      });
+      // Handle unsupported browsers through AI conversation
+      addBotMessage("It looks like your browser doesn't support voice input. Would you like to switch to keyboard mode instead?");
+      setPendingModeSwitch(true);
       return;
     }
 
@@ -366,7 +379,7 @@ const LearningChat = () => {
       setIsRecording(false);
     } else {
       setIsListening(true);
-      setIsRecording(true);
+      setIsRecording(false);
       recognitionRef.current.start();
     }
   };
@@ -523,49 +536,82 @@ const LearningChat = () => {
 
       {/* Input Area */}
       {preferredMode === 'mic' ? (
-        /* Mic Mode: Large Icon without circle */
-        <div className="relative w-full px-3 md:px-6 py-8 md:py-12 flex flex-col items-center justify-center gap-6">
+        /* Mic Mode: Sleek Modern Design */
+        <div className="relative w-full px-3 md:px-6 py-8 md:py-12 flex flex-col items-center justify-center gap-8">
           {/* Keyboard Switch Button - Bottom Left */}
           <Button
             onClick={() => setPreferredMode('text')}
-            variant="outline"
+            variant="ghost"
             size="sm"
-            className="absolute bottom-4 left-4 md:bottom-6 md:left-6 flex items-center gap-2"
+            className="absolute bottom-4 left-4 md:bottom-6 md:left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <Keyboard className="h-4 w-4" />
-            <span className="hidden md:inline">Switch to Keyboard</span>
+            <span className="hidden md:inline">Keyboard</span>
           </Button>
 
-          {/* Large Mic Icon */}
-          <div 
-            onClick={toggleVoiceInput}
-            className={`cursor-pointer transition-all duration-300 ${
-              isListening 
-                ? 'animate-pulse scale-110' 
-                : 'hover:scale-105'
-            }`}
-          >
-            {isListening ? (
-              <MicOff className="h-48 w-48 md:h-64 md:w-64 text-primary drop-shadow-2xl" />
-            ) : (
-              <Mic className="h-48 w-48 md:h-64 md:w-64 text-primary/70 hover:text-primary drop-shadow-2xl" />
+          {/* Modern Mic Icon with pulse animation */}
+          <div className="relative">
+            {/* Outer pulse ring when recording */}
+            {isRecording && (
+              <div className="absolute inset-0 -m-8">
+                <div className="w-full h-full rounded-full bg-primary/20 animate-ping" />
+              </div>
             )}
+            
+            {/* Inner glow when listening */}
+            {isListening && (
+              <div className="absolute inset-0 -m-4">
+                <div className="w-full h-full rounded-full bg-primary/10 blur-xl animate-pulse" />
+              </div>
+            )}
+            
+            {/* Mic Icon */}
+            <div 
+              onClick={toggleVoiceInput}
+              className={`relative cursor-pointer transition-all duration-300 p-8 rounded-full ${
+                isListening 
+                  ? 'bg-primary/5 shadow-lg shadow-primary/20' 
+                  : 'bg-muted/50 hover:bg-muted'
+              } ${isRecording ? 'scale-105' : 'hover:scale-105'}`}
+            >
+              {isListening ? (
+                <Mic className="h-24 w-24 md:h-28 md:w-28 text-primary" strokeWidth={1.5} />
+              ) : (
+                <MicOff className="h-24 w-24 md:h-28 md:w-28 text-muted-foreground" strokeWidth={1.5} />
+              )}
+            </div>
           </div>
           
-          {isListening && (
-            <div className="text-center animate-fade-in">
-              <div className="inline-flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-full">
-                <div className="w-3 h-3 bg-primary rounded-full animate-pulse" />
-                <span className="text-lg md:text-xl font-medium">Listening...</span>
+          {/* Status Messages */}
+          <div className="text-center space-y-2">
+            {isRecording && (
+              <div className="animate-fade-in">
+                <div className="inline-flex items-center gap-2 text-primary">
+                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                  <span className="text-base md:text-lg font-medium">Speaking...</span>
+                </div>
               </div>
-            </div>
-          )}
-          
-          {!isListening && (
-            <p className="text-sm md:text-base text-muted-foreground text-center animate-fade-in">
-              Tap the mic to speak or say "keyboard" to type
-            </p>
-          )}
+            )}
+            
+            {isListening && !isRecording && (
+              <div className="animate-fade-in">
+                <p className="text-sm md:text-base text-muted-foreground">
+                  Listening...
+                </p>
+              </div>
+            )}
+            
+            {!isListening && (
+              <div className="animate-fade-in space-y-1">
+                <p className="text-sm md:text-base text-muted-foreground">
+                  Tap to speak
+                </p>
+                <p className="text-xs text-muted-foreground/60">
+                  or say "keyboard" to type
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       ) : (
         /* Text Mode: Normal Input */
