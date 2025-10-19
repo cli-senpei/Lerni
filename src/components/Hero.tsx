@@ -3,28 +3,37 @@ import heroImage from "@/assets/hero.svg";
 
 const Hero = () => {
   return (
-    <section className="min-h-[calc(100vh-5rem)] px-6 py-12 md:px-12 md:py-20">
-      <div className="mx-auto grid max-w-screen-xl items-center gap-12 lg:grid-cols-2 lg:gap-20">
-        {/* Hero Image */}
-        <div className="order-2 lg:order-1">
-          <img
-            src={heroImage}
-            alt="Diverse learners celebrating achievements"
-            className="w-full"
-          />
+    <section className="flex min-h-[600px] items-center px-6 py-16 md:min-h-[calc(100vh-10rem)] md:px-12">
+      <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
+        {/* Hero Image - Left Side */}
+        <div className="flex justify-center lg:justify-end">
+          <div className="w-full max-w-[500px]">
+            <img
+              src={heroImage}
+              alt="Diverse learners celebrating achievements"
+              className="w-full"
+            />
+          </div>
         </div>
         
-        {/* Text Content */}
-        <div className="order-1 space-y-8 text-center lg:order-2 lg:text-left">
-          <h1 className="text-3xl font-bold leading-tight text-foreground md:text-4xl lg:text-5xl">
-            Because every mind learns differently—and every win matters.
+        {/* Text Content - Right Side */}
+        <div className="flex flex-col items-center space-y-10 lg:items-start">
+          <h1 className="max-w-xl text-center text-3xl font-bold leading-tight text-foreground md:text-4xl lg:text-left lg:text-5xl">
+            The free, fun, and effective way to learn—designed for every mind!
           </h1>
           
-          <div className="flex flex-col gap-4">
-            <Button size="lg" className="h-14 w-full rounded-2xl text-base font-bold uppercase tracking-wide lg:w-auto lg:min-w-[320px]">
+          <div className="flex w-full max-w-md flex-col gap-4">
+            <Button 
+              size="lg" 
+              className="h-12 w-full rounded-2xl text-base font-bold uppercase tracking-wide md:h-14"
+            >
               Get Started
             </Button>
-            <Button variant="outline" size="lg" className="h-14 w-full rounded-2xl text-base uppercase tracking-wide lg:w-auto lg:min-w-[320px]">
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="h-12 w-full rounded-2xl text-base font-bold uppercase tracking-wide md:h-14"
+            >
               I Already Have an Account
             </Button>
           </div>
