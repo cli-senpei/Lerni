@@ -1,7 +1,16 @@
-import * as tf from '@tensorflow/tfjs';
+// Lazy load TensorFlow to avoid bundling conflicts with React
+let tf: typeof import('@tensorflow/tfjs') | null = null;
+
+async function getTensorFlow() {
+  if (!tf) {
+    tf = await import('@tensorflow/tfjs');
+    await tf.ready();
+  }
+  return tf;
+}
 
 export interface AIModel {
-  model: tf.Sequential;
+  model: any; // tf.Sequential
   errorMemory: Map<string, number>;
 }
 
@@ -24,8 +33,7 @@ export interface Prediction {
 
 // Initialize the adaptive AI model
 export async function initAI(): Promise<AIModel> {
-  // Wait for TensorFlow to be ready
-  await tf.ready();
+  const tf = await getTensorFlow();
   
   const model = tf.sequential();
   // Inputs: [recentCorrect (0/1), reactionMs/3000, currentDifficulty/5]
@@ -55,6 +63,8 @@ export async function updateOnlineModel(
   ai: AIModel, 
   sample: PerformanceSample
 ): Promise<void> {
+  const tf = await getTensorFlow();
+  
   // sample: { category, difficulty, isCorrect(0/1), reactionMs }
   const x = tf.tensor2d([
     [
@@ -92,6 +102,8 @@ export async function predictNextDifficulty(
   ai: AIModel, 
   ctx: PredictionContext
 ): Promise<Prediction> {
+  const tf = await getTensorFlow();
+  
   const x = tf.tensor2d([
     [
       ctx.recentCorrect, 
@@ -100,7 +112,7 @@ export async function predictNextDifficulty(
     ]
   ]);
   
-  const y = ai.model.predict(x) as tf.Tensor;
+  const y = ai.model.predict(x);
   const pred = (await y.data())[0];
   const nextDiff = Math.round(Math.min(5, Math.max(1, pred)));
 
@@ -127,17 +139,13 @@ export async function predictNextDifficulty(
 
 // Serialize AI model for storage
 export async function serializeAI(ai: AIModel): Promise<string> {
+  const tf = await getTensorFlow();
   const errorMemoryObj = Object.fromEntries(ai.errorMemory);
-  
-  // Save model weights to memory
-  const saveResult = await ai.model.save(tf.io.withSaveHandler(async (artifacts) => {
-    return { modelArtifactsInfo: { dateSaved: new Date(), modelTopologyType: 'JSON' } };
-  }));
   
   // Get model config and weights separately
   const modelJSON = ai.model.toJSON(null, false);
   const weights = await ai.model.getWeights();
-  const weightData = weights.map(w => Array.from(w.dataSync()));
+  const weightData = weights.map((w: any) => Array.from(w.dataSync()));
   
   return JSON.stringify({
     modelJSON,
@@ -148,17 +156,18 @@ export async function serializeAI(ai: AIModel): Promise<string> {
 
 // Deserialize AI model from storage
 export async function deserializeAI(data: string): Promise<AIModel> {
+  const tf = await getTensorFlow();
   const parsed = JSON.parse(data);
   
   // Reconstruct model from JSON
-  const model = await tf.models.modelFromJSON(parsed.modelJSON) as tf.Sequential;
+  const model = await tf.models.modelFromJSON(parsed.modelJSON);
   
   // Restore weights
   if (parsed.weightData && parsed.weightData.length > 0) {
     const weights = parsed.weightData.map((data: number[]) => tf.tensor(data));
     model.setWeights(weights);
     // Clean up tensors
-    weights.forEach((w: tf.Tensor) => w.dispose());
+    weights.forEach((w: any) => w.dispose());
   }
   
   // Reconstruct error memory
