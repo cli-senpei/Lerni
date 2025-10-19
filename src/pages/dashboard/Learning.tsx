@@ -8,7 +8,7 @@ const Learning = () => {
 
   if (showChat) {
     return (
-      <div className="animate-fade-in">
+      <div className="h-[calc(100vh-12rem)] animate-fade-in">
         <LearningChat />
       </div>
     );
