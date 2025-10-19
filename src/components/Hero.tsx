@@ -18,21 +18,21 @@ const Hero = () => {
         
         {/* Text Content - Right Side */}
         <div className="order-1 flex flex-col items-center space-y-10 lg:order-2 lg:items-start">
-          <h1 className="max-w-xl text-center text-3xl font-bold leading-tight text-foreground md:text-4xl lg:text-left lg:text-5xl">
+          <h1 className="max-w-xl text-center text-2xl font-bold leading-tight text-foreground md:text-3xl lg:text-left lg:text-4xl">
             Because every mind learns differently—and every win matters.
           </h1>
           
           <div className="flex w-full max-w-md flex-col gap-4">
             <Button 
-              size="lg" 
-              className="h-12 w-full rounded-2xl text-base font-bold uppercase tracking-wide md:h-14"
+              size="default" 
+              className="h-10 w-full rounded-2xl text-sm font-bold uppercase tracking-wide"
             >
               Get Started
             </Button>
             <Button 
               variant="outline" 
-              size="lg" 
-              className="h-12 w-full rounded-2xl text-base font-bold uppercase tracking-wide md:h-14"
+              size="default" 
+              className="h-10 w-full rounded-2xl text-sm font-bold uppercase tracking-wide"
             >
               I Already Have an Account
             </Button>
