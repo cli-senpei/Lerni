@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="grid gap-8 md:grid-cols-3">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <img src={logo} alt="Lerni Logo" className="h-12 w-auto" />
+              <img src={logo} alt="Lerni Logo" className="h-16 w-auto" />
             </div>
             <p className="text-sm text-muted-foreground">
               Learning designed for every mind.

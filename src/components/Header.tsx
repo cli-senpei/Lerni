@@ -5,7 +5,7 @@ const Header = () => {
     <header className="w-full border-b border-border bg-background">
       <div className="mx-auto flex h-20 max-w-screen-2xl items-center justify-between px-6 md:px-12">
         <div className="flex items-center gap-2">
-          <img src={logo} alt="Lerni Logo" className="h-16 w-auto" />
+          <img src={logo} alt="Lerni Logo" className="h-20 w-auto" />
         </div>
         
         <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">

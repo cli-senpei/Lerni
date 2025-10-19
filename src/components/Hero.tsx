@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero.png";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="flex min-h-[600px] items-center px-6 py-16 md:min-h-[calc(100vh-10rem)] md:px-12">
       <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
@@ -26,6 +29,7 @@ const Hero = () => {
             <Button 
               size="lg" 
               className="h-12 w-full rounded-2xl text-base font-bold uppercase tracking-wide md:h-14"
+              onClick={() => navigate("/auth")}
             >
               Get Started
             </Button>
@@ -33,6 +37,7 @@ const Hero = () => {
               variant="outline" 
               size="lg" 
               className="h-12 w-full rounded-2xl text-base font-bold uppercase tracking-wide md:h-14"
+              onClick={() => navigate("/auth")}
             >
               I Already Have an Account
             </Button>
