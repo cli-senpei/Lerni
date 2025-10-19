@@ -204,7 +204,12 @@ const Leaderboard = () => {
         description: "Your comment has been removed",
       });
       setComment("");
-      loadLeaderboard();
+      // Update local state immediately
+      setEntries(entries.map(entry => 
+        entry.user_id === user.id 
+          ? { ...entry, comment: null }
+          : entry
+      ));
       loadUserEntry(user.id);
     }
   };

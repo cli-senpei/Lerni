@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import UserStats from "@/components/dashboard/UserStats";
 import { Card } from "@/components/ui/card";
 import { BookOpen, Target, Zap, TrendingUp } from "lucide-react";
+import lerniImage from "@/assets/lerni-2.png";
 
 const DashboardHome = () => {
   const [userName, setUserName] = useState("");
@@ -28,13 +29,16 @@ const DashboardHome = () => {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-4xl font-bold mb-2">
-          Welcome{userName ? `, ${userName}` : ""}! 🎉
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          Track your progress and continue your learning journey
-        </p>
+      <div className="flex items-center gap-4">
+        <img src={lerniImage} alt="Lerni mascot" className="h-20 w-20" />
+        <div>
+          <h1 className="text-4xl font-bold mb-2">
+            Welcome{userName ? `, ${userName}` : ""}!
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            Continue your learning journey
+          </p>
+        </div>
       </div>
 
       <UserStats />

@@ -92,8 +92,8 @@ const DashboardLayout = () => {
         </header>
 
         {/* Main Content with Sidebar */}
-        <div className="flex flex-1 w-full">
-          <Sidebar className="hidden lg:flex border-r w-80 bg-sidebar">
+        <div className="flex flex-1 w-full overflow-hidden">
+          <Sidebar className="hidden lg:flex border-r w-80 bg-sidebar flex-shrink-0">
             {/* Logo Section */}
             <div className="border-b border-sidebar-border p-6 flex justify-center">
               <img src={logo} alt="Lerni Logo" className="h-32 w-auto" />
@@ -143,8 +143,8 @@ const DashboardLayout = () => {
             </SidebarFooter>
           </Sidebar>
 
-          <main className="flex-1 overflow-auto">
-            <div className="container mx-auto p-6 md:p-12 max-w-7xl">
+          <main className="flex-1 overflow-auto w-full min-w-0">
+            <div className="w-full p-6 md:p-12 max-w-7xl mx-auto">
               <Outlet />
             </div>
           </main>
