@@ -8,11 +8,11 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="snap-y snap-mandatory overflow-y-scroll h-[calc(100vh-5rem)] md:h-[calc(100vh-6rem)]">
+      <main>
         <Hero />
         
         {/* Second Section - Reading Experience */}
-        <section className="flex min-h-screen items-center px-6 py-8 md:py-12 md:px-12 animate-fade-in snap-start">
+        <section className="flex min-h-screen items-center px-6 py-8 md:py-12 md:px-12 animate-fade-in">
           <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
             {/* Text Content - Left Side */}
             <div className="flex flex-col items-center space-y-6 lg:items-start">
@@ -35,7 +35,7 @@ const Index = () => {
         </section>
         
         {/* Third Section - Orton-Gillingham Method */}
-        <section className="flex min-h-screen items-center px-6 py-8 md:py-12 md:px-12 animate-fade-in snap-start">
+        <section className="flex min-h-screen items-center px-6 py-8 md:py-12 md:px-12 animate-fade-in">
           <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
             {/* Image - Left Side */}
             <div className="flex justify-center lg:justify-start">
