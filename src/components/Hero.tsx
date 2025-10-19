@@ -22,7 +22,7 @@ const Hero = () => {
         {/* Text Content - Right Side */}
         <div className="order-1 flex flex-col items-center space-y-10 lg:order-2 lg:items-start">
           <h1 className="max-w-xl text-center text-3xl font-bold leading-tight text-foreground md:text-4xl lg:text-left lg:text-5xl">
-            Because every mind learns differently—and every win matters.
+            Because every mind learns differently—<br />and every win matters.
           </h1>
           
           <div className="flex w-full max-w-md flex-col gap-4">
