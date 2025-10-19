@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import BaselineGame from "./BaselineGame";
 import RhymeGameMode from "./RhymeGameMode";
 import PhonicsPopGame from "./PhonicsPopGame";
+import PhaserGame from "./PhaserGame";
 
 interface Message {
   text: string;
@@ -31,6 +32,7 @@ const LearningChat = () => {
   const [userWeaknesses, setUserWeaknesses] = useState<string[]>([]);
   const [showRhymeGame, setShowRhymeGame] = useState(false);
   const [showPhonicsGame, setShowPhonicsGame] = useState(false);
+  const [showPhaserGame, setShowPhaserGame] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -355,18 +357,23 @@ const LearningChat = () => {
           total_points: points + 15,
         });
         
-        // Randomly choose between Rhyme Match and Phonics Pop
-        const gameChoice = Math.random() > 0.5 ? 'rhyme' : 'phonics';
+        // Randomly choose between games
+        const gameChoice = Math.random();
         
-        if (gameChoice === 'rhyme') {
+        if (gameChoice < 0.33) {
           addBotMessage(`Awesome! Starting Rhyme Match game now...`);
           setTimeout(() => {
             setShowRhymeGame(true);
           }, 2000);
-        } else {
+        } else if (gameChoice < 0.66) {
           addBotMessage(`Great! Let's play Phonics Pop - pop the balloons with matching sounds!`);
           setTimeout(() => {
             setShowPhonicsGame(true);
+          }, 2000);
+        } else {
+          addBotMessage(`Exciting! Let's play Word Catch - collect stars and avoid bombs!`);
+          setTimeout(() => {
+            setShowPhaserGame(true);
           }, 2000);
         }
       } else {
@@ -491,6 +498,28 @@ const LearningChat = () => {
           saveUserProfile({ total_points: newPoints });
         }}
         onExitToChat={() => setShowPhonicsGame(false)}
+      />
+    );
+  }
+
+  // Show Phaser game
+  if (showPhaserGame) {
+    return (
+      <PhaserGame
+        userName={userName}
+        points={points}
+        gameType="word-catch"
+        difficulty="medium"
+        onPointsEarned={(amount) => {
+          const newPoints = points + amount;
+          setPoints(newPoints);
+          setShowReward(true);
+          setTimeout(() => setShowReward(false), 2000);
+          
+          // Save points to database
+          saveUserProfile({ total_points: newPoints });
+        }}
+        onExitToChat={() => setShowPhaserGame(false)}
       />
     );
   }
