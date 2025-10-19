@@ -32,6 +32,7 @@ const LearningChat = () => {
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [pendingModeSwitch, setPendingModeSwitch] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -277,6 +278,34 @@ const LearningChat = () => {
   };
 
   const handleConversationFlow = (userInput: string) => {
+    const lowerInput = userInput.toLowerCase();
+    
+    // Check for mode switch command
+    if (preferredMode === 'mic' && (lowerInput.includes('keyboard') || lowerInput.includes('type'))) {
+      setPendingModeSwitch(true);
+      addBotMessage("Would you like me to show the keyboard so you can type?");
+      return;
+    }
+    
+    // Handle confirmation for mode switch
+    if (pendingModeSwitch) {
+      const confirmed = lowerInput.includes('yes') || lowerInput.includes('yeah') || lowerInput.includes('sure');
+      if (confirmed) {
+        setPendingModeSwitch(false);
+        setPreferredMode('text');
+        if (recognitionRef.current) {
+          recognitionRef.current.stop();
+          setIsListening(false);
+        }
+        addBotMessage("Switching to keyboard mode now!");
+        return;
+      } else {
+        setPendingModeSwitch(false);
+        addBotMessage("Okay, continuing with voice mode!");
+        return;
+      }
+    }
+    
     if (step === 0) {
       setUserName(userInput);
       addPoints(10);
@@ -494,25 +523,34 @@ const LearningChat = () => {
 
       {/* Input Area */}
       {preferredMode === 'mic' ? (
-        /* Mic Mode: Large Centered Button */
-        <div className="w-full px-3 md:px-6 py-8 md:py-12 flex flex-col items-center justify-center gap-6">
+        /* Mic Mode: Large Icon without circle */
+        <div className="relative w-full px-3 md:px-6 py-8 md:py-12 flex flex-col items-center justify-center gap-6">
+          {/* Keyboard Switch Button - Bottom Left */}
           <Button
+            onClick={() => setPreferredMode('text')}
+            variant="outline"
+            size="sm"
+            className="absolute bottom-4 left-4 md:bottom-6 md:left-6 flex items-center gap-2"
+          >
+            <Keyboard className="h-4 w-4" />
+            <span className="hidden md:inline">Switch to Keyboard</span>
+          </Button>
+
+          {/* Large Mic Icon */}
+          <div 
             onClick={toggleVoiceInput}
-            size="icon"
-            variant={isListening ? "default" : "outline"}
-            className={`h-32 w-32 md:h-40 md:w-40 rounded-full shadow-2xl transition-all duration-300 ${
+            className={`cursor-pointer transition-all duration-300 ${
               isListening 
-                ? 'bg-primary animate-pulse scale-110 shadow-primary/50' 
-                : 'hover:scale-105 border-4 border-primary/30'
+                ? 'animate-pulse scale-110' 
+                : 'hover:scale-105'
             }`}
-            disabled={isTyping}
           >
             {isListening ? (
-              <MicOff className="h-16 w-16 md:h-20 md:w-20" />
+              <MicOff className="h-48 w-48 md:h-64 md:w-64 text-primary drop-shadow-2xl" />
             ) : (
-              <Mic className="h-16 w-16 md:h-20 md:w-20" />
+              <Mic className="h-48 w-48 md:h-64 md:w-64 text-primary/70 hover:text-primary drop-shadow-2xl" />
             )}
-          </Button>
+          </div>
           
           {isListening && (
             <div className="text-center animate-fade-in">
@@ -525,13 +563,13 @@ const LearningChat = () => {
           
           {!isListening && (
             <p className="text-sm md:text-base text-muted-foreground text-center animate-fade-in">
-              Tap the mic to speak
+              Tap the mic to speak or say "keyboard" to type
             </p>
           )}
         </div>
       ) : (
         /* Text Mode: Normal Input */
-        <div className="w-full px-3 md:px-6 py-3 md:py-4 border-t backdrop-blur-sm bg-background/50">
+        <div className="relative w-full px-3 md:px-6 py-3 md:py-4 border-t backdrop-blur-sm bg-background/50">
           <div className="max-w-4xl mx-auto">
             <div className="flex gap-2 md:gap-3">
               <Input
