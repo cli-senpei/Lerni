@@ -1,4 +1,5 @@
-:
+
+![photo_5161384112709897093_y](https://github.com/user-attachments/assets/e7925971-96de-4081-9569-803993658d7b)
 
 🧠 Lerni
 A Duolingo-style learning platform built for dyslexic learners
