@@ -108,12 +108,12 @@ const DashboardLayout = () => {
                             className={({ isActive }) =>
                               `flex items-center gap-5 px-6 py-5 rounded-xl text-lg font-bold transition-all shadow-sm border-2 ${
                                 isActive
-                                  ? "bg-primary/10 text-foreground border-primary shadow-md"
-                                  : "bg-muted/50 text-foreground border-transparent hover:bg-muted hover:border-border hover:shadow"
+                                  ? "bg-primary/10 text-[hsl(0,0%,15%)] border-primary shadow-md"
+                                  : "bg-muted/50 text-[hsl(0,0%,15%)] border-transparent hover:bg-muted hover:border-border hover:shadow"
                               }`
                             }
                           >
-                            <item.icon className="h-8 w-8 stroke-[2.5]" />
+                            <item.icon className="h-8 w-8 stroke-[2.5] text-[hsl(0,0%,15%)]" />
                             <span className="tracking-wider">{item.title}</span>
                           </NavLink>
                         </SidebarMenuButton>
@@ -131,7 +131,7 @@ const DashboardLayout = () => {
             <SidebarFooter className="p-6 pb-8">
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-5 w-full px-6 py-5 text-lg font-bold rounded-xl bg-destructive/10 text-foreground hover:bg-destructive hover:text-destructive-foreground transition-all shadow-sm border-2 border-transparent hover:border-destructive hover:shadow-md"
+                className="flex items-center gap-5 w-full px-6 py-5 text-lg font-bold rounded-xl bg-destructive/10 text-[hsl(0,0%,15%)] hover:bg-destructive hover:text-destructive-foreground transition-all shadow-sm border-2 border-transparent hover:border-destructive hover:shadow-md"
               >
                 <LogOut className="h-8 w-8 stroke-[2.5]" />
                 <span className="tracking-wider">Sign Out</span>
