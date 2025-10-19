@@ -22,17 +22,17 @@ const Hero = () => {
             Because every mind learns differently—and every win matters.
           </h1>
           
-          <div className="flex w-full max-w-md flex-col gap-4">
+          <div className="flex flex-col items-center gap-3 lg:items-start">
             <Button 
               size="default" 
-              className="h-10 w-full rounded-2xl text-sm font-bold uppercase tracking-wide"
+              className="h-12 rounded-2xl px-8 text-sm font-bold uppercase tracking-wide"
             >
               Get Started
             </Button>
             <Button 
               variant="outline" 
               size="default" 
-              className="h-10 w-full rounded-2xl text-sm font-bold uppercase tracking-wide"
+              className="h-12 rounded-2xl px-8 text-sm font-bold uppercase tracking-wide"
             >
               I Already Have an Account
             </Button>
