@@ -120,7 +120,7 @@ const LearningChat = () => {
 
       const { error } = await supabase
         .from('user_learning_profiles')
-        .upsert(upsertData);
+        .upsert(upsertData, { onConflict: 'user_id' });
 
       if (error) throw error;
     } catch (error) {
