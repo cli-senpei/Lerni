@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Star, Sparkles, Award } from "lucide-react";
+import { Send, Star, Sparkles, Award, Mic, MicOff, Volume2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   text: string;
@@ -9,6 +10,7 @@ interface Message {
 }
 
 const LearningChat = () => {
+  const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [userName, setUserName] = useState("");
@@ -16,7 +18,11 @@ const LearningChat = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [points, setPoints] = useState(0);
   const [showReward, setShowReward] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null);
+  const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -27,6 +33,35 @@ const LearningChat = () => {
   }, [messages]);
 
   useEffect(() => {
+    // Initialize Speech Recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInput(transcript);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        toast({
+          title: "Voice input error",
+          description: "Please try again or type your response.",
+          variant: "destructive",
+        });
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+
     // Initial welcome message
     setTimeout(() => {
       addBotMessage("Hello! Welcome to your personalized learning experience. 🎉");
@@ -34,13 +69,42 @@ const LearningChat = () => {
         addBotMessage("Before we begin, what's your name?");
       }, 1500);
     }, 500);
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      window.speechSynthesis.cancel();
+    };
   }, []);
 
-  const addBotMessage = (text: string) => {
+  const speak = (text: string) => {
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.9; // Slightly slower for dyslexic-friendly
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    
+    synthesisRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const addBotMessage = (text: string, shouldSpeak = true) => {
     setIsTyping(true);
     setTimeout(() => {
       setMessages(prev => [...prev, { text, isUser: false }]);
       setIsTyping(false);
+      
+      // Speak the message after a brief delay
+      if (shouldSpeak) {
+        setTimeout(() => speak(text), 300);
+      }
     }, 1200);
   };
 
@@ -104,6 +168,32 @@ const LearningChat = () => {
     }
   };
 
+  const toggleVoiceInput = () => {
+    if (!recognitionRef.current) {
+      toast({
+        title: "Voice input not supported",
+        description: "Your browser doesn't support voice input. Please type your response.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      setIsListening(true);
+      recognitionRef.current.start();
+    }
+  };
+
+  const toggleSpeech = () => {
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    }
+  };
+
   if (step === 4) {
     return (
       <div className="fixed inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5 flex items-center justify-center animate-fade-in">
@@ -140,10 +230,22 @@ const LearningChat = () => {
           </div>
         </div>
         
-        {/* Points Display */}
-        <div className="flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-full border-2 border-primary/20">
-          <Star className="w-6 h-6 text-primary animate-pulse" />
-          <span className="text-2xl font-bold">{points}</span>
+        {/* Points Display & Speech Controls */}
+        <div className="flex items-center gap-4">
+          {isSpeaking && (
+            <Button
+              onClick={toggleSpeech}
+              variant="outline"
+              size="icon"
+              className="h-12 w-12 rounded-full border-2 border-primary/20 animate-pulse"
+            >
+              <Volume2 className="w-5 h-5 text-primary" />
+            </Button>
+          )}
+          <div className="flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-full border-2 border-primary/20">
+            <Star className="w-6 h-6 text-primary animate-pulse" />
+            <span className="text-2xl font-bold">{points}</span>
+          </div>
         </div>
       </div>
 
@@ -198,24 +300,49 @@ const LearningChat = () => {
 
       {/* Input Area */}
       <div className="w-full px-8 py-6 border-t backdrop-blur-sm bg-background/50">
-        <div className="max-w-4xl mx-auto flex gap-4">
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Type your answer here..."
-            className="flex-1 h-16 text-xl md:text-2xl px-6 rounded-2xl border-2 border-primary/20 focus:border-primary transition-all font-light tracking-wide"
-            style={{ letterSpacing: '0.05em' }}
-            disabled={isTyping}
-          />
-          <Button 
-            onClick={handleSend}
-            size="icon"
-            className="h-16 w-16 rounded-2xl shadow-lg hover:scale-110 transition-all"
-            disabled={isTyping || !input.trim()}
-          >
-            <Send className="h-6 w-6" />
-          </Button>
+        <div className="max-w-4xl mx-auto">
+          {isListening && (
+            <div className="mb-4 text-center animate-fade-in">
+              <div className="inline-flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-full border-2 border-primary/20">
+                <div className="w-3 h-3 bg-primary rounded-full animate-pulse" />
+                <span className="text-lg font-medium">Listening...</span>
+              </div>
+            </div>
+          )}
+          <div className="flex gap-4">
+            <Button 
+              onClick={toggleVoiceInput}
+              size="icon"
+              variant={isListening ? "default" : "outline"}
+              className={`h-16 w-16 rounded-2xl shadow-lg hover:scale-110 transition-all ${
+                isListening ? 'animate-pulse' : ''
+              }`}
+              disabled={isTyping}
+            >
+              {isListening ? (
+                <MicOff className="h-6 w-6" />
+              ) : (
+                <Mic className="h-6 w-6" />
+              )}
+            </Button>
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder={isListening ? "Speak now..." : "Type or speak your answer..."}
+              className="flex-1 h-16 text-xl md:text-2xl px-6 rounded-2xl border-2 border-primary/20 focus:border-primary transition-all font-light tracking-wide"
+              style={{ letterSpacing: '0.05em' }}
+              disabled={isTyping || isListening}
+            />
+            <Button 
+              onClick={handleSend}
+              size="icon"
+              className="h-16 w-16 rounded-2xl shadow-lg hover:scale-110 transition-all"
+              disabled={isTyping || !input.trim() || isListening}
+            >
+              <Send className="h-6 w-6" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
