@@ -7,7 +7,7 @@ import ortonGillinghamImage from "@/assets/orton-gillingham.png";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background snap-y snap-mandatory overflow-y-scroll">
       <Header />
       <main>
         <Hero />
@@ -15,7 +15,7 @@ const Index = () => {
         <Separator className="mx-auto w-[90%] max-w-screen-xl opacity-30" />
         
         {/* Second Section - Reading Experience */}
-        <section className="flex min-h-[600px] items-center px-6 py-16 md:px-12 animate-fade-in">
+        <section className="flex min-h-screen items-center px-6 py-16 md:px-12 animate-fade-in snap-start">
           <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
             {/* Text Content - Left Side */}
             <div className="flex flex-col items-center space-y-6 lg:items-start">
@@ -40,7 +40,7 @@ const Index = () => {
         <Separator className="mx-auto w-[90%] max-w-screen-xl opacity-30" />
         
         {/* Third Section - Orton-Gillingham Method */}
-        <section className="flex min-h-[600px] items-center px-6 py-16 md:px-12 animate-fade-in">
+        <section className="flex min-h-screen items-center px-6 py-16 md:px-12 animate-fade-in snap-start">
           <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
             {/* Image - Left Side */}
             <div className="flex justify-center lg:justify-start">
