@@ -6,7 +6,7 @@ const Hero = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="flex min-h-[600px] items-center px-6 py-16 md:min-h-[calc(100vh-10rem)] md:px-12">
+    <section className="flex min-h-[600px] items-center px-6 py-16 md:px-12">
       <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
         {/* Hero Image - Left Side */}
         <div className="order-2 flex justify-center lg:order-1 lg:justify-start">
