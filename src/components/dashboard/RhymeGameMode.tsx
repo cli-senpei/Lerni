@@ -4,7 +4,7 @@ import { X, Star, Award, Home, ArrowLeft, Volume2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import lerniIcon from "@/assets/lerni.png";
-import { PerformanceSample } from "@/lib/adaptiveAI";
+import { PerformanceSample } from "@/lib/simpleAdaptiveAI";
 
 interface RhymeGameModeProps {
   userName: string;

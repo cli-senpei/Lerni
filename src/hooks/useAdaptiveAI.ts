@@ -18,6 +18,7 @@ export function useAdaptiveAI() {
   const [isInitialized, setIsInitialized] = useState(false);
   const [currentDifficulty, setCurrentDifficulty] = useState(3); // Start at medium
   const [focusArea, setFocusArea] = useState<string>('general');
+  const [hasError, setHasError] = useState(false);
 
   // Initialize or load AI model
   useEffect(() => {
@@ -35,16 +36,12 @@ export function useAdaptiveAI() {
         
         setAi(model);
         setIsInitialized(true);
+        setHasError(false);
       } catch (error) {
         console.error('Failed to initialize AI:', error);
-        // Fallback: create new model
-        try {
-          const model = await initAI();
-          setAi(model);
-          setIsInitialized(true);
-        } catch (fallbackError) {
-          console.error('Fallback AI initialization failed:', fallbackError);
-        }
+        setHasError(true);
+        setIsInitialized(true); // Still mark as initialized to allow app to work
+        // App will work without AI, just with fixed difficulty
       }
     };
 
@@ -53,7 +50,7 @@ export function useAdaptiveAI() {
 
   // Save AI model to localStorage
   const saveAI = useCallback(async () => {
-    if (!ai) return;
+    if (!ai || hasError) return;
     
     try {
       const serialized = await serializeAI(ai);
@@ -61,11 +58,19 @@ export function useAdaptiveAI() {
     } catch (error) {
       console.error('Failed to save AI model:', error);
     }
-  }, [ai]);
+  }, [ai, hasError]);
 
   // Record a performance sample and update the model
   const recordPerformance = useCallback(async (sample: PerformanceSample) => {
-    if (!ai) return;
+    if (!ai || hasError) {
+      // If AI is not available, just adjust difficulty manually
+      if (sample.isCorrect && sample.reactionMs < 1500) {
+        setCurrentDifficulty(prev => Math.min(5, prev + 1));
+      } else if (!sample.isCorrect) {
+        setCurrentDifficulty(prev => Math.max(1, prev - 1));
+      }
+      return;
+    }
 
     try {
       await updateOnlineModel(ai, sample);
@@ -82,15 +87,15 @@ export function useAdaptiveAI() {
     } catch (error) {
       console.error('Failed to record performance:', error);
     }
-  }, [ai, saveAI]);
+  }, [ai, saveAI, hasError]);
 
   // Get next game recommendation
   const getNextRecommendation = useCallback(async (
     recentCorrect: number,
     reactionMs: number
   ): Promise<Prediction> => {
-    if (!ai) {
-      return { difficulty: 3, focus: 'general' };
+    if (!ai || hasError) {
+      return { difficulty: currentDifficulty, focus: 'general' };
     }
 
     try {
@@ -107,7 +112,7 @@ export function useAdaptiveAI() {
       console.error('Failed to get recommendation:', error);
       return { difficulty: currentDifficulty, focus: focusArea };
     }
-  }, [ai, currentDifficulty, focusArea]);
+  }, [ai, currentDifficulty, focusArea, hasError]);
 
   // Reset AI model
   const resetAI = useCallback(async () => {
@@ -116,9 +121,11 @@ export function useAdaptiveAI() {
       setAi(model);
       setCurrentDifficulty(3);
       setFocusArea('general');
+      setHasError(false);
       localStorage.removeItem(AI_STORAGE_KEY);
     } catch (error) {
       console.error('Failed to reset AI:', error);
+      setHasError(true);
     }
   }, []);
 
@@ -129,6 +136,7 @@ export function useAdaptiveAI() {
     recordPerformance,
     getNextRecommendation,
     resetAI,
-    ai
+    ai,
+    hasError,
   };
 }

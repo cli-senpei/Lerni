@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
-import { PerformanceSample } from "@/lib/adaptiveAI";
+import { PerformanceSample } from "@/lib/simpleAdaptiveAI";
 
 interface PhaserGameProps {
   userName: string;

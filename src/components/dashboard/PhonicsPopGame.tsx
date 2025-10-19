@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Star, Award, Target, Clock } from "lucide-react";
-import { PerformanceSample } from "@/lib/adaptiveAI";
+import { PerformanceSample } from "@/lib/simpleAdaptiveAI";
 
 interface Balloon {
   id: string;

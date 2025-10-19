@@ -8,8 +8,8 @@ import BaselineGame from "./BaselineGame";
 import RhymeGameMode from "./RhymeGameMode";
 import PhonicsPopGame from "./PhonicsPopGame";
 import PhaserGame from "./PhaserGame";
-import { useAdaptiveAI } from "@/hooks/useAdaptiveAI";
-import { getGameCategory, getDifficultyString } from "@/lib/adaptiveAI";
+import { useSimpleAdaptiveAI } from "@/hooks/useSimpleAdaptiveAI";
+import { getDifficultyString } from "@/lib/simpleAdaptiveAI";
 
 interface Message {
   text: string;
@@ -44,14 +44,13 @@ const LearningChat = () => {
   const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
   
-  // Initialize Adaptive AI
+  // Initialize Simple Adaptive AI (no TensorFlow)
   const { 
-    isInitialized: aiInitialized, 
     currentDifficulty, 
     focusArea,
     recordPerformance,
     getNextRecommendation 
-  } = useAdaptiveAI();
+  } = useSimpleAdaptiveAI();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -369,7 +368,7 @@ const LearningChat = () => {
         });
         
         // Use AI to recommend next game based on user's focus area
-        const recommendation = await getNextRecommendation(1, 1500);
+        const recommendation = getNextRecommendation();
         let gameChoice: string;
         
         // Map focus area to game type
