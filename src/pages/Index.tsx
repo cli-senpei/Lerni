@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
+import readingImage from "@/assets/reading-experience.png";
 
 const Index = () => {
   return (
@@ -8,6 +9,29 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
+        
+        {/* Second Section - Reading Experience */}
+        <section className="flex min-h-[600px] items-center px-6 py-16 md:px-12">
+          <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
+            {/* Text Content - Left Side */}
+            <div className="flex flex-col items-center space-y-6 lg:items-start">
+              <h2 className="max-w-xl text-center text-2xl font-bold leading-tight text-foreground md:text-3xl lg:text-left lg:text-4xl">
+                "Finally, a reading experience that works with your brain, not against it."
+              </h2>
+            </div>
+            
+            {/* Image - Right Side */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="w-full max-w-[850px]">
+                <img
+                  src={readingImage}
+                  alt="Interactive learning experience with brain character and learner"
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
       <Footer />
     </div>
