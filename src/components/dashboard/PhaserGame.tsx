@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
+import { PerformanceSample } from "@/lib/adaptiveAI";
 
 interface PhaserGameProps {
   userName: string;
@@ -11,6 +12,7 @@ interface PhaserGameProps {
   difficulty?: "easy" | "medium" | "hard";
   onPointsEarned: (amount: number) => void;
   onExitToChat: () => void;
+  onPerformanceRecord?: (sample: PerformanceSample) => Promise<void>;
 }
 
 const PhaserGame = ({

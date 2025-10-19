@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Star, Award, Target, Clock } from "lucide-react";
+import { PerformanceSample } from "@/lib/adaptiveAI";
 
 interface Balloon {
   id: string;
@@ -17,9 +18,11 @@ interface PhonicsPopGameProps {
   points: number;
   onPointsEarned: (amount: number) => void;
   onExitToChat: () => void;
+  onPerformanceRecord?: (sample: PerformanceSample) => Promise<void>;
+  currentDifficulty?: 'easy' | 'medium' | 'hard';
 }
 
-const PhonicsPopGame = ({ userName, points, onPointsEarned, onExitToChat }: PhonicsPopGameProps) => {
+const PhonicsPopGame = ({ userName, points, onPointsEarned, onExitToChat, onPerformanceRecord, currentDifficulty = 'medium' }: PhonicsPopGameProps) => {
   const [balloons, setBalloons] = useState<Balloon[]>([]);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);

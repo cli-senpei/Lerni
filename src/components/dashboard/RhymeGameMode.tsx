@@ -4,6 +4,7 @@ import { X, Star, Award, Home, ArrowLeft, Volume2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import lerniIcon from "@/assets/lerni.png";
+import { PerformanceSample } from "@/lib/adaptiveAI";
 
 interface RhymeGameModeProps {
   userName: string;
@@ -11,6 +12,8 @@ interface RhymeGameModeProps {
   points: number;
   onPointsEarned: (amount: number) => void;
   onExitToChat: () => void;
+  onPerformanceRecord?: (sample: PerformanceSample) => Promise<void>;
+  currentDifficulty?: 'easy' | 'medium' | 'hard';
 }
 
 // Rhyme word groups

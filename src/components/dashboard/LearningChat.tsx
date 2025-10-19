@@ -8,6 +8,8 @@ import BaselineGame from "./BaselineGame";
 import RhymeGameMode from "./RhymeGameMode";
 import PhonicsPopGame from "./PhonicsPopGame";
 import PhaserGame from "./PhaserGame";
+import { useAdaptiveAI } from "@/hooks/useAdaptiveAI";
+import { getGameCategory, getDifficultyString } from "@/lib/adaptiveAI";
 
 interface Message {
   text: string;
@@ -41,6 +43,15 @@ const LearningChat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
+  
+  // Initialize Adaptive AI
+  const { 
+    isInitialized: aiInitialized, 
+    currentDifficulty, 
+    focusArea,
+    recordPerformance,
+    getNextRecommendation 
+  } = useAdaptiveAI();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -297,7 +308,7 @@ const LearningChat = () => {
     }, 2000);
   };
 
-  const handleConversationFlow = (userInput: string) => {
+  const handleConversationFlow = async (userInput: string) => {
     const lowerInput = userInput.toLowerCase();
     
     // Increment successful responses counter
@@ -357,21 +368,33 @@ const LearningChat = () => {
           total_points: points + 15,
         });
         
-        // Randomly choose between games
-        const gameChoice = Math.random();
+        // Use AI to recommend next game based on user's focus area
+        const recommendation = await getNextRecommendation(1, 1500);
+        let gameChoice: string;
         
-        if (gameChoice < 0.33) {
-          addBotMessage(`Awesome! Starting Rhyme Match game now...`);
+        // Map focus area to game type
+        if (focusArea === 'rhyming' || recommendation.focus === 'rhyming') {
+          gameChoice = 'rhyme';
+        } else if (focusArea === 'phonics' || recommendation.focus === 'phonics') {
+          gameChoice = 'phonics';
+        } else {
+          // Random choice weighted by difficulty
+          const rand = Math.random();
+          gameChoice = rand < 0.4 ? 'rhyme' : rand < 0.7 ? 'phonics' : 'phaser';
+        }
+        
+        if (gameChoice === 'rhyme') {
+          addBotMessage(`Based on your progress, let's practice rhyming! Starting game...`);
           setTimeout(() => {
             setShowRhymeGame(true);
           }, 2000);
-        } else if (gameChoice < 0.66) {
-          addBotMessage(`Great! Let's play Phonics Pop - pop the balloons with matching sounds!`);
+        } else if (gameChoice === 'phonics') {
+          addBotMessage(`Great! Let's work on phonics with Phonics Pop!`);
           setTimeout(() => {
             setShowPhonicsGame(true);
           }, 2000);
         } else {
-          addBotMessage(`Exciting! Let's play Word Catch - collect stars and avoid bombs!`);
+          addBotMessage(`Time for some action! Let's play Word Catch!`);
           setTimeout(() => {
             setShowPhaserGame(true);
           }, 2000);
@@ -478,6 +501,8 @@ const LearningChat = () => {
           saveUserProfile({ total_points: newPoints });
         }}
         onExitToChat={() => setShowRhymeGame(false)}
+        onPerformanceRecord={recordPerformance}
+        currentDifficulty={getDifficultyString(currentDifficulty)}
       />
     );
   }
@@ -498,6 +523,8 @@ const LearningChat = () => {
           saveUserProfile({ total_points: newPoints });
         }}
         onExitToChat={() => setShowPhonicsGame(false)}
+        onPerformanceRecord={recordPerformance}
+        currentDifficulty={getDifficultyString(currentDifficulty)}
       />
     );
   }
@@ -509,7 +536,7 @@ const LearningChat = () => {
         userName={userName}
         points={points}
         gameType="word-catch"
-        difficulty="medium"
+        difficulty={getDifficultyString(currentDifficulty)}
         onPointsEarned={(amount) => {
           const newPoints = points + amount;
           setPoints(newPoints);
@@ -520,6 +547,7 @@ const LearningChat = () => {
           saveUserProfile({ total_points: newPoints });
         }}
         onExitToChat={() => setShowPhaserGame(false)}
+        onPerformanceRecord={recordPerformance}
       />
     );
   }
