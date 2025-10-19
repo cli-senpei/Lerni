@@ -45,6 +45,13 @@ const LearningChat = () => {
         const transcript = event.results[0][0].transcript;
         setInput(transcript);
         setIsListening(false);
+        // Auto-submit the recording
+        setTimeout(() => {
+          setMessages(prev => [...prev, { text: transcript, isUser: true }]);
+          setTimeout(() => {
+            handleConversationFlow(transcript);
+          }, 600);
+        }, 100);
       };
 
       recognitionRef.current.onerror = (event: any) => {
@@ -64,9 +71,9 @@ const LearningChat = () => {
 
     // Initial welcome message
     setTimeout(() => {
-      addBotMessage("Hello! Welcome to your personalized learning experience. 🎉");
+      addBotMessage("Hi! Welcome! 🎉");
       setTimeout(() => {
-        addBotMessage("Before we begin, what's your name?");
+        addBotMessage("What's your name?");
       }, 1500);
     }, 500);
 
@@ -132,33 +139,33 @@ const LearningChat = () => {
       addPoints(10);
       addBotMessage(`Nice to meet you, ${userInput}! 😊`);
       setTimeout(() => {
-        addBotMessage(`${userInput}, I'm here to make learning fun and easy for you. How are you feeling today?`);
+        addBotMessage(`How are you feeling today?`);
         setStep(1);
-      }, 2500);
+      }, 2000);
     } else if (step === 1) {
       addPoints(10);
-      addBotMessage(`That's great to hear, ${userName}! I'm excited to help you on this journey.`);
+      addBotMessage(`Great! I'm here to help you.`);
       setTimeout(() => {
-        addBotMessage(`${userName}, have you played learning games before? (Yes/No)`);
+        addBotMessage(`Ready to play a game? (Yes/No)`);
         setStep(2);
-      }, 2500);
+      }, 2000);
     } else if (step === 2) {
       addPoints(15);
       const response = userInput.toLowerCase().includes('yes') 
-        ? `Awesome, ${userName}! You're going to love what we have for you.`
-        : `No worries, ${userName}! We'll take it step by step together.`;
+        ? `Awesome! You'll love this.`
+        : `No worries! We'll go slow.`;
       
       addBotMessage(response);
       setTimeout(() => {
-        addBotMessage(`${userName}, are you ready to start your first interactive game? It's designed to help you learn while having fun! 🎮`);
+        addBotMessage(`Let's start! Ready? 🎮`);
         setStep(3);
-      }, 3000);
+      }, 2000);
     } else if (step === 3) {
       addPoints(25);
-      addBotMessage(`Perfect, ${userName}! Let's begin your adventure. Loading your personalized game now...`);
+      addBotMessage(`Perfect! Loading your game...`);
       setTimeout(() => {
         setStep(4);
-      }, 2500);
+      }, 2000);
     }
   };
 
@@ -225,8 +232,8 @@ const LearningChat = () => {
             <Sparkles className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold tracking-wide">Learning Assistant</h2>
-            <p className="text-base md:text-lg text-muted-foreground font-light">Let's get started!</p>
+            <h2 className="text-2xl md:text-3xl font-bold">Learning Helper</h2>
+            <p className="text-base md:text-lg text-muted-foreground">Let's go!</p>
           </div>
         </div>
         
@@ -275,7 +282,7 @@ const LearningChat = () => {
                     : 'bg-card border-2 border-primary/10'
                 }`}
               >
-                <p className="text-xl md:text-2xl leading-relaxed tracking-wide font-light" style={{ lineHeight: '2' }}>
+                <p className="text-lg md:text-xl leading-relaxed">
                   {message.text}
                 </p>
               </div>
@@ -329,9 +336,8 @@ const LearningChat = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={isListening ? "Speak now..." : "Type or speak your answer..."}
-              className="flex-1 h-16 text-xl md:text-2xl px-6 rounded-2xl border-2 border-primary/20 focus:border-primary transition-all font-light tracking-wide"
-              style={{ letterSpacing: '0.05em' }}
+              placeholder={isListening ? "Speak now..." : "Type your answer..."}
+              className="flex-1 h-16 text-lg md:text-xl px-6 rounded-2xl border-2 border-primary/20 focus:border-primary transition-all"
               disabled={isTyping || isListening}
             />
             <Button 

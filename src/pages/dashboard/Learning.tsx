@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Brain, Gamepad2 } from "lucide-react";
+import { Gamepad2 } from "lucide-react";
 import LearningChat from "@/components/dashboard/LearningChat";
 import learningGameImage from "@/assets/learning-game.png";
 
@@ -45,7 +45,6 @@ const Learning = () => {
               size="lg"
               className="w-full bg-[hsl(142,76%,36%)] hover:bg-[hsl(142,76%,30%)] text-white font-bold text-lg h-14"
             >
-              <Brain className="w-5 h-5 mr-2" />
               Improve Reading with AI
             </Button>
             
@@ -55,7 +54,7 @@ const Learning = () => {
               className="w-full bg-[hsl(142,76%,36%)] hover:bg-[hsl(142,76%,30%)] text-white font-bold text-lg h-14"
             >
               <Gamepad2 className="w-5 h-5 mr-2" />
-              Play AI Learning Game
+              Play Games and Learn
             </Button>
           </div>
         </div>
