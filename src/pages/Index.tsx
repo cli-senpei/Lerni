@@ -1,7 +1,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
-import { Separator } from "@/components/ui/separator";
 import readingImage from "@/assets/reading-experience.png";
 import ortonGillinghamImage from "@/assets/orton-gillingham.png";
 
@@ -12,10 +11,8 @@ const Index = () => {
       <main>
         <Hero />
         
-        <Separator className="mx-auto w-[90%] max-w-screen-xl opacity-30" />
-        
         {/* Second Section - Reading Experience */}
-        <section className="flex min-h-screen items-center px-6 py-16 md:px-12 animate-fade-in snap-start">
+        <section className="flex min-h-screen items-center px-6 py-8 md:py-12 md:px-12 animate-fade-in snap-start">
           <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
             {/* Text Content - Left Side */}
             <div className="flex flex-col items-center space-y-6 lg:items-start">
@@ -37,10 +34,8 @@ const Index = () => {
           </div>
         </section>
         
-        <Separator className="mx-auto w-[90%] max-w-screen-xl opacity-30" />
-        
         {/* Third Section - Orton-Gillingham Method */}
-        <section className="flex min-h-screen items-center px-6 py-16 md:px-12 animate-fade-in snap-start">
+        <section className="flex min-h-screen items-center px-6 py-8 md:py-12 md:px-12 animate-fade-in snap-start">
           <div className="mx-auto grid w-full max-w-screen-xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
             {/* Image - Left Side */}
             <div className="flex justify-center lg:justify-start">
