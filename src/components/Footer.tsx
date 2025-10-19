@@ -33,8 +33,9 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="mt-12 border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 Lerni. All rights reserved.</p>
+        <div className="mt-12 border-t border-border pt-8 text-center">
+          <p className="text-sm text-muted-foreground">&copy; 2025 Lerni. All rights reserved.</p>
+          <p className="text-xs text-muted-foreground/70 mt-2 font-mono">Coded By CLI Senpei</p>
         </div>
       </div>
     </footer>

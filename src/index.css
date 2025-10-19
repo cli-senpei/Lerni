@@ -118,7 +118,11 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background: radial-gradient(ellipse at top left, hsl(var(--muted) / 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, hsl(var(--muted) / 0.2) 0%, transparent 50%),
+                hsl(var(--background));
+    background-attachment: fixed;
     /* Accessibility improvements for reading disabilities */
     font-size: 16px;
     line-height: 1.8;

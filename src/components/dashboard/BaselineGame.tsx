@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { usePointsTracker } from "@/hooks/usePointsTracker";
 
 interface BaselineGameProps {
   onComplete: (score: number, weaknesses: string[]) => void;
@@ -34,6 +35,7 @@ const BaselineGame = ({ onComplete }: BaselineGameProps) => {
   const [shuffledLetters, setShuffledLetters] = useState<string[]>([]);
   const [mistakes, setMistakes] = useState<{ [key: string]: number }>({});
   const gameRef = useRef<HTMLDivElement>(null);
+  const { addPoints, incrementLesson } = usePointsTracker();
 
   const currentQuestion = QUESTIONS[currentWordIndex];
 
@@ -66,6 +68,7 @@ const BaselineGame = ({ onComplete }: BaselineGameProps) => {
       const formedWord = newSelected.join("");
       if (formedWord === currentQuestion.word) {
         setScore(score + 1);
+        addPoints(10); // Award 10 points per correct answer
         setTimeout(moveToNext, 800);
       } else {
         // Track mistakes by difficulty
@@ -90,6 +93,7 @@ const BaselineGame = ({ onComplete }: BaselineGameProps) => {
       const weaknesses: string[] = [];
       if ((mistakes.easy || 0) > 0) weaknesses.push("phonics");
       
+      incrementLesson(); // Count as completed lesson
       onComplete(score, weaknesses.length > 0 ? weaknesses : ["none"]);
     }
   };

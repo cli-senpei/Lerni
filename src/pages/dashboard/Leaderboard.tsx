@@ -27,6 +27,7 @@ const Leaderboard = () => {
   const [rating, setRating] = useState(0);
   const [currentScore, setCurrentScore] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [editName, setEditName] = useState("");
 
   useEffect(() => {
     loadUser();
@@ -51,6 +52,7 @@ const Leaderboard = () => {
 
     if (data) {
       setCurrentScore(data.total_points || 0);
+      setEditName(data.user_name || "");
     }
   };
 
@@ -107,16 +109,24 @@ const Leaderboard = () => {
       return;
     }
 
+    if (!editName.trim()) {
+      toast({
+        title: "Name required",
+        description: "Please enter your name before submitting",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setSubmitting(true);
 
-    // Get user name from profile
-    const { data: profile } = await supabase
+    // Update user name in profile if changed
+    await supabase
       .from('user_learning_profiles')
-      .select('user_name')
-      .eq('user_id', user.id)
-      .single();
+      .update({ user_name: editName.trim() })
+      .eq('user_id', user.id);
 
-    const userName = profile?.user_name || "Anonymous";
+    const userName = editName.trim();
 
     if (userEntry) {
       // Update existing entry
@@ -174,6 +184,31 @@ const Leaderboard = () => {
     setSubmitting(false);
   };
 
+  const handleDeleteComment = async () => {
+    if (!user || !userEntry) return;
+
+    const { error } = await supabase
+      .from('leaderboard_entries')
+      .update({ comment: null })
+      .eq('user_id', user.id);
+
+    if (error) {
+      toast({
+        title: "Error deleting comment",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Comment deleted",
+        description: "Your comment has been removed",
+      });
+      setComment("");
+      loadLeaderboard();
+      loadUserEntry(user.id);
+    }
+  };
+
   const getRankIcon = (index: number) => {
     if (index === 0) return <Trophy className="h-6 w-6 text-yellow-500" />;
     if (index === 1) return <Medal className="h-6 w-6 text-gray-400" />;
@@ -228,14 +263,36 @@ const Leaderboard = () => {
           <div className="space-y-3">
             <div>
               <label className="text-sm font-medium mb-2 block">
+                Your Name (Required)
+              </label>
+              <input
+                type="text"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Enter your name"
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                maxLength={50}
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">
                 Rate Your Experience (Required)
               </label>
               {renderStars(rating, true)}
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-2 block">
-                Share Your Thoughts (Optional)
+              <label className="text-sm font-medium mb-2 block flex items-center justify-between">
+                <span>Share Your Thoughts (Optional)</span>
+                {userEntry?.comment && (
+                  <button
+                    onClick={handleDeleteComment}
+                    className="text-xs text-destructive hover:underline"
+                  >
+                    Delete Comment
+                  </button>
+                )}
               </label>
               <Textarea
                 value={comment}
@@ -251,7 +308,7 @@ const Leaderboard = () => {
 
             <Button
               onClick={handleSubmit}
-              disabled={submitting || rating === 0}
+              disabled={submitting || rating === 0 || !editName.trim()}
               className="w-full"
               size="lg"
             >

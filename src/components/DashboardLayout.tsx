@@ -3,6 +3,7 @@ import { useNavigate, Outlet, NavLink, Link } from "react-router-dom";
 import { Home, BookOpen, Trophy, LogOut, User as UserIcon, Menu } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
+import ProfileModal from "@/components/ProfileModal";
 import {
   Sidebar,
   SidebarContent,
@@ -24,6 +25,7 @@ const DashboardLayout = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -77,11 +79,13 @@ const DashboardLayout = () => {
             </div>
             
             <div className="flex items-center gap-2 md:gap-3">
-              <Avatar className="h-8 w-8 md:h-10 md:w-10">
-                <AvatarFallback className="bg-primary/10 text-primary">
-                  <UserIcon className="h-4 w-4 md:h-5 md:w-5" />
-                </AvatarFallback>
-              </Avatar>
+              <button onClick={() => setProfileOpen(true)} className="cursor-pointer">
+                <Avatar className="h-8 w-8 md:h-10 md:w-10 hover:ring-2 hover:ring-primary transition-all">
+                  <AvatarFallback className="bg-primary/10 text-primary">
+                    <UserIcon className="h-4 w-4 md:h-5 md:w-5" />
+                  </AvatarFallback>
+                </Avatar>
+              </button>
               <span className="text-xs md:text-sm font-medium hidden sm:block">{user.email}</span>
             </div>
           </div>
@@ -139,13 +143,14 @@ const DashboardLayout = () => {
             </SidebarFooter>
           </Sidebar>
 
-          <main className="flex-1 overflow-auto bg-background">
+          <main className="flex-1 overflow-auto">
             <div className="container mx-auto p-6 md:p-12 max-w-7xl">
               <Outlet />
             </div>
           </main>
         </div>
       </div>
+      {user && <ProfileModal open={profileOpen} onOpenChange={setProfileOpen} user={user} />}
     </SidebarProvider>
   );
 };

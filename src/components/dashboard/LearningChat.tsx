@@ -10,6 +10,7 @@ import PhonicsPopGame from "./PhonicsPopGame";
 import PhaserGame from "./PhaserGame";
 import { useSimpleAdaptiveAI } from "@/hooks/useSimpleAdaptiveAI";
 import { getDifficultyString } from "@/lib/simpleAdaptiveAI";
+import { usePointsTracker } from "@/hooks/usePointsTracker";
 
 interface Message {
   text: string;
@@ -18,6 +19,7 @@ interface Message {
 
 const LearningChat = () => {
   const { toast } = useToast();
+  const { addPoints: trackPoints, incrementLesson, updateStreak } = usePointsTracker();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [userName, setUserName] = useState("");
@@ -494,13 +496,18 @@ const LearningChat = () => {
         onPointsEarned={(amount) => {
           const newPoints = points + amount;
           setPoints(newPoints);
+          trackPoints(amount); // Track in database
           setShowReward(true);
           setTimeout(() => setShowReward(false), 2000);
           
           // Save points to database
           saveUserProfile({ total_points: newPoints });
         }}
-        onExitToChat={() => setShowRhymeGame(false)}
+        onExitToChat={() => {
+          setShowRhymeGame(false);
+          incrementLesson(); // Count as completed lesson
+          updateStreak(); // Update streak
+        }}
         onPerformanceRecord={recordPerformance}
         currentDifficulty={getDifficultyString(currentDifficulty)}
       />
@@ -516,13 +523,18 @@ const LearningChat = () => {
         onPointsEarned={(amount) => {
           const newPoints = points + amount;
           setPoints(newPoints);
+          trackPoints(amount); // Track in database
           setShowReward(true);
           setTimeout(() => setShowReward(false), 2000);
           
           // Save points to database
           saveUserProfile({ total_points: newPoints });
         }}
-        onExitToChat={() => setShowPhonicsGame(false)}
+        onExitToChat={() => {
+          setShowPhonicsGame(false);
+          incrementLesson(); // Count as completed lesson
+          updateStreak(); // Update streak
+        }}
         onPerformanceRecord={recordPerformance}
         currentDifficulty={getDifficultyString(currentDifficulty)}
       />
@@ -540,13 +552,18 @@ const LearningChat = () => {
         onPointsEarned={(amount) => {
           const newPoints = points + amount;
           setPoints(newPoints);
+          trackPoints(amount); // Track in database
           setShowReward(true);
           setTimeout(() => setShowReward(false), 2000);
           
           // Save points to database
           saveUserProfile({ total_points: newPoints });
         }}
-        onExitToChat={() => setShowPhaserGame(false)}
+        onExitToChat={() => {
+          setShowPhaserGame(false);
+          incrementLesson(); // Count as completed lesson
+          updateStreak(); // Update streak
+        }}
         onPerformanceRecord={recordPerformance}
       />
     );
