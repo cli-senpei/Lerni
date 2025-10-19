@@ -8,6 +8,7 @@ import BaselineGame from "./BaselineGame";
 import RhymeGameMode from "./RhymeGameMode";
 import PhonicsPopGame from "./PhonicsPopGame";
 import PhaserGame from "./PhaserGame";
+import ReadingGame from "./ReadingGame";
 import { useSimpleAdaptiveAI } from "@/hooks/useSimpleAdaptiveAI";
 import { getDifficultyString } from "@/lib/simpleAdaptiveAI";
 import { usePointsTracker } from "@/hooks/usePointsTracker";
@@ -37,6 +38,7 @@ const LearningChat = () => {
   const [showRhymeGame, setShowRhymeGame] = useState(false);
   const [showPhonicsGame, setShowPhonicsGame] = useState(false);
   const [showPhaserGame, setShowPhaserGame] = useState(false);
+  const [showReadingGame, setShowReadingGame] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -382,7 +384,7 @@ const LearningChat = () => {
         } else {
           // Random choice weighted by difficulty
           const rand = Math.random();
-          gameChoice = rand < 0.4 ? 'rhyme' : rand < 0.7 ? 'phonics' : 'phaser';
+          gameChoice = rand < 0.3 ? 'rhyme' : rand < 0.5 ? 'phonics' : rand < 0.75 ? 'reading' : 'phaser';
         }
         
         if (gameChoice === 'rhyme') {
@@ -394,6 +396,11 @@ const LearningChat = () => {
           addBotMessage(`Great! Let's work on phonics with Phonics Pop!`);
           setTimeout(() => {
             setShowPhonicsGame(true);
+          }, 2000);
+        } else if (gameChoice === 'reading') {
+          addBotMessage(`Let's improve your reading comprehension with Reading Adventure!`);
+          setTimeout(() => {
+            setShowReadingGame(true);
           }, 2000);
         } else {
           addBotMessage(`Time for some action! Let's play Word Catch!`);
@@ -537,6 +544,27 @@ const LearningChat = () => {
         }}
         onPerformanceRecord={recordPerformance}
         currentDifficulty={getDifficultyString(currentDifficulty)}
+      />
+    );
+  }
+
+  // Show Reading game
+  if (showReadingGame) {
+    return (
+      <ReadingGame
+        onComplete={(score) => {
+          const earnedPoints = score * 20; // 20 points per correct answer
+          const newPoints = points + earnedPoints;
+          setPoints(newPoints);
+          trackPoints(earnedPoints);
+          setShowReward(true);
+          setTimeout(() => setShowReward(false), 2000);
+          
+          saveUserProfile({ total_points: newPoints });
+          incrementLesson();
+          updateStreak();
+          setShowReadingGame(false);
+        }}
       />
     );
   }
