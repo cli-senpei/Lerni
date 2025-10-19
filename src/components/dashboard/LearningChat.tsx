@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import BaselineGame from "./BaselineGame";
 import RhymeGameMode from "./RhymeGameMode";
+import PhonicsPopGame from "./PhonicsPopGame";
 
 interface Message {
   text: string;
@@ -29,6 +30,7 @@ const LearningChat = () => {
   const [baselineComplete, setBaselineComplete] = useState(false);
   const [userWeaknesses, setUserWeaknesses] = useState<string[]>([]);
   const [showRhymeGame, setShowRhymeGame] = useState(false);
+  const [showPhonicsGame, setShowPhonicsGame] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -344,8 +346,8 @@ const LearningChat = () => {
         }, 1500);
       }, 2000);
     } else if (step === 2 && baselineComplete) {
-      const response = userInput.toLowerCase().includes('yes');
-      if (response) {
+      const response = userInput.toLowerCase();
+      if (response.includes('yes') || response.includes('sure') || response.includes('ok')) {
         addPoints(15);
         
         // Save updated points
@@ -353,10 +355,20 @@ const LearningChat = () => {
           total_points: points + 15,
         });
         
-        addBotMessage(`Awesome! Starting your game now...`);
-        setTimeout(() => {
-          setShowRhymeGame(true);
-        }, 2000);
+        // Randomly choose between Rhyme Match and Phonics Pop
+        const gameChoice = Math.random() > 0.5 ? 'rhyme' : 'phonics';
+        
+        if (gameChoice === 'rhyme') {
+          addBotMessage(`Awesome! Starting Rhyme Match game now...`);
+          setTimeout(() => {
+            setShowRhymeGame(true);
+          }, 2000);
+        } else {
+          addBotMessage(`Great! Let's play Phonics Pop - pop the balloons with matching sounds!`);
+          setTimeout(() => {
+            setShowPhonicsGame(true);
+          }, 2000);
+        }
       } else {
         addBotMessage(`No problem! Let me know when you're ready!`);
       }
@@ -459,6 +471,26 @@ const LearningChat = () => {
           saveUserProfile({ total_points: newPoints });
         }}
         onExitToChat={() => setShowRhymeGame(false)}
+      />
+    );
+  }
+
+  // Show phonics pop game
+  if (showPhonicsGame) {
+    return (
+      <PhonicsPopGame
+        userName={userName}
+        points={points}
+        onPointsEarned={(amount) => {
+          const newPoints = points + amount;
+          setPoints(newPoints);
+          setShowReward(true);
+          setTimeout(() => setShowReward(false), 2000);
+          
+          // Save points to database
+          saveUserProfile({ total_points: newPoints });
+        }}
+        onExitToChat={() => setShowPhonicsGame(false)}
       />
     );
   }
