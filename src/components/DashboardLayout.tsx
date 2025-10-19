@@ -89,11 +89,11 @@ const DashboardLayout = () => {
 
         {/* Main Content with Sidebar */}
         <div className="flex flex-1 w-full">
-          <Sidebar className="hidden lg:flex border-r">
-            <SidebarContent>
+          <Sidebar className="hidden lg:flex border-r w-72">
+            <SidebarContent className="pt-6">
               <SidebarGroup>
                 <SidebarGroupContent>
-                  <SidebarMenu>
+                  <SidebarMenu className="space-y-3">
                     {menuItems.map((item) => (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild>
@@ -101,13 +101,15 @@ const DashboardLayout = () => {
                             to={item.url}
                             end={item.url === "/dashboard"}
                             className={({ isActive }) =>
-                              isActive
-                                ? "bg-primary/10 text-primary font-medium"
-                                : "hover:bg-muted/50"
+                              `flex items-center gap-4 px-6 py-4 rounded-xl text-lg font-semibold transition-all ${
+                                isActive
+                                  ? "bg-primary/10 text-primary shadow-sm"
+                                  : "hover:bg-muted/50 text-foreground"
+                              }`
                             }
                           >
-                            <item.icon className="h-5 w-5" />
-                            <span>{item.title}</span>
+                            <item.icon className="h-7 w-7 stroke-[2.5]" />
+                            <span className="tracking-wide">{item.title}</span>
                           </NavLink>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -117,13 +119,13 @@ const DashboardLayout = () => {
               </SidebarGroup>
             </SidebarContent>
 
-            <SidebarFooter className="border-t p-4">
+            <SidebarFooter className="border-t p-6">
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 w-full px-3 py-2 text-sm rounded-md hover:bg-muted/50 transition-colors"
+                className="flex items-center gap-4 w-full px-6 py-4 text-lg font-semibold rounded-xl hover:bg-destructive/10 hover:text-destructive transition-all"
               >
-                <LogOut className="h-5 w-5" />
-                <span>Sign Out</span>
+                <LogOut className="h-7 w-7 stroke-[2.5]" />
+                <span className="tracking-wide">Sign Out</span>
               </button>
             </SidebarFooter>
           </Sidebar>
