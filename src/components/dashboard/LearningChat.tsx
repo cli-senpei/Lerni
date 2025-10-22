@@ -290,13 +290,12 @@ const LearningChat = () => {
     }, 600);
   };
 
-  const handleBaselineComplete = (score: number, weaknesses: string[]) => {
+  const handleBaselineComplete = async (score: number, weaknesses: string[]) => {
     setUserWeaknesses(weaknesses);
     setBaselineComplete(true);
     setShowBaselineGame(false);
     addPoints(50);
     
-    // Save to database
     saveUserProfile({
       has_completed_baseline: true,
       baseline_score: score,
@@ -304,12 +303,29 @@ const LearningChat = () => {
       total_points: points + 50,
     });
     
-    addBotMessage(`Great job! You got ${score} out of 3 correct!`);
+    // Use AI to generate personalized feedback
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-chat', {
+        body: {
+          messages: [
+            { role: 'user', content: `The child just completed ${score} out of 5 challenges. Their areas to work on are: ${weaknesses.join(', ')}. Give them encouraging feedback in 1-2 sentences.` }
+          ],
+          userName,
+          context: 'baseline assessment complete'
+        }
+      });
+
+      if (error) throw error;
+      
+      addBotMessage(data.message || `Amazing work! You got ${score} out of 5 correct! 🌟`);
+    } catch (error) {
+      console.error('AI error:', error);
+      addBotMessage(`Fantastic effort! You got ${score} out of 5 correct! 🌟`);
+    }
+    
     setTimeout(() => {
-      addBotMessage(`Based on your results, here is a game to sharpen your skills.`);
+      addBotMessage(`Ready to play a fun game?`);
       setTimeout(() => {
-        // Auto-start the game based on weaknesses
-        handleConversationFlow('yes');
         setStep(2);
       }, 1500);
     }, 2000);
@@ -318,17 +334,14 @@ const LearningChat = () => {
   const handleConversationFlow = async (userInput: string) => {
     const lowerInput = userInput.toLowerCase();
     
-    // Increment successful responses counter
     setSuccessfulResponses(prev => prev + 1);
     
-    // Check for mode switch command
     if (preferredMode === 'mic' && (lowerInput.includes('keyboard') || lowerInput.includes('type'))) {
       setPendingModeSwitch(true);
       addBotMessage("Would you like me to show the keyboard so you can type?");
       return;
     }
     
-    // Handle confirmation for mode switch
     if (pendingModeSwitch) {
       const confirmed = lowerInput.includes('yes') || lowerInput.includes('yeah') || lowerInput.includes('sure');
       if (confirmed) {
@@ -351,13 +364,30 @@ const LearningChat = () => {
       setUserName(userInput);
       addPoints(10);
       
-      // Save name to database
       saveUserProfile({
         user_name: userInput,
         total_points: points + 10,
       });
       
-      addBotMessage(`Nice to meet you, ${userInput}!`);
+      // Use AI for personalized greeting
+      try {
+        const { data, error } = await supabase.functions.invoke('ai-chat', {
+          body: {
+            messages: [
+              { role: 'user', content: `The child just told me their name is ${userInput}. Give them a warm, friendly greeting and tell them we're going to play some fun learning games! Keep it to 1 sentence.` }
+            ],
+            userName: userInput,
+            context: 'first meeting'
+          }
+        });
+
+        if (error) throw error;
+        addBotMessage(data.message || `Nice to meet you, ${userInput}!`);
+      } catch (error) {
+        console.error('AI error:', error);
+        addBotMessage(`Nice to meet you, ${userInput}!`);
+      }
+      
       setTimeout(() => {
         setShowBaselineGame(true);
         setStep(1);
