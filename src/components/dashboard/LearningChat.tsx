@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Send, Star, Sparkles, Award, Mic, MicOff, Volume2, Keyboard } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { askHF } from "@/lib/ai";
 import BaselineGame from "./BaselineGame";
 import RhymeGameMode from "./RhymeGameMode";
 import PhonicsPopGame from "./PhonicsPopGame";
@@ -305,19 +306,11 @@ const LearningChat = () => {
     
     // Use AI to generate personalized feedback
     try {
-      const { data, error } = await supabase.functions.invoke('ai-chat', {
-        body: {
-          messages: [
-            { role: 'user', content: `The child just completed ${score} out of 5 challenges. Their areas to work on are: ${weaknesses.join(', ')}. Give them encouraging feedback in 1-2 sentences.` }
-          ],
-          userName,
-          context: 'baseline assessment complete'
-        }
-      });
-
-      if (error) throw error;
+      const response = await askHF(
+        `${userName} just completed ${score} out of 5 challenges. Their areas to work on are: ${weaknesses.join(', ')}. Give them encouraging feedback in 1-2 sentences.`
+      );
       
-      addBotMessage(data.message || `Amazing work! You got ${score} out of 5 correct! 🌟`);
+      addBotMessage(response || `Amazing work! You got ${score} out of 5 correct! 🌟`);
     } catch (error) {
       console.error('AI error:', error);
       addBotMessage(`Fantastic effort! You got ${score} out of 5 correct! 🌟`);
@@ -371,18 +364,11 @@ const LearningChat = () => {
       
       // Use AI for personalized greeting
       try {
-        const { data, error } = await supabase.functions.invoke('ai-chat', {
-          body: {
-            messages: [
-              { role: 'user', content: `The child just told me their name is ${userInput}. Give them a warm, friendly greeting and tell them we're going to play some fun learning games! Keep it to 1 sentence.` }
-            ],
-            userName: userInput,
-            context: 'first meeting'
-          }
-        });
-
-        if (error) throw error;
-        addBotMessage(data.message || `Nice to meet you, ${userInput}!`);
+        const response = await askHF(
+          `The child just told me their name is ${userInput}. Give them a warm, friendly greeting and tell them we're going to play some fun learning games! Keep it to 1 sentence.`
+        );
+        
+        addBotMessage(response || `Nice to meet you, ${userInput}!`);
       } catch (error) {
         console.error('AI error:', error);
         addBotMessage(`Nice to meet you, ${userInput}!`);
