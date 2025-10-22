@@ -8,8 +8,9 @@ import { askAI } from "@/lib/ai";
 import BaselineGame from "./BaselineGame";
 import RhymeGameMode from "./RhymeGameMode";
 import PhonicsPopGame from "./PhonicsPopGame";
-import PhaserGame from "./PhaserGame";
 import ReadingGame from "./ReadingGame";
+import WordSortGame from "./WordSortGame";
+import LetterMatchGame from "./LetterMatchGame";
 import { useSimpleAdaptiveAI } from "@/hooks/useSimpleAdaptiveAI";
 import { getDifficultyString } from "@/lib/simpleAdaptiveAI";
 import { usePointsTracker } from "@/hooks/usePointsTracker";
@@ -39,8 +40,10 @@ const LearningChat = () => {
   const [userWeaknesses, setUserWeaknesses] = useState<string[]>([]);
   const [showRhymeGame, setShowRhymeGame] = useState(false);
   const [showPhonicsGame, setShowPhonicsGame] = useState(false);
-  const [showPhaserGame, setShowPhaserGame] = useState(false);
   const [showReadingGame, setShowReadingGame] = useState(false);
+  const [showWordSortGame, setShowWordSortGame] = useState(false);
+  const [showLetterMatchGame, setShowLetterMatchGame] = useState(false);
+  const [currentGameType, setCurrentGameType] = useState<'rhyme' | 'phonics' | 'reading' | 'wordsort' | 'lettermatch' | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -268,16 +271,57 @@ const LearningChat = () => {
         setShowBaselineGame(true);
       }, 1500);
     } else if (activity === 'game') {
-      await addBotMessage(`Awesome! Let's pick a fun game! 🌟`, true, false);
+      await addBotMessage(`Let's play! 🎮`, true, false);
       setTimeout(() => {
         const recommendation = getNextRecommendation();
         const focusCategory = recommendation.focus;
+        const difficulty = recommendation.difficulty;
         
-        // Map focus category to game
-        if (focusCategory === 'rhyming') setShowRhymeGame(true);
-        else if (focusCategory === 'phonics') setShowPhonicsGame(true);
-        else if (focusCategory === 'word-recognition') setShowReadingGame(true);
-        else setShowPhaserGame(true);
+        // Choose game based on user level and focus area
+        // Rotate through different games for variety
+        const gamePool: Array<'rhyme' | 'phonics' | 'reading' | 'wordsort' | 'lettermatch'> = [];
+        
+        if (difficulty <= 2) {
+          // Beginner: Focus on basics
+          gamePool.push('lettermatch', 'rhyme', 'wordsort');
+        } else if (difficulty === 3) {
+          // Intermediate: Mix of games
+          gamePool.push('rhyme', 'phonics', 'wordsort', 'reading');
+        } else {
+          // Advanced: All games
+          gamePool.push('phonics', 'reading', 'wordsort', 'rhyme');
+        }
+        
+        // Pick based on focus or random
+        let selectedGame = gamePool[Math.floor(Math.random() * gamePool.length)];
+        
+        if (focusCategory === 'rhyming' && gamePool.includes('rhyme')) {
+          selectedGame = 'rhyme';
+        } else if (focusCategory === 'phonics' && gamePool.includes('phonics')) {
+          selectedGame = 'phonics';
+        } else if (focusCategory === 'word-recognition' && gamePool.includes('reading')) {
+          selectedGame = 'reading';
+        }
+        
+        setCurrentGameType(selectedGame);
+        
+        switch(selectedGame) {
+          case 'rhyme':
+            setShowRhymeGame(true);
+            break;
+          case 'phonics':
+            setShowPhonicsGame(true);
+            break;
+          case 'reading':
+            setShowReadingGame(true);
+            break;
+          case 'wordsort':
+            setShowWordSortGame(true);
+            break;
+          case 'lettermatch':
+            setShowLetterMatchGame(true);
+            break;
+        }
       }, 1500);
     } else {
       // Casual chat mode
@@ -337,10 +381,11 @@ ${text}
 Respond as Lerni (keep it to 1-2 sentences, encouraging and friendly):`;
 
         const aiResponse = await askAI(aiPrompt, userName, points);
-        messageText = aiResponse || text;
+        messageText = aiResponse || "Great job! 🌟";
       } catch (error) {
         console.error('AI error:', error);
-        // Fallback to provided text
+        // Fallback to friendly default
+        messageText = "You're doing awesome! 🌟";
       }
     }
     
@@ -386,9 +431,14 @@ Respond as Lerni (keep it to 1-2 sentences, encouraging and friendly):`;
       total_points: points + 50,
     });
     
-    // Use AI for personalized feedback based on results
-    const feedbackPrompt = `The child completed the assessment! Score: ${score}/5. They did great! Celebrate their effort briefly.`;
-    await addBotMessage(feedbackPrompt, true, true);
+    // Celebrate completion warmly
+    if (score >= 4) {
+      await addBotMessage(`Amazing job! You got ${score} out of 5! 🎉`, true, false);
+    } else if (score >= 3) {
+      await addBotMessage(`Nice work! You got ${score} out of 5! ⭐`, true, false);
+    } else {
+      await addBotMessage(`You did it! Great effort! 💪`, true, false);
+    }
     
     setTimeout(() => {
       // Show activity options after assessment
@@ -626,30 +676,58 @@ Respond as Lerni (keep it to 1-2 sentences, encouraging and friendly):`;
     );
   }
 
-  // Show Phaser game
-  if (showPhaserGame) {
+  // Show Word Sort game
+  if (showWordSortGame) {
     return (
-      <PhaserGame
+      <WordSortGame
         userName={userName}
-        points={points}
-        gameType="word-catch"
         difficulty={getDifficultyString(currentDifficulty)}
-        onPointsEarned={(amount) => {
-          const newPoints = points + amount;
+        onComplete={(score) => {
+          const earnedPoints = score * 15;
+          const newPoints = points + earnedPoints;
           setPoints(newPoints);
-          trackPoints(amount); // Track in database
+          trackPoints(earnedPoints);
           setShowReward(true);
           setTimeout(() => setShowReward(false), 2000);
           
-          // Save points to database
           saveUserProfile({ total_points: newPoints });
+          incrementLesson();
+          updateStreak();
+          setShowWordSortGame(false);
+          setShowActivityOptions(true);
         }}
-        onExitToChat={() => {
-          setShowPhaserGame(false);
-          incrementLesson(); // Count as completed lesson
-          updateStreak(); // Update streak
+        onExit={() => {
+          setShowWordSortGame(false);
+          setShowActivityOptions(true);
         }}
-        onPerformanceRecord={recordPerformance}
+      />
+    );
+  }
+
+  // Show Letter Match game
+  if (showLetterMatchGame) {
+    return (
+      <LetterMatchGame
+        userName={userName}
+        difficulty={getDifficultyString(currentDifficulty)}
+        onComplete={(score) => {
+          const earnedPoints = score * 10;
+          const newPoints = points + earnedPoints;
+          setPoints(newPoints);
+          trackPoints(earnedPoints);
+          setShowReward(true);
+          setTimeout(() => setShowReward(false), 2000);
+          
+          saveUserProfile({ total_points: newPoints });
+          incrementLesson();
+          updateStreak();
+          setShowLetterMatchGame(false);
+          setShowActivityOptions(true);
+        }}
+        onExit={() => {
+          setShowLetterMatchGame(false);
+          setShowActivityOptions(true);
+        }}
       />
     );
   }
