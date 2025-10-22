@@ -97,11 +97,19 @@ const LearningChat = () => {
 
         if (profile.has_completed_baseline) {
           setStep(2);
-          // Skip straight to conversation
-          addBotMessage(`Welcome back, ${profile.user_name}! Ready for another game?`, false);
+          // Welcome back with AI
+          await addBotMessage(
+            `Welcome back ${profile.user_name}! They have ${profile.total_points} points. Greet them warmly and ask if they want to play another game!`,
+            false,
+            true
+          );
         } else {
-          // Continue from where they left off
-          addBotMessage(`Hi my name is Lerni, what's your name?`, false);
+          // Continue from where they left off with AI
+          await addBotMessage(
+            `Greet the returning user warmly and ask their name. Keep it friendly and encouraging!`,
+            false,
+            true
+          );
         }
       }
 
@@ -202,9 +210,13 @@ const LearningChat = () => {
         setIsListening(false);
         setIsRecording(false);
         
-        // Handle errors conversationally
+      // Handle errors conversationally with AI
         if (event.error === 'not-allowed' || event.error === 'no-speech') {
-          addBotMessage("I'm having trouble hearing you. Have you connected your microphone properly? Would you like to switch to keyboard mode?");
+          addBotMessage(
+            "There's a microphone problem. Explain it kindly to the child and offer to switch to keyboard mode.",
+            true,
+            true
+          );
           setPendingModeSwitch(true);
         }
       };
@@ -227,9 +239,13 @@ const LearningChat = () => {
     setPreferredMode(mode);
     setShowModeSelection(false);
     
-    // Initial welcome message
-    setTimeout(() => {
-      addBotMessage("Hi my name is Lerni, what's your name?");
+    // Initial welcome message with AI
+    setTimeout(async () => {
+      await addBotMessage(
+        `Generate a warm, friendly greeting. Introduce yourself as Lerni and ask the child their name. Keep it playful and short (1 sentence).`,
+        true,
+        true
+      );
     }, 500);
 
     // Auto-start voice input if mic mode selected
@@ -260,15 +276,55 @@ const LearningChat = () => {
     window.speechSynthesis.speak(utterance);
   };
 
-  const addBotMessage = (text: string, shouldSpeak = true) => {
+  const getConversationContext = () => {
+    const context: string[] = [];
+    context.push(`User's name: ${userName || 'unknown'}`);
+    context.push(`Current step: ${step === 0 ? 'asking for name' : step === 1 ? 'baseline assessment' : 'game selection'}`);
+    context.push(`Baseline completed: ${baselineComplete ? 'yes' : 'no'}`);
+    if (userWeaknesses.length > 0) {
+      context.push(`Areas to focus on: ${userWeaknesses.join(', ')}`);
+    }
+    context.push(`Total points earned: ${points}`);
+    context.push(`Preferred input mode: ${preferredMode || 'not set'}`);
+    return context.join(' | ');
+  };
+
+  const addBotMessage = async (text: string, shouldSpeak = true, useAI = false) => {
     setIsTyping(true);
+    
+    let messageText = text;
+    
+    // Use AI to generate intelligent response if requested
+    if (useAI) {
+      try {
+        const conversationHistory = messages
+          .slice(-6) // Last 6 messages for context
+          .map(m => `${m.isUser ? 'Child' : 'Lerni'}: ${m.text}`)
+          .join('\n');
+        
+        const aiPrompt = `Context: ${getConversationContext()}
+Recent conversation:
+${conversationHistory}
+
+${text}
+
+Respond as Lerni (keep it to 1-2 sentences, encouraging and friendly):`;
+
+        const aiResponse = await askHF(aiPrompt);
+        messageText = aiResponse || text;
+      } catch (error) {
+        console.error('AI error:', error);
+        // Fallback to provided text
+      }
+    }
+    
     setTimeout(() => {
-      setMessages(prev => [...prev, { text, isUser: false }]);
+      setMessages(prev => [...prev, { text: messageText, isUser: false }]);
       setIsTyping(false);
       
       // Speak the message after a brief delay
       if (shouldSpeak) {
-        setTimeout(() => speak(text), 300);
+        setTimeout(() => speak(messageText), 300);
       }
     }, 1200);
   };
@@ -305,19 +361,18 @@ const LearningChat = () => {
     });
     
     // Use AI to generate personalized feedback
-    try {
-      const response = await askHF(
-        `${userName} just completed ${score} out of 5 challenges. Their areas to work on are: ${weaknesses.join(', ')}. Give them encouraging feedback in 1-2 sentences.`
-      );
-      
-      addBotMessage(response || `Amazing work! You got ${score} out of 5 correct! 🌟`);
-    } catch (error) {
-      console.error('AI error:', error);
-      addBotMessage(`Fantastic effort! You got ${score} out of 5 correct! 🌟`);
-    }
+    await addBotMessage(
+      `${userName} completed ${score}/5 challenges. Focus areas: ${weaknesses.join(', ')}. Give enthusiastic feedback and celebrate their effort!`,
+      true,
+      true
+    );
     
-    setTimeout(() => {
-      addBotMessage(`Ready to play a fun game?`);
+    setTimeout(async () => {
+      await addBotMessage(
+        `Ask ${userName} if they're ready to play a fun learning game. Make it exciting!`,
+        true,
+        true
+      );
       setTimeout(() => {
         setStep(2);
       }, 1500);
@@ -329,9 +384,14 @@ const LearningChat = () => {
     
     setSuccessfulResponses(prev => prev + 1);
     
+    // Handle mode switch requests with AI
     if (preferredMode === 'mic' && (lowerInput.includes('keyboard') || lowerInput.includes('type'))) {
       setPendingModeSwitch(true);
-      addBotMessage("Would you like me to show the keyboard so you can type?");
+      await addBotMessage(
+        "The child wants to switch to keyboard. Ask them if they'd like to type instead of talking.",
+        true,
+        true
+      );
       return;
     }
     
@@ -344,15 +404,16 @@ const LearningChat = () => {
           recognitionRef.current.stop();
           setIsListening(false);
         }
-        addBotMessage("Switching to keyboard mode now!");
+        await addBotMessage("Confirm the switch to keyboard mode in a fun way!", true, true);
         return;
       } else {
         setPendingModeSwitch(false);
-        addBotMessage("Okay, continuing with voice mode!");
+        await addBotMessage("They said no. Tell them we'll keep using voice in an encouraging way!", true, true);
         return;
       }
     }
     
+    // Step 0: Getting child's name
     if (step === 0) {
       setUserName(userInput);
       addPoints(10);
@@ -363,74 +424,78 @@ const LearningChat = () => {
       });
       
       // Use AI for personalized greeting
-      try {
-        const response = await askHF(
-          `The child just told me their name is ${userInput}. Give them a warm, friendly greeting and tell them we're going to play some fun learning games! Keep it to 1 sentence.`
-        );
-        
-        addBotMessage(response || `Nice to meet you, ${userInput}!`);
-      } catch (error) {
-        console.error('AI error:', error);
-        addBotMessage(`Nice to meet you, ${userInput}!`);
-      }
+      await addBotMessage(
+        `The child's name is ${userInput}. Welcome them warmly and tell them you'll start with some fun mini-games to see what they like!`,
+        true,
+        true
+      );
       
       setTimeout(() => {
         setShowBaselineGame(true);
         setStep(1);
       }, 1500);
-    } else if (step === 2 && baselineComplete) {
-      const response = userInput.toLowerCase();
-      if (response.includes('yes') || response.includes('sure') || response.includes('ok')) {
+    } 
+    // Step 2: Ready to play full games after baseline
+    else if (step === 2 && baselineComplete) {
+      // Detect intent using AI
+      const isReady = lowerInput.includes('yes') || lowerInput.includes('sure') || lowerInput.includes('ok') || 
+                      lowerInput.includes('ready') || lowerInput.includes('play') || lowerInput.includes('game');
+      
+      if (isReady) {
         addPoints(15);
+        saveUserProfile({ total_points: points + 15 });
         
-        // Save updated points
-        saveUserProfile({
-          total_points: points + 15,
-        });
-        
-        // Use AI to recommend next game based on user's focus area
+        // Determine which game to play
         const recommendation = getNextRecommendation();
         let gameChoice: string;
         
-        // Map focus area to game type
-        // After baseline, show rhyme game first, then adapt to focus areas
         if (successfulResponses === 0 && baselineComplete) {
-          // First full-screen game after chatbox mini game
           gameChoice = 'rhyme';
         } else if (focusArea === 'rhyming' || recommendation.focus === 'rhyming') {
           gameChoice = 'rhyme';
         } else if (focusArea === 'phonics' || recommendation.focus === 'phonics') {
           gameChoice = 'phonics';
         } else {
-          // Random choice weighted by difficulty
           const rand = Math.random();
           gameChoice = rand < 0.3 ? 'rhyme' : rand < 0.5 ? 'phonics' : rand < 0.75 ? 'reading' : 'phaser';
         }
         
-        if (gameChoice === 'rhyme') {
-          addBotMessage(`Based on your progress, let's practice rhyming! Starting game...`);
-          setTimeout(() => {
-            setShowRhymeGame(true);
-          }, 2000);
-        } else if (gameChoice === 'phonics') {
-          addBotMessage(`Great! Let's work on phonics with Phonics Pop!`);
-          setTimeout(() => {
-            setShowPhonicsGame(true);
-          }, 2000);
-        } else if (gameChoice === 'reading') {
-          addBotMessage(`Let's improve your reading comprehension with Reading Adventure!`);
-          setTimeout(() => {
-            setShowReadingGame(true);
-          }, 2000);
-        } else {
-          addBotMessage(`Time for some action! Let's play Word Catch!`);
-          setTimeout(() => {
-            setShowPhaserGame(true);
-          }, 2000);
-        }
+        // Use AI to introduce the game
+        const gameNames: Record<string, string> = {
+          rhyme: 'rhyming practice',
+          phonics: 'Phonics Pop',
+          reading: 'Reading Adventure',
+          phaser: 'Word Catch'
+        };
+        
+        await addBotMessage(
+          `${userName} is ready to play! Introduce them to ${gameNames[gameChoice]} in an exciting way. Tell them what they'll learn!`,
+          true,
+          true
+        );
+        
+        setTimeout(() => {
+          if (gameChoice === 'rhyme') setShowRhymeGame(true);
+          else if (gameChoice === 'phonics') setShowPhonicsGame(true);
+          else if (gameChoice === 'reading') setShowReadingGame(true);
+          else setShowPhaserGame(true);
+        }, 2000);
       } else {
-        addBotMessage(`No problem! Let me know when you're ready!`);
+        // Natural conversation - use AI to respond
+        await addBotMessage(
+          `${userName} said: "${userInput}". Respond naturally and empathetically. If they seem unsure, gently encourage them. If they're chatting, engage briefly then guide back to games.`,
+          true,
+          true
+        );
       }
+    }
+    // Catch-all: Natural conversation
+    else {
+      await addBotMessage(
+        `${userName} said: "${userInput}". Respond as Lerni in a supportive, encouraging way.`,
+        true,
+        true
+      );
     }
   };
 
@@ -440,10 +505,14 @@ const LearningChat = () => {
     }
   };
 
-  const toggleVoiceInput = () => {
+  const toggleVoiceInput = async () => {
     if (!recognitionRef.current) {
       // Handle unsupported browsers through AI conversation
-      addBotMessage("It looks like your browser doesn't support voice input. Would you like to switch to keyboard mode instead?");
+      await addBotMessage(
+        "The browser doesn't support voice. Explain this to the child kindly and offer keyboard mode instead.",
+        true,
+        true
+      );
       setPendingModeSwitch(true);
       return;
     }
