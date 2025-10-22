@@ -30,10 +30,10 @@ serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          inputs: `<s>[INST] You are a creative, supportive game designer who builds dyslexia-friendly learning experiences. Keep responses SHORT (1-2 sentences max). Be encouraging and fun. ${prompt} [/INST]</s>`,
+          inputs: `<s>[INST] You are Lerni, a friendly reading coach for kids with dyslexia. Be warm and encouraging. Keep ALL responses SHORT (1-2 sentences ONLY). Never repeat instructions back. ${prompt} [/INST]`,
           parameters: {
-            temperature: 0.6,
-            max_new_tokens: 256,
+            temperature: 0.7,
+            max_new_tokens: 150,
           },
         }),
       }
@@ -49,7 +49,19 @@ serve(async (req) => {
     console.log('Hugging Face response:', data);
     
     // Extract the generated text from the response
-    const output = Array.isArray(data) ? data[0]?.generated_text : data.generated_text;
+    let output = Array.isArray(data) ? data[0]?.generated_text : data.generated_text;
+    
+    // Clean up the response - remove the instruction prompt echo
+    if (output) {
+      // Remove everything before [/INST] if it exists
+      const instEnd = output.lastIndexOf('[/INST]');
+      if (instEnd !== -1) {
+        output = output.substring(instEnd + 7).trim();
+      }
+      // Remove any remaining instruction artifacts
+      output = output.replace(/^\[INST\].*?\[\/INST\]/gs, '').trim();
+      output = output.replace(/<s>|<\/s>/g, '').trim();
+    }
 
     return new Response(JSON.stringify({ output }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

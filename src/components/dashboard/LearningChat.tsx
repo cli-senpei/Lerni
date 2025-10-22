@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Send, Star, Sparkles, Award, Mic, MicOff, Volume2, Keyboard } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { askHF } from "@/lib/ai";
+import { askAI } from "@/lib/ai";
 import BaselineGame from "./BaselineGame";
 import RhymeGameMode from "./RhymeGameMode";
 import PhonicsPopGame from "./PhonicsPopGame";
@@ -310,7 +310,7 @@ ${text}
 
 Respond as Lerni (keep it to 1-2 sentences, encouraging and friendly):`;
 
-        const aiResponse = await askHF(aiPrompt);
+        const aiResponse = await askAI(aiPrompt, userName, points);
         messageText = aiResponse || text;
       } catch (error) {
         console.error('AI error:', error);

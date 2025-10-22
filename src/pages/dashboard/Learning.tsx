@@ -11,6 +11,8 @@ const Learning = () => {
   useEffect(() => {
     if (showChat) {
       setOpen(false); // Collapse sidebar when chat starts
+    } else {
+      setOpen(true); // Expand sidebar when returning to landing
     }
   }, [showChat, setOpen]);
 
