@@ -13,6 +13,7 @@ import ReadingGame from "./ReadingGame";
 import { useSimpleAdaptiveAI } from "@/hooks/useSimpleAdaptiveAI";
 import { getDifficultyString } from "@/lib/simpleAdaptiveAI";
 import { usePointsTracker } from "@/hooks/usePointsTracker";
+import ActivityOptions from "./ActivityOptions";
 
 interface Message {
   text: string;
@@ -43,6 +44,8 @@ const LearningChat = () => {
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [showActivityOptions, setShowActivityOptions] = useState(false);
+  const [chatMode, setChatMode] = useState<'assessment' | 'game' | 'casual' | null>(null);
   const [pendingModeSwitch, setPendingModeSwitch] = useState(false);
   const [successfulResponses, setSuccessfulResponses] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -97,18 +100,14 @@ const LearningChat = () => {
 
         if (profile.has_completed_baseline) {
           setStep(2);
-          // Welcome back with AI
-          await addBotMessage(
-            `Welcome back ${profile.user_name}! They have ${profile.total_points} points. Greet them warmly and ask if they want to play another game!`,
-            false,
-            true
-          );
+          // Show activity options for returning users
+          setShowActivityOptions(true);
         } else {
-          // Continue from where they left off with AI
+          // Continue from where they left off
           await addBotMessage(
-            `Greet the returning user warmly and ask their name. Keep it friendly and encouraging!`,
+            `Hey! What's your name? 😊`,
             false,
-            true
+            false
           );
         }
       }
@@ -239,12 +238,12 @@ const LearningChat = () => {
     setPreferredMode(mode);
     setShowModeSelection(false);
     
-    // Initial welcome message with AI
+    // Simple initial greeting
     setTimeout(async () => {
       await addBotMessage(
-        `Generate a warm, friendly greeting. Introduce yourself as Lerni and ask the child their name. Keep it playful and short (1 sentence).`,
+        `Hey! What's your name? 😊`,
         true,
-        true
+        false
       );
     }, 500);
 
@@ -255,7 +254,34 @@ const LearningChat = () => {
           setIsListening(true);
           recognitionRef.current.start();
         }
-      }, 2500); // Start after welcome message
+      }, 2500);
+    }
+  };
+
+  const handleActivitySelect = async (activity: 'assessment' | 'game' | 'casual') => {
+    setShowActivityOptions(false);
+    setChatMode(activity);
+
+    if (activity === 'assessment') {
+      await addBotMessage(`Let's do a quick check! Ready? 🎯`, true, false);
+      setTimeout(() => {
+        setShowBaselineGame(true);
+      }, 1500);
+    } else if (activity === 'game') {
+      await addBotMessage(`Awesome! Let's pick a fun game! 🌟`, true, false);
+      setTimeout(() => {
+        const recommendation = getNextRecommendation();
+        const focusCategory = recommendation.focus;
+        
+        // Map focus category to game
+        if (focusCategory === 'rhyming') setShowRhymeGame(true);
+        else if (focusCategory === 'phonics') setShowPhonicsGame(true);
+        else if (focusCategory === 'word-recognition') setShowReadingGame(true);
+        else setShowPhaserGame(true);
+      }, 1500);
+    } else {
+      // Casual chat mode
+      await addBotMessage(`Cool! What's on your mind? 💭`, true, false);
     }
   };
 
@@ -360,22 +386,14 @@ Respond as Lerni (keep it to 1-2 sentences, encouraging and friendly):`;
       total_points: points + 50,
     });
     
-    // Use AI to generate personalized feedback
-    await addBotMessage(
-      `${userName} completed ${score}/5 challenges. Focus areas: ${weaknesses.join(', ')}. Give enthusiastic feedback and celebrate their effort!`,
-      true,
-      true
-    );
+    // Use AI for personalized feedback based on results
+    const feedbackPrompt = `The child completed the assessment! Score: ${score}/5. They did great! Celebrate their effort briefly.`;
+    await addBotMessage(feedbackPrompt, true, true);
     
-    setTimeout(async () => {
-      await addBotMessage(
-        `Ask ${userName} if they're ready to play a fun learning game. Make it exciting!`,
-        true,
-        true
-      );
-      setTimeout(() => {
-        setStep(2);
-      }, 1500);
+    setTimeout(() => {
+      // Show activity options after assessment
+      setShowActivityOptions(true);
+      setStep(2);
     }, 2000);
   };
 
@@ -423,11 +441,11 @@ Respond as Lerni (keep it to 1-2 sentences, encouraging and friendly):`;
         total_points: points + 10,
       });
       
-      // Use AI for personalized greeting
+      // Simple warm greeting with their name
       await addBotMessage(
-        `The child's name is ${userInput}. Welcome them warmly and tell them you'll start with some fun mini-games to see what they like!`,
+        `Great to meet you, ${userInput}! Let's do a quick warm-up first. 🎮`,
         true,
-        true
+        false
       );
       
       setTimeout(() => {
@@ -435,67 +453,17 @@ Respond as Lerni (keep it to 1-2 sentences, encouraging and friendly):`;
         setStep(1);
       }, 1500);
     } 
-    // Step 2: Ready to play full games after baseline
-    else if (step === 2 && baselineComplete) {
-      // Detect intent using AI
-      const isReady = lowerInput.includes('yes') || lowerInput.includes('sure') || lowerInput.includes('ok') || 
-                      lowerInput.includes('ready') || lowerInput.includes('play') || lowerInput.includes('game');
+    // Step 2: After baseline OR casual chat mode
+    else if (step === 2 || chatMode === 'casual') {
+      // Use AI to respond naturally to user's message
+      const conversationHistory = messages
+        .slice(-4)
+        .map(m => `${m.isUser ? 'Child' : 'Lerni'}: ${m.text}`)
+        .join('\n');
       
-      if (isReady) {
-        addPoints(15);
-        saveUserProfile({ total_points: points + 15 });
-        
-        // Determine which game to play
-        const recommendation = getNextRecommendation();
-        let gameChoice: string;
-        
-        if (successfulResponses === 0 && baselineComplete) {
-          gameChoice = 'rhyme';
-        } else if (focusArea === 'rhyming' || recommendation.focus === 'rhyming') {
-          gameChoice = 'rhyme';
-        } else if (focusArea === 'phonics' || recommendation.focus === 'phonics') {
-          gameChoice = 'phonics';
-        } else {
-          const rand = Math.random();
-          gameChoice = rand < 0.3 ? 'rhyme' : rand < 0.5 ? 'phonics' : rand < 0.75 ? 'reading' : 'phaser';
-        }
-        
-        // Use AI to introduce the game
-        const gameNames: Record<string, string> = {
-          rhyme: 'rhyming practice',
-          phonics: 'Phonics Pop',
-          reading: 'Reading Adventure',
-          phaser: 'Word Catch'
-        };
-        
-        await addBotMessage(
-          `${userName} is ready to play! Introduce them to ${gameNames[gameChoice]} in an exciting way. Tell them what they'll learn!`,
-          true,
-          true
-        );
-        
-        setTimeout(() => {
-          if (gameChoice === 'rhyme') setShowRhymeGame(true);
-          else if (gameChoice === 'phonics') setShowPhonicsGame(true);
-          else if (gameChoice === 'reading') setShowReadingGame(true);
-          else setShowPhaserGame(true);
-        }, 2000);
-      } else {
-        // Natural conversation - use AI to respond
-        await addBotMessage(
-          `${userName} said: "${userInput}". Respond naturally and empathetically. If they seem unsure, gently encourage them. If they're chatting, engage briefly then guide back to games.`,
-          true,
-          true
-        );
-      }
-    }
-    // Catch-all: Natural conversation
-    else {
-      await addBotMessage(
-        `${userName} said: "${userInput}". Respond as Lerni in a supportive, encouraging way.`,
-        true,
-        true
-      );
+      const aiPrompt = `Recent chat:\n${conversationHistory}\n\nChild said: "${userInput}"\n\nRespond naturally as Lerni. If they want to do something (play, learn, etc), suggest showing them options. Otherwise just chat friendly.`;
+      
+      await addBotMessage(aiPrompt, true, true);
     }
   };
 
@@ -738,6 +706,12 @@ Respond as Lerni (keep it to 1-2 sentences, encouraging and friendly):`;
               </div>
             </div>
           ))}
+          
+          {showActivityOptions && (
+            <div className="animate-fade-in my-4">
+              <ActivityOptions onSelectActivity={handleActivitySelect} userName={userName} />
+            </div>
+          )}
           
           {showBaselineGame && (
             <div className="animate-fade-in">
