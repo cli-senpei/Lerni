@@ -67,10 +67,10 @@ const DashboardLayout = () => {
     <SidebarProvider>
       <div className="flex min-h-screen w-full flex-col">
         {/* Header */}
-        <header className="w-full border-b border-border bg-background">
+        <header className="w-full border-b border-border bg-background sticky top-0 z-50">
           <div className="flex h-16 md:h-20 items-center justify-between px-4 md:px-12">
             <div className="flex items-center gap-2">
-              <SidebarTrigger className="hover:bg-accent rounded-md transition-colors" />
+              <SidebarTrigger className="hover:bg-accent rounded-md transition-colors p-2" />
               <Link to="/dashboard" className="flex items-center">
                 <img src={logo} alt="Lerni Logo" className="h-12 md:h-20 w-auto" />
               </Link>
