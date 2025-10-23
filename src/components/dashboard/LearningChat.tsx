@@ -506,14 +506,27 @@ Respond as Lerni (keep it to 1-2 sentences, encouraging and friendly):`;
     // Step 2: After baseline OR casual chat mode
     else if (step === 2 || chatMode === 'casual') {
       // Use AI to respond naturally to user's message
-      const conversationHistory = messages
-        .slice(-4)
-        .map(m => `${m.isUser ? 'Child' : 'Lerni'}: ${m.text}`)
-        .join('\n');
-      
-      const aiPrompt = `Recent chat:\n${conversationHistory}\n\nChild said: "${userInput}"\n\nRespond naturally as Lerni. If they want to do something (play, learn, etc), suggest showing them options. Otherwise just chat friendly.`;
-      
-      await addBotMessage(aiPrompt, true, true);
+      try {
+        const recentContext = messages
+          .slice(-3)
+          .map(m => `${m.isUser ? userName || "Child" : "Lerni"}: ${m.text}`)
+          .join("\n");
+
+        const fullPrompt = recentContext 
+          ? `Conversation so far:\n${recentContext}\n\n${userName || "Child"}: ${userInput}\n\nRespond naturally to what they just said:`
+          : `${userName || "Child"} said: "${userInput}"\n\nRespond naturally:`;
+        
+        const aiResponse = await askAI(
+          fullPrompt,
+          userName || "friend",
+          points
+        );
+        
+        await addBotMessage(aiResponse, true, false);
+      } catch (error) {
+        console.error('AI error in casual chat:', error);
+        await addBotMessage("That's cool! What else is on your mind? 😊", true, false);
+      }
     }
   };
 
