@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Outlet, NavLink, Link } from "react-router-dom";
-import { Home, BookOpen, Trophy, LogOut, User as UserIcon, Menu } from "lucide-react";
+import { Home, BookOpen, Trophy, LogOut, User as UserIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import ProfileModal from "@/components/ProfileModal";
@@ -70,9 +70,7 @@ const DashboardLayout = () => {
         <header className="w-full border-b border-border bg-background">
           <div className="flex h-16 md:h-20 items-center justify-between px-4 md:px-12">
             <div className="flex items-center gap-2">
-              <SidebarTrigger className="p-2 hover:bg-accent rounded-md transition-colors">
-                <Menu className="h-6 w-6" />
-              </SidebarTrigger>
+              <SidebarTrigger className="hover:bg-accent rounded-md transition-colors" />
               <Link to="/" className="flex items-center">
                 <img src={logo} alt="Lerni Logo" className="h-12 md:h-20 w-auto" />
               </Link>
