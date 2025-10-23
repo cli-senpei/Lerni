@@ -632,6 +632,7 @@ Respond as Lerni (keep it to 1-2 sentences, encouraging and friendly):`;
         }}
         onExitToChat={() => {
           setShowRhymeGame(false);
+          setShowActivityOptions(true);
           incrementLesson(); // Count as completed lesson
           updateStreak(); // Update streak
         }}
@@ -659,6 +660,7 @@ Respond as Lerni (keep it to 1-2 sentences, encouraging and friendly):`;
         }}
         onExitToChat={() => {
           setShowPhonicsGame(false);
+          setShowActivityOptions(true);
           incrementLesson(); // Count as completed lesson
           updateStreak(); // Update streak
         }}
@@ -684,6 +686,7 @@ Respond as Lerni (keep it to 1-2 sentences, encouraging and friendly):`;
           incrementLesson();
           updateStreak();
           setShowReadingGame(false);
+          setShowActivityOptions(true);
         }}
       />
     );

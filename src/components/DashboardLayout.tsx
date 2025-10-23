@@ -71,7 +71,7 @@ const DashboardLayout = () => {
           <div className="flex h-16 md:h-20 items-center justify-between px-4 md:px-12">
             <div className="flex items-center gap-2">
               <SidebarTrigger className="hover:bg-accent rounded-md transition-colors" />
-              <Link to="/" className="flex items-center">
+              <Link to="/dashboard" className="flex items-center">
                 <img src={logo} alt="Lerni Logo" className="h-12 md:h-20 w-auto" />
               </Link>
             </div>

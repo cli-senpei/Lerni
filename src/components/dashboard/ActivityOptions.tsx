@@ -17,7 +17,7 @@ const ActivityOptions = ({ onSelectActivity, userName }: ActivityOptionsProps) =
         <Button
           onClick={() => onSelectActivity('assessment')}
           variant="outline"
-          className="h-auto py-5 px-5 flex items-center justify-start gap-4 bg-card hover:bg-accent border-2 transition-all"
+          className="h-auto py-5 px-5 flex items-center justify-start gap-4 bg-card hover:bg-[hsl(142,76%,36%)]/10 hover:border-[hsl(142,76%,36%)] border-2 transition-all"
         >
           <div className="bg-muted p-3 rounded-lg">
             <Brain className="h-6 w-6 text-foreground" />
@@ -31,7 +31,7 @@ const ActivityOptions = ({ onSelectActivity, userName }: ActivityOptionsProps) =
         <Button
           onClick={() => onSelectActivity('game')}
           variant="outline"
-          className="h-auto py-5 px-5 flex items-center justify-start gap-4 bg-card hover:bg-accent border-2 transition-all"
+          className="h-auto py-5 px-5 flex items-center justify-start gap-4 bg-card hover:bg-[hsl(142,76%,36%)]/10 hover:border-[hsl(142,76%,36%)] border-2 transition-all"
         >
           <div className="bg-muted p-3 rounded-lg">
             <Gamepad2 className="h-6 w-6 text-foreground" />
@@ -45,7 +45,7 @@ const ActivityOptions = ({ onSelectActivity, userName }: ActivityOptionsProps) =
         <Button
           onClick={() => onSelectActivity('casual')}
           variant="outline"
-          className="h-auto py-5 px-5 flex items-center justify-start gap-4 bg-card hover:bg-accent border-2 transition-all"
+          className="h-auto py-5 px-5 flex items-center justify-start gap-4 bg-card hover:bg-[hsl(142,76%,36%)]/10 hover:border-[hsl(142,76%,36%)] border-2 transition-all"
         >
           <div className="bg-muted p-3 rounded-lg">
             <MessageCircle className="h-6 w-6 text-foreground" />
