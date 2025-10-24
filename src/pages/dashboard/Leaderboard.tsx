@@ -215,43 +215,22 @@ const Leaderboard = () => {
     }
   };
 
-  const getRankBadge = (index: number) => {
-    const badges = [
-      { bg: "bg-amber-500/20", text: "text-amber-700", label: "1st" },
-      { bg: "bg-slate-400/20", text: "text-slate-600", label: "2nd" },
-      { bg: "bg-orange-600/20", text: "text-orange-700", label: "3rd" },
-    ];
-    
-    if (index < 3) {
-      return (
-        <div className={`${badges[index].bg} ${badges[index].text} px-4 py-2 rounded-full font-bold text-lg flex items-center gap-2 min-w-[70px] justify-center`}>
-          {index === 0 && <Trophy className="h-5 w-5" />}
-          {badges[index].label}
-        </div>
-      );
-    }
-    return (
-      <div className="bg-muted px-4 py-2 rounded-full font-semibold text-muted-foreground min-w-[70px] text-center">
-        #{index + 1}
-      </div>
-    );
-  };
 
   const renderStars = (count: number, interactive: boolean = false) => {
     return (
-      <div className="flex gap-1.5">
+      <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
             onClick={() => interactive && setRating(star)}
             disabled={!interactive}
-            className={`transition-all ${interactive ? 'cursor-pointer hover:scale-125' : ''}`}
+            className={`transition-all ${interactive ? 'cursor-pointer hover:scale-110' : ''}`}
           >
             <Star
-              className={`h-6 w-6 ${
+              className={`h-5 w-5 ${
                 star <= count
-                  ? 'fill-orange-400 text-orange-400'
-                  : 'fill-none text-orange-200'
+                  ? 'fill-amber-400 text-amber-400'
+                  : 'fill-none text-muted-foreground/30'
               }`}
             />
           </button>
@@ -261,42 +240,38 @@ const Leaderboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50/50 via-background to-peach-50/30">
-      <div className="max-w-6xl mx-auto space-y-8 p-6">
-        {/* Hero Section */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-100/80 via-peach-100/60 to-orange-50/80 p-8 md:p-12 border border-orange-200/50">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="flex-1 text-center md:text-left">
-              <h1 className="text-5xl md:text-6xl font-bold mb-3 bg-gradient-to-r from-orange-600 to-orange-800 bg-clip-text text-transparent">
-                Leaderboard
-              </h1>
-              <p className="text-lg text-orange-900/70 font-medium">
-                See how you rank among top learners!
-              </p>
-            </div>
-            <div className="flex-shrink-0">
-              <img src={mascotImage} alt="Mascot" className="w-32 h-32 md:w-40 md:h-40 animate-bounce-slow" />
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-background to-slate-50/20">
+      <div className="max-w-5xl mx-auto space-y-6 p-4 md:p-6">
+        {/* Header */}
+        <div className="text-center py-4">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <img src={mascotImage} alt="Mascot" className="w-12 h-12" />
+            <h1 className="text-3xl font-bold text-foreground">
+              Leaderboard
+            </h1>
           </div>
+          <p className="text-sm text-muted-foreground">
+            See how you rank among top learners
+          </p>
         </div>
 
         {/* Submit Score Card */}
-        <Card className="p-6 md:p-8 bg-white/80 backdrop-blur-sm border-orange-200/50 shadow-lg">
-          <div className="space-y-6">
+        <Card className="p-6 bg-card border shadow-sm">
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-3">
-                <Sparkles className="h-7 w-7 text-orange-500" />
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
                 Your Score
               </h2>
-              <div className="flex items-center gap-2 bg-gradient-to-br from-orange-500 to-orange-600 text-white px-6 py-3 rounded-2xl shadow-lg">
-                <TrendingUp className="h-5 w-5" />
-                <span className="text-2xl font-bold">{currentScore}</span>
+              <div className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg shadow-md">
+                <TrendingUp className="h-4 w-4" />
+                <span className="text-xl font-bold">{currentScore}</span>
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div>
-                <label className="text-sm font-semibold mb-2 block text-foreground">
+                <label className="text-xs font-medium mb-1.5 block text-muted-foreground">
                   Your Name *
                 </label>
                 <input
@@ -304,20 +279,20 @@ const Leaderboard = () => {
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
                   placeholder="Enter your name"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
+                  className="w-full px-3 py-2 text-sm rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                   maxLength={50}
                 />
               </div>
 
               <div>
-                <label className="text-sm font-semibold mb-2 block text-foreground">
+                <label className="text-xs font-medium mb-1.5 block text-muted-foreground">
                   Rate Your Experience *
                 </label>
                 {renderStars(rating, true)}
               </div>
 
               <div>
-                <label className="text-sm font-semibold mb-2 block flex items-center justify-between text-foreground">
+                <label className="text-xs font-medium mb-1.5 block flex items-center justify-between text-muted-foreground">
                   <span>Share Your Thoughts</span>
                   {userEntry?.comment && (
                     <button
@@ -332,10 +307,10 @@ const Leaderboard = () => {
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   placeholder="Tell us about your learning experience..."
-                  className="min-h-[100px] border-2 border-orange-200 focus:ring-orange-400 focus:border-transparent rounded-xl"
+                  className="min-h-[80px] text-sm rounded-lg"
                   maxLength={500}
                 />
-                <p className="text-xs text-muted-foreground mt-2">
+                <p className="text-xs text-muted-foreground mt-1">
                   {comment.length}/500 characters
                 </p>
               </div>
@@ -343,8 +318,7 @@ const Leaderboard = () => {
               <Button
                 onClick={handleSubmit}
                 disabled={submitting || rating === 0 || !editName.trim()}
-                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
-                size="lg"
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-5 rounded-lg shadow-md hover:shadow-lg transition-all"
               >
                 {userEntry ? "Update Entry" : "Submit to Leaderboard"}
               </Button>
@@ -353,72 +327,139 @@ const Leaderboard = () => {
         </Card>
 
         {/* Leaderboard */}
-        <div className="space-y-6">
-          <h2 className="text-3xl font-bold flex items-center gap-3">
-            <Trophy className="h-8 w-8 text-orange-500" />
-            Top Performers
-          </h2>
-          
+        <div className="space-y-4">
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : entries.length === 0 ? (
-            <Card className="p-12 text-center bg-white/80 backdrop-blur-sm border-orange-200/50">
-              <p className="text-muted-foreground text-lg">No entries yet. Be the first to submit your score!</p>
+            <Card className="p-12 text-center">
+              <p className="text-muted-foreground">No entries yet. Be the first to submit your score!</p>
             </Card>
           ) : (
-            <div className="space-y-4">
-              {entries.map((entry, index) => (
-                <Card
-                  key={entry.id}
-                  className={`p-6 transition-all hover:shadow-xl hover:-translate-y-1 bg-white/80 backdrop-blur-sm border-orange-200/50 ${
-                    entry.user_id === user?.id ? 'ring-2 ring-orange-400 bg-orange-50/50' : ''
-                  }`}
-                >
-                  <div className="flex items-start gap-6">
-                    <div className="flex-shrink-0">
-                      {getRankBadge(index)}
-                    </div>
-                    
-                    <div className="flex-1 space-y-3">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <h3 className="font-bold text-xl text-foreground flex items-center gap-2 flex-wrap">
-                            {entry.user_name}
-                            {entry.user_id === user?.id && (
-                              <span className="text-xs bg-orange-500 text-white px-3 py-1 rounded-full font-semibold">
-                                You
-                              </span>
-                            )}
-                          </h3>
-                          <div className="flex items-center gap-4 mt-2 flex-wrap">
-                            <div className="flex items-center gap-2 bg-orange-100 px-3 py-1.5 rounded-lg">
-                              <TrendingUp className="h-4 w-4 text-orange-600" />
-                              <span className="font-bold text-orange-700">{entry.score} pts</span>
-                            </div>
-                            {entry.rating && (
-                              <div className="flex items-center gap-1">
-                                {renderStars(entry.rating)}
-                              </div>
-                            )}
-                          </div>
-                        </div>
+            <>
+              {/* Top 3 Podium */}
+              {entries.length >= 1 && (
+                <div className="flex items-end justify-center gap-2 mb-6 px-4">
+                  {/* 2nd Place */}
+                  {entries[1] && (
+                    <div className="flex flex-col items-center flex-1 max-w-[120px]">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-slate-300 to-slate-400 flex items-center justify-center mb-2 shadow-lg">
+                        <span className="text-2xl font-bold text-white">2</span>
                       </div>
-                      
-                      {entry.comment && (
-                        <div className="flex gap-3 bg-orange-50/50 p-4 rounded-xl border border-orange-100">
-                          <MessageSquare className="h-5 w-5 text-orange-500 mt-0.5 flex-shrink-0" />
-                          <p className="text-sm text-foreground/90 leading-relaxed">
-                            {entry.comment}
-                          </p>
+                      <div className="w-full bg-gradient-to-br from-slate-200 to-slate-300 rounded-t-2xl p-4 text-center shadow-md h-28 flex flex-col justify-between">
+                        <div>
+                          <p className="font-bold text-sm truncate">{entries[1].user_name}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{entries[1].score} pts</p>
+                        </div>
+                        {entries[1].rating && (
+                          <div className="flex justify-center gap-0.5 mt-1">
+                            {[...Array(entries[1].rating)].map((_, i) => (
+                              <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 1st Place */}
+                  <div className="flex flex-col items-center flex-1 max-w-[140px]">
+                    <Trophy className="h-8 w-8 text-amber-500 mb-2" />
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center mb-2 shadow-xl ring-4 ring-amber-200">
+                      <span className="text-3xl font-bold text-white">1</span>
+                    </div>
+                    <div className="w-full bg-gradient-to-br from-amber-200 to-amber-300 rounded-t-2xl p-4 text-center shadow-lg h-36 flex flex-col justify-between">
+                      <div>
+                        <p className="font-bold text-base truncate">{entries[0].user_name}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{entries[0].score} pts</p>
+                      </div>
+                      {entries[0].rating && (
+                        <div className="flex justify-center gap-0.5 mt-2">
+                          {[...Array(entries[0].rating)].map((_, i) => (
+                            <Star key={i} className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                          ))}
                         </div>
                       )}
                     </div>
                   </div>
+
+                  {/* 3rd Place */}
+                  {entries[2] && (
+                    <div className="flex flex-col items-center flex-1 max-w-[120px]">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center mb-2 shadow-lg">
+                        <span className="text-2xl font-bold text-white">3</span>
+                      </div>
+                      <div className="w-full bg-gradient-to-br from-orange-200 to-orange-300 rounded-t-2xl p-4 text-center shadow-md h-24 flex flex-col justify-between">
+                        <div>
+                          <p className="font-bold text-sm truncate">{entries[2].user_name}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{entries[2].score} pts</p>
+                        </div>
+                        {entries[2].rating && (
+                          <div className="flex justify-center gap-0.5 mt-1">
+                            {[...Array(entries[2].rating)].map((_, i) => (
+                              <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Rest of the list */}
+              {entries.length > 3 && (
+                <Card className="p-4">
+                  <div className="space-y-2">
+                    {entries.slice(3).map((entry, index) => (
+                      <div
+                        key={entry.id}
+                        className={`p-4 rounded-lg transition-all hover:bg-muted/50 ${
+                          entry.user_id === user?.id ? 'bg-blue-50 dark:bg-blue-950/20 ring-1 ring-blue-200 dark:ring-blue-800' : ''
+                        }`}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                            <span className="text-sm font-semibold text-muted-foreground">
+                              {index + 4}
+                            </span>
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <p className="font-semibold text-sm truncate">{entry.user_name}</p>
+                              {entry.user_id === user?.id && (
+                                <span className="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full font-medium">
+                                  You
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-3 flex-wrap">
+                              <span className="text-xs font-medium text-muted-foreground">
+                                {entry.score} pts
+                              </span>
+                              {entry.rating && (
+                                <div className="flex gap-0.5">
+                                  {[...Array(entry.rating)].map((_, i) => (
+                                    <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            {entry.comment && (
+                              <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
+                                {entry.comment}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </Card>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </div>
