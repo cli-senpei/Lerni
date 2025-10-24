@@ -10,12 +10,6 @@ import DashboardLayout from "./components/DashboardLayout";
 import DashboardHome from "./pages/dashboard/Home";
 import Learning from "./pages/dashboard/Learning";
 import Leaderboard from "./pages/dashboard/Leaderboard";
-import OurMission from "./pages/OurMission";
-import HowItWorks from "./pages/HowItWorks";
-import Research from "./pages/Research";
-import HelpCenter from "./pages/HelpCenter";
-import ContactUs from "./pages/ContactUs";
-import Privacy from "./pages/Privacy";
 
 const queryClient = new QueryClient();
 
@@ -28,12 +22,6 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/our-mission" element={<OurMission />} />
-          <Route path="/how-it-works" element={<HowItWorks />} />
-          <Route path="/research" element={<Research />} />
-          <Route path="/help-center" element={<HelpCenter />} />
-          <Route path="/contact-us" element={<ContactUs />} />
-          <Route path="/privacy" element={<Privacy />} />
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<DashboardHome />} />
             <Route path="learning" element={<Learning />} />
