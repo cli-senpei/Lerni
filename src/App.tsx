@@ -10,6 +10,12 @@ import DashboardLayout from "./components/DashboardLayout";
 import DashboardHome from "./pages/dashboard/Home";
 import Learning from "./pages/dashboard/Learning";
 import Leaderboard from "./pages/dashboard/Leaderboard";
+import AdminLayout from "./components/AdminLayout";
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminUsers from "./pages/admin/Users";
+import AdminGames from "./pages/admin/Games";
+import AdminSystem from "./pages/admin/System";
+import AdminLogs from "./pages/admin/Logs";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +32,13 @@ const App = () => (
             <Route index element={<DashboardHome />} />
             <Route path="learning" element={<Learning />} />
             <Route path="leaderboard" element={<Leaderboard />} />
+          </Route>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="games" element={<AdminGames />} />
+            <Route path="system" element={<AdminSystem />} />
+            <Route path="logs" element={<AdminLogs />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
