@@ -94,7 +94,7 @@ const DashboardLayout = () => {
         <div className="flex flex-1 w-full overflow-hidden">
           {/* Sidebar */}
           <Sidebar collapsible="offcanvas" className="border-r bg-sidebar" variant="sidebar">
-            <SidebarContent className="pt-8">
+            <SidebarContent className="pt-24 md:pt-32">
               <SidebarGroup>
                 <SidebarGroupContent>
                   <SidebarMenu className="space-y-6 px-4">
