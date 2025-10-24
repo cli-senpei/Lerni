@@ -22,10 +22,31 @@ interface GameCodeEditorProps {
 }
 
 const GameCodeEditor = ({ code, gameName, onSave, onClose }: GameCodeEditorProps) => {
-  const [editorCode, setEditorCode] = useState(code || "");
+  const [editorCode, setEditorCode] = useState(code || `// Start writing your game component code here
+// Example:
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
+
+const ${gameName.replace(/\s+/g, '')} = () => {
+  const [score, setScore] = useState(0);
+
+  return (
+    <Card className="p-6">
+      <h2 className="text-2xl font-bold mb-4">${gameName}</h2>
+      <div className="space-y-4">
+        <p>Score: {score}</p>
+        {/* Add your game logic here */}
+      </div>
+    </Card>
+  );
+};
+
+export default ${gameName.replace(/\s+/g, '')};
+`);
   const [showWarning1, setShowWarning1] = useState(false);
   const [showWarning2, setShowWarning2] = useState(false);
   const [showFinalWarning, setShowFinalWarning] = useState(false);
+  const [lineCount, setLineCount] = useState(0);
 
   const handleSaveClick = () => {
     setShowWarning1(true);
@@ -46,6 +67,12 @@ const GameCodeEditor = ({ code, gameName, onSave, onClose }: GameCodeEditorProps
     onSave(editorCode);
   };
 
+  const handleEditorChange = (value: string | undefined) => {
+    const newCode = value || "";
+    setEditorCode(newCode);
+    setLineCount(newCode.split('\n').length);
+  };
+
   return (
     <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-7xl h-[90vh] bg-slate-900 border-slate-700 flex flex-col">
@@ -53,6 +80,7 @@ const GameCodeEditor = ({ code, gameName, onSave, onClose }: GameCodeEditorProps
           <div>
             <h2 className="text-xl font-bold text-slate-100">Game Code Editor</h2>
             <p className="text-sm text-slate-400 mt-1">Editing: {gameName}</p>
+            <p className="text-xs text-slate-500 mt-1">Lines: {lineCount} | Characters: {editorCode.length}</p>
           </div>
           <div className="flex gap-2">
             <Button
@@ -79,12 +107,12 @@ const GameCodeEditor = ({ code, gameName, onSave, onClose }: GameCodeEditorProps
             defaultLanguage="typescript"
             theme="vs-dark"
             value={editorCode}
-            onChange={(value) => setEditorCode(value || "")}
+            onChange={handleEditorChange}
             options={{
               minimap: { enabled: true },
               fontSize: 14,
               lineNumbers: "on",
-              lineNumbersMinChars: 3,
+              lineNumbersMinChars: 4,
               glyphMargin: true,
               scrollBeyondLastLine: false,
               automaticLayout: true,
@@ -92,6 +120,10 @@ const GameCodeEditor = ({ code, gameName, onSave, onClose }: GameCodeEditorProps
               wordWrap: "on",
               renderLineHighlight: "all",
               folding: true,
+              showFoldingControls: "always",
+              cursorBlinking: "smooth",
+              smoothScrolling: true,
+              renderWhitespace: "selection",
             }}
           />
         </div>

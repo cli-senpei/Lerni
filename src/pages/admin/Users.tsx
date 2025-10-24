@@ -96,6 +96,7 @@ const AdminUsers = () => {
           target_table: "user_roles",
           target_id: selectedUser.user_id,
           description: `Promoted ${selectedUser.user_name} to admin`,
+          admin_user_id: (await supabase.auth.getUser()).data.user?.id,
         });
 
         toast({ title: "User promoted to admin" });
@@ -113,6 +114,7 @@ const AdminUsers = () => {
           target_table: "user_roles",
           target_id: selectedUser.user_id,
           description: `Demoted ${selectedUser.user_name} from admin`,
+          admin_user_id: (await supabase.auth.getUser()).data.user?.id,
         });
 
         toast({ title: "Admin privileges removed" });
@@ -129,6 +131,7 @@ const AdminUsers = () => {
           target_table: "user_learning_profiles",
           target_id: selectedUser.user_id,
           description: `Deleted user ${selectedUser.user_name}`,
+          admin_user_id: (await supabase.auth.getUser()).data.user?.id,
         });
 
         toast({ title: "User deleted" });
@@ -185,6 +188,7 @@ const AdminUsers = () => {
           target_table: "user_learning_profiles",
           target_id: authData.user.id,
           description: `Created user ${newUserData.email}${newUserData.makeAdmin ? " with admin role" : ""}`,
+          admin_user_id: (await supabase.auth.getUser()).data.user?.id,
         });
 
         toast({ 

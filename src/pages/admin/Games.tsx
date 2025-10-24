@@ -86,6 +86,7 @@ const AdminGames = () => {
           target_table: "games",
           target_id: editingGame.id,
           description: `Updated game: ${formData.name}`,
+          admin_user_id: (await supabase.auth.getUser()).data.user?.id,
         });
 
         toast({ title: "Game updated successfully" });
@@ -103,6 +104,7 @@ const AdminGames = () => {
           action_type: "game_created",
           target_table: "games",
           description: `Created game: ${formData.name}`,
+          admin_user_id: (await supabase.auth.getUser()).data.user?.id,
         });
 
         toast({ title: "Game created successfully" });
@@ -136,6 +138,7 @@ const AdminGames = () => {
         target_table: "games",
         target_id: game.id,
         description: `Deleted game: ${game.name}`,
+        admin_user_id: (await supabase.auth.getUser()).data.user?.id,
       });
 
       toast({ title: "Game deleted successfully" });
@@ -164,6 +167,7 @@ const AdminGames = () => {
         target_table: "games",
         target_id: game.id,
         description: `${game.is_active ? "Deactivated" : "Activated"} game: ${game.name}`,
+        admin_user_id: (await supabase.auth.getUser()).data.user?.id,
       });
 
       toast({ title: `Game ${game.is_active ? "deactivated" : "activated"}` });
@@ -251,6 +255,7 @@ const AdminGames = () => {
         target_table: "games",
         target_id: editingCode.id,
         description: `Updated code for game: ${editingCode.name}`,
+        admin_user_id: (await supabase.auth.getUser()).data.user?.id,
       });
 
       toast({ 

@@ -100,7 +100,7 @@ const AdminLayout = () => {
                 <img src={logo} alt="Lerni Admin" className="h-12 md:h-16 w-auto brightness-0 invert" />
                 <div className="flex items-center gap-2">
                   <Shield className="h-5 w-5 text-red-500" />
-                  <span className="text-red-500 font-bold text-lg">ADMIN</span>
+                  <span className="text-white font-bold text-lg">ADMIN</span>
                 </div>
               </Link>
             </div>
