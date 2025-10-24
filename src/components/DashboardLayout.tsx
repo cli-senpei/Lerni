@@ -64,7 +64,7 @@ const DashboardLayout = () => {
   if (!user) return null;
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen w-full flex-col">
         {/* Header */}
         <header className="w-full border-b border-border bg-background sticky top-0 z-50">
@@ -91,7 +91,7 @@ const DashboardLayout = () => {
 
         {/* Main Content with Sidebar */}
         <div className="flex flex-1 w-full overflow-hidden">
-          <Sidebar className="hidden lg:flex border-r w-64 bg-sidebar flex-shrink-0">
+          <Sidebar collapsible="offcanvas" className="border-r bg-sidebar flex-shrink-0" variant="sidebar">
             <SidebarContent className="pt-8">
               <SidebarGroup>
                 <SidebarGroupContent>
