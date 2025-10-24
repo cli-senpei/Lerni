@@ -67,21 +67,10 @@ const DashboardLayout = () => {
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen w-full">
-        {/* Sidebar with header above it */}
-        <div className="flex flex-col border-r bg-sidebar">
-          {/* Logo and Toggle above sidebar */}
-          <div className="h-16 md:h-20 border-b bg-background flex items-center px-4 gap-3 flex-shrink-0">
-            <SidebarTrigger className="hover:bg-accent rounded-md transition-colors p-2" />
-            <Link to="/dashboard" className="flex items-center">
-              <img 
-                src={logo} 
-                alt="Lerni Logo" 
-                className="h-12 md:h-16 w-auto transition-transform duration-200 hover:scale-105" 
-              />
-            </Link>
-          </div>
-          
-          <Sidebar collapsible="offcanvas" className="border-none bg-sidebar h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)]" variant="sidebar">
+        {/* Sidebar */}
+        <div className="flex-shrink-0">
+          <div className="h-16 md:h-20" /> {/* Spacer for header height */}
+          <Sidebar collapsible="offcanvas" className="border-r bg-sidebar fixed top-16 md:top-20 h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)]" variant="sidebar">
             <SidebarContent className="pt-8">
               <SidebarGroup>
                 <SidebarGroupContent>
@@ -129,9 +118,16 @@ const DashboardLayout = () => {
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Top right user info header */}
-          <header className="w-full border-b border-border bg-background sticky top-0 z-50 h-16 md:h-20">
-            <div className="flex h-full items-center justify-end px-4 md:px-12">
+          {/* Header */}
+          <header className="w-full border-b border-border bg-background sticky top-0 z-50">
+            <div className="flex h-16 md:h-20 items-center justify-between px-4 md:px-12">
+              <div className="flex items-center gap-2">
+                <SidebarTrigger className="hover:bg-accent rounded-md transition-colors p-2" />
+                <Link to="/dashboard" className="flex items-center">
+                  <img src={logo} alt="Lerni Logo" className="h-12 md:h-20 w-auto" />
+                </Link>
+              </div>
+              
               <div className="flex items-center gap-2 md:gap-3">
                 <button onClick={() => setProfileOpen(true)} className="cursor-pointer">
                   <Avatar className="h-8 w-8 md:h-10 md:w-10 hover:ring-2 hover:ring-primary transition-all">
