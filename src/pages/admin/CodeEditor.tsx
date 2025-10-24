@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Code, Plus, RefreshCw, FileCode, Upload, HelpCircle, AlertTriangle, Info, BookOpen } from "lucide-react";
+import { Code, Plus, RefreshCw, FileCode, Upload, HelpCircle, AlertTriangle, Info, BookOpen, PlayCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import CodeEditorWithSidebar from "@/components/CodeEditorWithSidebar";
+import GamePreview from "@/components/GamePreview";
 
 interface Game {
   id: string;
@@ -246,8 +247,11 @@ const AdminCodeEditor = () => {
                           e.stopPropagation();
                           setPreviewGame(game);
                         }}
+                        disabled={!game.code || !game.code.trim()}
+                        title={!game.code || !game.code.trim() ? "No code to preview" : "Test game in preview window"}
                       >
-                        Preview
+                        <PlayCircle className="h-3 w-3 mr-1" />
+                        Test
                       </Button>
                       <span className="text-blue-400 group-hover:text-blue-300">Edit →</span>
                     </div>
@@ -688,136 +692,110 @@ const AdminCodeEditor = () => {
 
       {/* Game Preview Dialog */}
       <Dialog open={!!previewGame} onOpenChange={() => setPreviewGame(null)}>
-        <DialogContent className="bg-slate-900 border-slate-800 text-slate-100 max-w-5xl max-h-[90vh]">
+        <DialogContent className="bg-slate-900 border-slate-800 text-slate-100 max-w-6xl max-h-[95vh] h-[95vh]">
           <DialogHeader>
             <DialogTitle className="text-xl flex items-center gap-2">
-              <FileCode className="h-5 w-5 text-green-400" />
-              Game Preview: {previewGame?.name}
+              <PlayCircle className="h-5 w-5 text-green-400" />
+              Live Game Preview: {previewGame?.name}
             </DialogTitle>
             <DialogDescription className="text-slate-400">
-              Testing area for {previewGame?.component_name}
+              Testing {previewGame?.component_name} in real-time environment
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4">
+          <div className="flex-1 space-y-3 overflow-hidden flex flex-col">
             <Alert className="bg-blue-500/10 border-blue-500/50">
               <Info className="h-4 w-4 text-blue-500" />
-              <AlertDescription className="text-slate-300">
-                <strong>Preview Mode:</strong> This is a testing environment. Changes made here do not affect the live game. Use this to test functionality before deployment.
+              <AlertDescription className="text-slate-300 text-xs">
+                <strong>Live Testing Mode:</strong> This preview runs the actual game code in an isolated environment. 
+                Test all features to ensure everything works before making the game active.
               </AlertDescription>
             </Alert>
 
-            <Card className="bg-slate-800 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-slate-200 text-sm">Live Preview</CardTitle>
-                <CardDescription className="text-slate-400 text-xs">
-                  Interactive preview of the game component
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="min-h-[400px] bg-slate-950 rounded-lg p-6">
-                {previewGame?.code && previewGame.code.trim() ? (
-                  <div className="flex items-center justify-center h-full">
-                    <div className="text-center space-y-4">
-                      <FileCode className="h-16 w-16 text-green-500 mx-auto" />
-                      <div>
-                        <p className="text-slate-300 font-semibold mb-2">Code Loaded Successfully</p>
-                        <p className="text-xs text-slate-500 max-w-md">
-                          Component: <span className="font-mono text-blue-400">{previewGame.component_name}</span>
-                        </p>
-                        <p className="text-xs text-slate-500 mt-2">
-                          Code lines: <span className="text-green-400">{previewGame.code.split('\n').length}</span>
-                        </p>
-                        <p className="text-xs text-slate-500 mt-1">
-                          Characters: <span className="text-green-400">{previewGame.code.length}</span>
-                        </p>
-                      </div>
-                      <div className="mt-4 p-4 bg-slate-900 rounded border border-slate-700 max-w-lg mx-auto">
-                        <p className="text-xs text-slate-400 font-mono text-left overflow-x-auto whitespace-pre-wrap max-h-48 overflow-y-auto">
-                          {previewGame.code.substring(0, 500)}...
-                        </p>
-                      </div>
-                      <Alert className="bg-blue-500/10 border-blue-500/50 max-w-lg mx-auto">
-                        <Info className="h-4 w-4 text-blue-500" />
-                        <AlertDescription className="text-xs text-slate-300">
-                          Full preview rendering will be available after the component is built and deployed. 
-                          Use the Edit Code feature to modify the game code.
-                        </AlertDescription>
-                      </Alert>
-                    </div>
+            {/* Preview Area */}
+            <div className="flex-1 bg-slate-950 rounded-lg border border-slate-800 overflow-hidden">
+              {previewGame?.code && previewGame.code.trim() ? (
+                <GamePreview
+                  code={previewGame.code}
+                  componentName={previewGame.component_name}
+                  gameName={previewGame.name}
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center">
+                    <AlertTriangle className="h-12 w-12 mx-auto mb-3 text-slate-600" />
+                    <p className="text-slate-400 font-semibold">No code available</p>
+                    <p className="text-xs mt-2 text-slate-500">Add code to enable live preview</p>
+                    <Button
+                      className="mt-4 bg-blue-600 hover:bg-blue-700"
+                      size="sm"
+                      onClick={() => {
+                        setPreviewGame(null);
+                        setEditingCode(previewGame);
+                      }}
+                    >
+                      <Code className="h-4 w-4 mr-2" />
+                      Add Code Now
+                    </Button>
                   </div>
-                ) : (
-                  <div className="flex items-center justify-center h-full text-slate-500">
-                    <div className="text-center">
-                      <AlertTriangle className="h-12 w-12 mx-auto mb-3 text-slate-600" />
-                      <p className="text-slate-400 font-semibold">No code available for preview</p>
-                      <p className="text-xs mt-2 text-slate-500">Add code to this game to enable preview</p>
-                      <Button
-                        className="mt-4 bg-blue-600 hover:bg-blue-700"
-                        size="sm"
-                        onClick={() => {
-                          setPreviewGame(null);
-                          setEditingCode(previewGame);
-                        }}
-                      >
-                        <Code className="h-4 w-4 mr-2" />
-                        Add Code Now
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                </div>
+              )}
+            </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* Testing Info */}
+            <div className="grid grid-cols-2 gap-3">
               <Card className="bg-slate-800 border-slate-700">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-slate-200 text-sm">Testing Checklist</CardTitle>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-slate-200 text-xs">Testing Checklist</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="text-xs text-slate-400 space-y-2">
-                    <li className="flex items-start gap-2">
+                  <ul className="text-[10px] text-slate-400 space-y-1.5">
+                    <li className="flex items-start gap-1.5">
                       <span className="text-green-400 mt-0.5">□</span>
-                      <span>Component renders without errors</span>
+                      <span>Game loads without errors</span>
                     </li>
-                    <li className="flex items-start gap-2">
+                    <li className="flex items-start gap-1.5">
                       <span className="text-green-400 mt-0.5">□</span>
-                      <span>All interactive elements work</span>
+                      <span>All buttons/interactions work</span>
                     </li>
-                    <li className="flex items-start gap-2">
+                    <li className="flex items-start gap-1.5">
                       <span className="text-green-400 mt-0.5">□</span>
-                      <span>Responsive on different screen sizes</span>
+                      <span>Responsive on different sizes</span>
                     </li>
-                    <li className="flex items-start gap-2">
+                    <li className="flex items-start gap-1.5">
                       <span className="text-green-400 mt-0.5">□</span>
-                      <span>No console errors or warnings</span>
+                      <span>No console errors</span>
                     </li>
                   </ul>
                 </CardContent>
               </Card>
 
               <Card className="bg-slate-800 border-slate-700">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-slate-200 text-sm">Quick Actions</CardTitle>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-slate-200 text-xs">Quick Actions</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2">
+                <CardContent className="space-y-1.5">
                   <Button
                     size="sm"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-xs"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-xs h-7"
                     onClick={() => {
                       setPreviewGame(null);
                       setEditingCode(previewGame);
                     }}
                   >
-                    <Code className="h-3 w-3 mr-2" />
+                    <Code className="h-3 w-3 mr-1" />
                     Edit Code
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="w-full bg-slate-900 border-slate-700 text-slate-300 text-xs"
-                    onClick={() => window.open(`/dashboard`, '_blank')}
+                    className="w-full bg-slate-900 border-slate-700 text-slate-300 text-xs h-7"
+                    onClick={() => {
+                      const url = `/dashboard/learning`;
+                      window.open(url, '_blank');
+                    }}
                   >
-                    Test in Dashboard
+                    Open in Dashboard
                   </Button>
                 </CardContent>
               </Card>
@@ -825,7 +803,7 @@ const AdminCodeEditor = () => {
           </div>
 
           <DialogFooter>
-            <Button onClick={() => setPreviewGame(null)} className="bg-slate-800 border-slate-700">
+            <Button onClick={() => setPreviewGame(null)} variant="outline" className="bg-slate-800 border-slate-700">
               Close Preview
             </Button>
           </DialogFooter>
