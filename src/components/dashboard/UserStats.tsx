@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
-import { Trophy, Flame, BookOpen, TrendingUp } from "lucide-react";
+import { Trophy, BookOpen, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
 interface UserProgress {
@@ -79,14 +79,9 @@ const UserStats = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-3xl font-bold mb-2">Your Learning Journey</h2>
-        <p className="text-muted-foreground">Track your progress and achievements</p>
-      </div>
-
       <div className="grid gap-4">
-        {/* Level Card */}
-        <Card className="p-6">
+        {/* Level Card with Animated Progress */}
+        <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-2">
           <div className="flex items-center gap-4 mb-4">
             <div className="p-3 bg-primary/10 rounded-full">
               <TrendingUp className="w-6 h-6 text-primary" />
@@ -96,18 +91,21 @@ const UserStats = () => {
               <p className="text-3xl font-bold">Level {progress?.level || 1}</p>
             </div>
           </div>
-          <Progress value={levelProgress} className="h-2" />
+          <Progress 
+            value={levelProgress} 
+            className="h-3 [&>div]:transition-all [&>div]:duration-1000 [&>div]:ease-out [&>div]:animate-in [&>div]:slide-in-from-left" 
+          />
           <p className="text-xs text-muted-foreground mt-2">
             {progress?.total_points || 0} / {((progress?.level || 1) * 1000)} XP
           </p>
         </Card>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card className="p-6 bg-gradient-to-br from-orange-50/50 to-amber-50/50 border-2">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-secondary/10 rounded-full">
-                <Trophy className="w-5 h-5 text-secondary" />
+              <div className="p-3 bg-amber-500/10 rounded-full">
+                <Trophy className="w-5 h-5 text-amber-600" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{progress?.total_points || 0}</p>
@@ -116,19 +114,7 @@ const UserStats = () => {
             </div>
           </Card>
 
-          <Card className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-orange-500/10 rounded-full">
-                <Flame className="w-5 h-5 text-orange-500" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{progress?.current_streak || 0}</p>
-                <p className="text-sm text-muted-foreground">Day Streak</p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6">
+          <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-2">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-primary/10 rounded-full">
                 <BookOpen className="w-5 h-5 text-primary" />
