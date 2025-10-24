@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import LearningChat from "@/components/dashboard/LearningChat";
 import marioVideo from "@/assets/mario.mp4";
+import learningGameImage from "@/assets/learning-game.png";
 
 const Learning = () => {
   const [showChat, setShowChat] = useState(false);
@@ -17,36 +18,35 @@ const Learning = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50/30 via-background to-emerald-50/20">
       <div className="max-w-5xl mx-auto space-y-6 p-4 md:p-6">
-        {/* Hero Card - Clean & Accessible */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-green-100/60 to-emerald-100/50 p-6 md:p-10 border border-green-200/40 shadow-lg">
-          <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-8">
-            {/* Video - Contained */}
-            <div className="w-full md:w-1/2 flex justify-center">
-              <div className="w-full max-w-[280px] md:max-w-[320px]">
-                <video
-                  src={marioVideo}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full rounded-2xl shadow-md border border-green-200/30"
-                />
-              </div>
+        {/* Hero Card with Video Background */}
+        <div className="relative overflow-hidden rounded-3xl shadow-2xl border-4 border-green-200/60">
+          {/* Video Background */}
+          <video
+            src={marioVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          
+          {/* Overlay Content */}
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-8 md:p-12 min-h-[400px]">
+            {/* Game Character Image */}
+            <div className="flex-shrink-0 mb-6 md:mb-0">
+              <img 
+                src={learningGameImage} 
+                alt="Learning Game Character" 
+                className="w-64 md:w-80 h-auto drop-shadow-2xl"
+              />
             </div>
             
-            {/* Content */}
-            <div className="flex-1 text-center md:text-left">
-              <h1 className="text-3xl md:text-5xl font-black mb-4 text-green-900 tracking-tight">
-                Start Learning
-              </h1>
-              <p className="text-base md:text-lg text-green-800/80 font-medium mb-6">
-                Your personal reading coach is ready!
-              </p>
-              
+            {/* Button Integrated into Scene */}
+            <div className="flex-1 flex justify-center md:justify-end items-center">
               <Button
                 onClick={() => setShowChat(true)}
                 size="lg"
-                className="bg-green-600 hover:bg-green-700 text-white font-bold shadow-md hover:shadow-lg transition-all hover:scale-105"
+                className="bg-gradient-to-br from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-black text-2xl px-12 py-8 rounded-3xl shadow-2xl hover:shadow-[0_20px_60px_rgba(251,146,60,0.5)] transition-all hover:scale-110 border-4 border-yellow-300/50"
               >
                 Let's Go!
               </Button>
