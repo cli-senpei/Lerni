@@ -38,33 +38,27 @@ const AdminUsers = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      // Fetch all user profiles
-      const { data: profiles, error: profilesError } = await supabase
-        .from("user_learning_profiles")
-        .select("*")
-        .order("created_at", { ascending: false });
+      // Call edge function to fetch all users (including auth.users data)
+      const { data, error } = await supabase.functions.invoke('fetch-all-users');
 
-      if (profilesError) throw profilesError;
+      if (error) throw error;
 
-      // Fetch user roles
-      const { data: roles, error: rolesError } = await supabase
-        .from("user_roles")
-        .select("user_id, role");
-
-      if (rolesError) throw rolesError;
-
-      // Combine data
-      const usersWithRoles = profiles?.map(profile => ({
-        ...profile,
-        isAdmin: roles?.some(r => r.user_id === profile.user_id && r.role === "admin"),
-      })) || [];
-
-      setUsers(usersWithRoles);
+      if (data?.users) {
+        const formattedUsers = data.users.map((user: any) => ({
+          id: user.profile_id || user.id,
+          user_id: user.id,
+          user_name: user.user_name,
+          email: user.email,
+          created_at: user.created_at,
+          isAdmin: user.isAdmin,
+        }));
+        setUsers(formattedUsers);
+      }
     } catch (error) {
       console.error("Error fetching users:", error);
       toast({
         title: "Error",
-        description: "Failed to fetch users",
+        description: "Failed to fetch users. Make sure you have admin privileges.",
         variant: "destructive",
       });
     } finally {

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Edit, Plus, RefreshCw, ArrowUp, ArrowDown, Power, PowerOff } from "lucide-react";
+import { Trash2, Edit, Plus, RefreshCw, ArrowUp, ArrowDown, Power, PowerOff, Code } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import GameCodeEditor from "@/components/GameCodeEditor";
 
 interface Game {
   id: string;
@@ -26,6 +27,7 @@ interface Game {
   display_order: number;
   is_active: boolean;
   difficulty_level: string;
+  code?: string;
   created_at: string;
 }
 
@@ -35,6 +37,7 @@ const AdminGames = () => {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
+  const [editingCode, setEditingCode] = useState<Game | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -228,6 +231,45 @@ const AdminGames = () => {
     });
   };
 
+  const handleEditCode = (game: Game) => {
+    setEditingCode(game);
+  };
+
+  const handleSaveCode = async (code: string) => {
+    if (!editingCode) return;
+
+    try {
+      const { error } = await supabase
+        .from("games")
+        .update({ code })
+        .eq("id", editingCode.id);
+
+      if (error) throw error;
+
+      await supabase.from("admin_actions").insert({
+        action_type: "game_code_updated",
+        target_table: "games",
+        target_id: editingCode.id,
+        description: `Updated code for game: ${editingCode.name}`,
+      });
+
+      toast({ 
+        title: "Code saved successfully",
+        description: "The game code has been updated. Changes will be reflected after rebuild.",
+      });
+      
+      setEditingCode(null);
+      fetchGames();
+    } catch (error) {
+      console.error("Error saving code:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save game code",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -325,14 +367,25 @@ const AdminGames = () => {
                           variant="outline"
                           className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
                           onClick={() => handleToggleActive(game)}
+                          title={game.is_active ? "Deactivate" : "Activate"}
                         >
                           {game.is_active ? <PowerOff className="h-4 w-4" /> : <Power className="h-4 w-4" />}
                         </Button>
                         <Button
                           size="sm"
                           variant="outline"
+                          className="bg-blue-600 border-blue-700 text-white hover:bg-blue-700"
+                          onClick={() => handleEditCode(game)}
+                          title="Edit Code"
+                        >
+                          <Code className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
                           className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
                           onClick={() => handleEdit(game)}
+                          title="Edit Details"
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -340,6 +393,7 @@ const AdminGames = () => {
                           size="sm"
                           variant="destructive"
                           onClick={() => handleDelete(game)}
+                          title="Delete"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -416,6 +470,16 @@ const AdminGames = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Code Editor Modal */}
+      {editingCode && (
+        <GameCodeEditor
+          code={editingCode.code || ""}
+          gameName={editingCode.name}
+          onSave={handleSaveCode}
+          onClose={() => setEditingCode(null)}
+        />
+      )}
     </div>
   );
 };

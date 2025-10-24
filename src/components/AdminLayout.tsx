@@ -92,12 +92,12 @@ const AdminLayout = () => {
     <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen w-full flex-col bg-slate-950">
         {/* Admin Header */}
-        <header className="w-full border-b border-slate-800 bg-slate-900 sticky top-0 z-50">
+        <header className="w-full border-b border-slate-800 bg-black sticky top-0 z-50">
           <div className="flex h-16 md:h-20 items-center justify-between px-4 md:px-12">
             <div className="flex items-center gap-2">
-              <SidebarTrigger className="hover:bg-slate-800 rounded-md transition-colors p-2 text-slate-300" />
+              <SidebarTrigger className="hover:bg-slate-800 rounded-md transition-colors p-2 text-white" />
               <Link to="/admin" className="flex items-center gap-3">
-                <img src={logo} alt="Lerni Admin" className="h-12 md:h-16 w-auto" />
+                <img src={logo} alt="Lerni Admin" className="h-12 md:h-16 w-auto brightness-0 invert" />
                 <div className="flex items-center gap-2">
                   <Shield className="h-5 w-5 text-red-500" />
                   <span className="text-red-500 font-bold text-lg">ADMIN</span>
@@ -111,7 +111,7 @@ const AdminLayout = () => {
                   <Shield className="h-4 w-4 md:h-5 md:w-5" />
                 </AvatarFallback>
               </Avatar>
-              <span className="text-xs md:text-sm font-medium hidden sm:block text-slate-300">{user.email}</span>
+              <span className="text-xs md:text-sm font-medium hidden sm:block text-white">{user.email}</span>
             </div>
           </div>
         </header>
@@ -119,10 +119,10 @@ const AdminLayout = () => {
         {/* Sidebar and Content Container */}
         <div className="flex flex-1 w-full overflow-hidden">
           {/* Sidebar */}
-          <Sidebar collapsible="offcanvas" className="border-r border-slate-800 bg-slate-900" variant="sidebar">
+          <Sidebar collapsible="offcanvas" className="border-r border-slate-900 bg-black" variant="sidebar">
             <SidebarContent className="pt-8">
               <SidebarGroup>
-                <SidebarGroupLabel className="text-slate-400">Admin Panel</SidebarGroupLabel>
+                <SidebarGroupLabel className="text-white">Admin Panel</SidebarGroupLabel>
                 <SidebarGroupContent>
                   <SidebarMenu className="space-y-2 px-2">
                     {menuItems.map((item) => (
@@ -135,7 +135,7 @@ const AdminLayout = () => {
                               `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
                                 isActive
                                   ? "bg-red-500/20 text-red-400 border border-red-500/30"
-                                  : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                                  : "text-white hover:bg-slate-900 hover:text-white"
                               }`
                             }
                           >
@@ -151,7 +151,7 @@ const AdminLayout = () => {
             </SidebarContent>
 
             <div className="px-6 mb-4">
-              <div className="border-t border-slate-800" />
+              <div className="border-t border-slate-900" />
             </div>
 
             <SidebarFooter className="p-4 pb-6">
