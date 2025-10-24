@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Outlet, NavLink, Link } from "react-router-dom";
-import { Home, BookOpen, Trophy, LogOut, User as UserIcon } from "lucide-react";
+import { Home, LogOut, User as UserIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import ProfileModal from "@/components/ProfileModal";
+import learningIcon from "@/assets/learning-icon.png";
+import leaderboardIcon from "@/assets/leaderboard-icon.png";
 import {
   Sidebar,
   SidebarContent,
@@ -56,9 +58,9 @@ const DashboardLayout = () => {
   };
 
   const menuItems = [
-    { title: "Home", url: "/dashboard", icon: Home },
-    { title: "Learning", url: "/dashboard/learning", icon: BookOpen },
-    { title: "Leaderboard", url: "/dashboard/leaderboard", icon: Trophy },
+    { title: "Home", url: "/dashboard", icon: Home, isLucide: true },
+    { title: "Learning", url: "/dashboard/learning", iconSrc: learningIcon, isLucide: false },
+    { title: "Leaderboard", url: "/dashboard/leaderboard", iconSrc: leaderboardIcon, isLucide: false },
   ];
 
   if (!user) return null;
@@ -103,15 +105,19 @@ const DashboardLayout = () => {
                             to={item.url}
                             end={item.url === "/dashboard"}
                             className={({ isActive }) =>
-                              `flex items-center gap-5 px-6 py-5 rounded-xl text-lg font-bold transition-all shadow-sm border-2 ${
+                              `flex items-center gap-4 px-5 py-4 rounded-2xl text-base font-bold transition-all ${
                                 isActive
-                                  ? "bg-primary/10 text-[hsl(0,0%,15%)] border-primary shadow-md"
-                                  : "bg-muted/50 text-[hsl(0,0%,15%)] border-transparent hover:bg-muted hover:border-border hover:shadow"
+                                  ? "bg-gradient-to-br from-pink-100 to-purple-100 text-pink-600 shadow-lg scale-105"
+                                  : "bg-white/80 text-gray-700 hover:bg-gradient-to-br hover:from-pink-50 hover:to-purple-50 hover:shadow-md hover:scale-102"
                               }`
                             }
                           >
-                            <item.icon className="h-8 w-8 stroke-[2.5] text-[hsl(0,0%,15%)]" />
-                            <span className="tracking-wider">{item.title}</span>
+                            {item.isLucide ? (
+                              <item.icon className="h-7 w-7 stroke-[2.5]" />
+                            ) : (
+                              <img src={item.iconSrc} alt={item.title} className="h-7 w-7 object-contain" />
+                            )}
+                            <span className="tracking-wide">{item.title}</span>
                           </NavLink>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -128,10 +134,10 @@ const DashboardLayout = () => {
             <SidebarFooter className="p-6 pb-8">
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-5 w-full px-6 py-5 text-lg font-bold rounded-xl bg-destructive/10 text-[hsl(0,0%,15%)] hover:bg-destructive hover:text-destructive-foreground transition-all shadow-sm border-2 border-transparent hover:border-destructive hover:shadow-md"
+                className="flex items-center gap-4 w-full px-5 py-4 text-base font-bold rounded-2xl bg-red-50 text-red-600 hover:bg-gradient-to-br hover:from-red-100 hover:to-pink-100 hover:text-red-700 transition-all hover:shadow-lg hover:scale-102"
               >
-                <LogOut className="h-8 w-8 stroke-[2.5]" />
-                <span className="tracking-wider">Sign Out</span>
+                <LogOut className="h-7 w-7 stroke-[2.5]" />
+                <span className="tracking-wide">Sign Out</span>
               </button>
             </SidebarFooter>
           </Sidebar>
