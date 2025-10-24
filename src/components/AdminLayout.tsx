@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Outlet, NavLink, Link } from "react-router-dom";
-import { Users, Gamepad2, Settings, Activity, Shield, LogOut, Home } from "lucide-react";
+import { Users, Gamepad2, Settings, Activity, Home, LogOut, Code } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -82,6 +82,7 @@ const AdminLayout = () => {
     { title: "Dashboard", url: "/admin", icon: Home, end: true },
     { title: "User Management", url: "/admin/users", icon: Users },
     { title: "Game Management", url: "/admin/games", icon: Gamepad2 },
+    { title: "Code Editor", url: "/admin/code-editor", icon: Code },
     { title: "System Controls", url: "/admin/system", icon: Settings },
     { title: "Activity Logs", url: "/admin/logs", icon: Activity },
   ];
@@ -91,15 +92,15 @@ const AdminLayout = () => {
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen w-full flex-col bg-slate-950">
-        {/* Admin Header */}
-        <header className="w-full border-b border-slate-800 bg-black sticky top-0 z-50">
-          <div className="flex h-16 md:h-20 items-center justify-between px-4 md:px-12">
+        {/* Admin Header - Fixed */}
+        <header className="w-full border-b border-slate-800 bg-black sticky top-0 z-50 h-16 md:h-20">
+          <div className="flex h-full items-center justify-between px-4 md:px-12">
             <div className="flex items-center gap-2">
               <SidebarTrigger className="hover:bg-slate-800 rounded-md transition-colors p-2 text-white" />
               <Link to="/admin" className="flex items-center gap-3">
-                <img src={logo} alt="Lerni Admin" className="h-12 md:h-16 w-auto brightness-0 invert" />
+                <img src={logo} alt="Lerni Admin" className="h-8 md:h-12 w-auto brightness-0 invert" />
                 <div className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-white" />
+                  <Code className="h-5 w-5 text-white" />
                   <span className="text-white font-bold text-lg">ADMIN</span>
                 </div>
               </Link>
@@ -108,7 +109,7 @@ const AdminLayout = () => {
             <div className="flex items-center gap-2 md:gap-3">
               <Avatar className="h-8 w-8 md:h-10 md:w-10 hover:ring-2 hover:ring-red-500 transition-all">
                 <AvatarFallback className="bg-red-500/10 text-red-500">
-                  <Shield className="h-4 w-4 md:h-5 md:w-5" />
+                  <Code className="h-4 w-4 md:h-5 md:w-5" />
                 </AvatarFallback>
               </Avatar>
               <span className="text-xs md:text-sm font-medium hidden sm:block text-white">{user.email}</span>
@@ -116,11 +117,11 @@ const AdminLayout = () => {
           </div>
         </header>
 
-        {/* Sidebar and Content Container */}
+        {/* Sidebar and Content Container - Below Header */}
         <div className="flex flex-1 w-full overflow-hidden">
           {/* Sidebar */}
-          <Sidebar collapsible="offcanvas" className="border-r border-slate-900 bg-black" variant="sidebar">
-            <SidebarContent className="pt-8 bg-black">
+          <Sidebar collapsible="offcanvas" className="border-r border-slate-900 bg-black h-full" variant="sidebar">
+            <SidebarContent className="pt-4 bg-black">
               <SidebarGroup className="bg-black">
                 <SidebarGroupLabel className="text-white px-4">Admin Panel</SidebarGroupLabel>
                 <SidebarGroupContent className="bg-black">
@@ -150,11 +151,7 @@ const AdminLayout = () => {
               </SidebarGroup>
             </SidebarContent>
 
-            <div className="px-6 mb-4 bg-black">
-              {/* Removed divider line */}
-            </div>
-
-            <SidebarFooter className="p-4 pb-6 bg-black">
+            <SidebarFooter className="p-4 pb-6 bg-black border-t-0">
               <button
                 onClick={() => setSignOutDialogOpen(true)}
                 className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/30 transition-all"

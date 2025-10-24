@@ -14,6 +14,7 @@ import AdminLayout from "./components/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminUsers from "./pages/admin/Users";
 import AdminGames from "./pages/admin/Games";
+import AdminCodeEditor from "./pages/admin/CodeEditor";
 import AdminSystem from "./pages/admin/System";
 import AdminLogs from "./pages/admin/Logs";
 
@@ -37,6 +38,7 @@ const App = () => (
             <Route index element={<AdminDashboard />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="games" element={<AdminGames />} />
+            <Route path="code-editor" element={<AdminCodeEditor />} />
             <Route path="system" element={<AdminSystem />} />
             <Route path="logs" element={<AdminLogs />} />
           </Route>
