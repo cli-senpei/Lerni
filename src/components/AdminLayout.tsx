@@ -120,19 +120,19 @@ const AdminLayout = () => {
         <div className="flex flex-1 w-full overflow-hidden">
           {/* Sidebar */}
           <Sidebar collapsible="offcanvas" className="border-r border-slate-900 bg-black" variant="sidebar">
-            <SidebarContent className="pt-8">
-              <SidebarGroup>
-                <SidebarGroupLabel className="text-white">Admin Panel</SidebarGroupLabel>
-                <SidebarGroupContent>
-                  <SidebarMenu className="space-y-2 px-2">
+            <SidebarContent className="pt-8 bg-black">
+              <SidebarGroup className="bg-black">
+                <SidebarGroupLabel className="text-white px-4">Admin Panel</SidebarGroupLabel>
+                <SidebarGroupContent className="bg-black">
+                  <SidebarMenu className="space-y-2 px-2 bg-black">
                     {menuItems.map((item) => (
-                      <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton asChild>
+                      <SidebarMenuItem key={item.title} className="bg-black">
+                        <SidebarMenuButton asChild className="bg-black hover:bg-slate-900">
                           <NavLink
                             to={item.url}
                             end={item.end}
                             className={({ isActive }) =>
-                              `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                              `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all bg-black ${
                                 isActive
                                   ? "bg-red-500/20 text-red-400 border border-red-500/30"
                                   : "text-white hover:bg-slate-900 hover:text-white"
@@ -150,11 +150,11 @@ const AdminLayout = () => {
               </SidebarGroup>
             </SidebarContent>
 
-            <div className="px-6 mb-4">
+            <div className="px-6 mb-4 bg-black">
               <div className="border-t border-slate-900" />
             </div>
 
-            <SidebarFooter className="p-4 pb-6">
+            <SidebarFooter className="p-4 pb-6 bg-black">
               <button
                 onClick={() => setSignOutDialogOpen(true)}
                 className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/30 transition-all"

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Gamepad2, Activity, TrendingUp } from "lucide-react";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalGames: 0,
@@ -13,25 +15,28 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      // Fetch user count
-      const { count: userCount } = await supabase
-        .from("user_learning_profiles")
-        .select("*", { count: "exact", head: true });
+      try {
+        // Fetch all users using edge function
+        const { data: userData } = await supabase.functions.invoke('fetch-all-users');
+        const userCount = userData?.users?.length || 0;
 
-      // Fetch games stats
-      const { data: games } = await supabase.from("games").select("is_active");
-      
-      // Fetch admin actions count
-      const { count: actionsCount } = await supabase
-        .from("admin_actions")
-        .select("*", { count: "exact", head: true });
+        // Fetch games stats
+        const { data: games } = await supabase.from("games").select("is_active");
+        
+        // Fetch admin actions count
+        const { count: actionsCount } = await supabase
+          .from("admin_actions")
+          .select("*", { count: "exact", head: true });
 
-      setStats({
-        totalUsers: userCount || 0,
-        totalGames: games?.length || 0,
-        activeGames: games?.filter(g => g.is_active).length || 0,
-        totalActions: actionsCount || 0,
-      });
+        setStats({
+          totalUsers: userCount,
+          totalGames: games?.length || 0,
+          activeGames: games?.filter(g => g.is_active).length || 0,
+          totalActions: actionsCount || 0,
+        });
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      }
     };
 
     fetchStats();
@@ -101,22 +106,34 @@ const AdminDashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer">
+            <button 
+              onClick={() => navigate('/admin/users')}
+              className="p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer text-left"
+            >
               <h3 className="font-semibold text-slate-200">View Users</h3>
               <p className="text-sm text-slate-400 mt-1">Manage user accounts and roles</p>
-            </div>
-            <div className="p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer">
+            </button>
+            <button 
+              onClick={() => navigate('/admin/games')}
+              className="p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer text-left"
+            >
               <h3 className="font-semibold text-slate-200">Manage Games</h3>
               <p className="text-sm text-slate-400 mt-1">Add, edit, or remove games</p>
-            </div>
-            <div className="p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer">
+            </button>
+            <button 
+              onClick={() => navigate('/admin/system')}
+              className="p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer text-left"
+            >
               <h3 className="font-semibold text-slate-200">System Settings</h3>
               <p className="text-sm text-slate-400 mt-1">Configure system parameters</p>
-            </div>
-            <div className="p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer">
+            </button>
+            <button 
+              onClick={() => navigate('/admin/logs')}
+              className="p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer text-left"
+            >
               <h3 className="font-semibold text-slate-200">View Logs</h3>
               <p className="text-sm text-slate-400 mt-1">Check recent admin activities</p>
-            </div>
+            </button>
           </div>
         </CardContent>
       </Card>

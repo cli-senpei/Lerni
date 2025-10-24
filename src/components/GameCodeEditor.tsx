@@ -84,10 +84,14 @@ const GameCodeEditor = ({ code, gameName, onSave, onClose }: GameCodeEditorProps
               minimap: { enabled: true },
               fontSize: 14,
               lineNumbers: "on",
+              lineNumbersMinChars: 3,
+              glyphMargin: true,
               scrollBeyondLastLine: false,
               automaticLayout: true,
               tabSize: 2,
               wordWrap: "on",
+              renderLineHighlight: "all",
+              folding: true,
             }}
           />
         </div>

@@ -3,10 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Shield, ShieldOff, Search, RefreshCw } from "lucide-react";
+import { Trash2, Shield, ShieldOff, Search, RefreshCw, UserPlus } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +18,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface UserProfile {
   id: string;
@@ -34,6 +37,13 @@ const AdminUsers = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [actionType, setActionType] = useState<"delete" | "promote" | "demote" | null>(null);
+  const [addUserDialogOpen, setAddUserDialogOpen] = useState(false);
+  const [newUserData, setNewUserData] = useState({
+    email: "",
+    password: "",
+    fullName: "",
+    makeAdmin: false,
+  });
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -138,6 +148,64 @@ const AdminUsers = () => {
     }
   };
 
+  const handleAddUser = async () => {
+    if (!newUserData.email || !newUserData.password) {
+      toast({
+        title: "Error",
+        description: "Email and password are required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Create user via Supabase admin API
+      const { data: authData, error: signUpError } = await supabase.auth.signUp({
+        email: newUserData.email,
+        password: newUserData.password,
+        options: {
+          data: {
+            full_name: newUserData.fullName,
+          },
+        },
+      });
+
+      if (signUpError) throw signUpError;
+
+      if (authData.user) {
+        // If admin, add role
+        if (newUserData.makeAdmin) {
+          await supabase
+            .from("user_roles")
+            .insert({ user_id: authData.user.id, role: "admin" });
+        }
+
+        await supabase.from("admin_actions").insert({
+          action_type: "user_created",
+          target_table: "user_learning_profiles",
+          target_id: authData.user.id,
+          description: `Created user ${newUserData.email}${newUserData.makeAdmin ? " with admin role" : ""}`,
+        });
+
+        toast({ 
+          title: "User created successfully",
+          description: `User ${newUserData.email} has been added to the system`,
+        });
+        
+        setAddUserDialogOpen(false);
+        setNewUserData({ email: "", password: "", fullName: "", makeAdmin: false });
+        fetchUsers();
+      }
+    } catch (error: any) {
+      console.error("Error adding user:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to add user",
+        variant: "destructive",
+      });
+    }
+  };
+
   const filteredUsers = users.filter(user =>
     user.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.user_id.toLowerCase().includes(searchTerm.toLowerCase())
@@ -150,10 +218,16 @@ const AdminUsers = () => {
           <h1 className="text-3xl font-bold text-slate-100">User Management</h1>
           <p className="text-slate-400 mt-2">Manage users and their permissions</p>
         </div>
-        <Button onClick={fetchUsers} variant="outline" className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700">
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={fetchUsers} variant="outline" className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
+          <Button onClick={() => setAddUserDialogOpen(true)} className="bg-red-600 hover:bg-red-700">
+            <UserPlus className="h-4 w-4 mr-2" />
+            Add User
+          </Button>
+        </div>
       </div>
 
       <Card className="bg-slate-900 border-slate-800">
@@ -291,6 +365,80 @@ const AdminUsers = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Add User Dialog */}
+      <Dialog open={addUserDialogOpen} onOpenChange={setAddUserDialogOpen}>
+        <DialogContent className="bg-slate-900 border-slate-800 text-slate-100">
+          <DialogHeader>
+            <DialogTitle>Add New User</DialogTitle>
+            <DialogDescription className="text-slate-400">
+              Create a new user account for the learning platform
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="email" className="text-slate-300">Email *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={newUserData.email}
+                onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
+                className="bg-slate-800 border-slate-700 text-slate-200"
+                placeholder="user@example.com"
+              />
+            </div>
+            <div>
+              <Label htmlFor="password" className="text-slate-300">Password *</Label>
+              <Input
+                id="password"
+                type="password"
+                value={newUserData.password}
+                onChange={(e) => setNewUserData({ ...newUserData, password: e.target.value })}
+                className="bg-slate-800 border-slate-700 text-slate-200"
+                placeholder="Min. 6 characters"
+                minLength={6}
+              />
+            </div>
+            <div>
+              <Label htmlFor="fullName" className="text-slate-300">Full Name</Label>
+              <Input
+                id="fullName"
+                value={newUserData.fullName}
+                onChange={(e) => setNewUserData({ ...newUserData, fullName: e.target.value })}
+                className="bg-slate-800 border-slate-700 text-slate-200"
+                placeholder="John Doe"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="makeAdmin"
+                checked={newUserData.makeAdmin}
+                onChange={(e) => setNewUserData({ ...newUserData, makeAdmin: e.target.checked })}
+                className="h-4 w-4"
+              />
+              <Label htmlFor="makeAdmin" className="text-slate-300 cursor-pointer">
+                Make this user an admin
+              </Label>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setAddUserDialogOpen(false);
+                setNewUserData({ email: "", password: "", fullName: "", makeAdmin: false });
+              }} 
+              className="bg-slate-800 border-slate-700 text-slate-300"
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleAddUser} className="bg-red-600 hover:bg-red-700">
+              Create User
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
