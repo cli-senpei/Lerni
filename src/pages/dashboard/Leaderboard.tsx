@@ -251,33 +251,33 @@ const Leaderboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-background">
-      <div className="max-w-6xl mx-auto space-y-6 p-4 md:p-6">
-        {/* Hero Banner - AAA Game Style */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 p-8 md:p-12 shadow-2xl">
-          {/* Animated Background Effects */}
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50/30 via-background to-amber-50/20">
+      <div className="max-w-5xl mx-auto space-y-6 p-4 md:p-6">
+        {/* Hero Banner - Clean & Accessible */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-100/60 to-amber-100/50 p-6 md:p-10 border border-orange-200/40 shadow-lg">
+          {/* Subtle background pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+          </div>
           
           {/* Content */}
           <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex-1 text-center md:text-left z-10">
-              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-4 border border-white/20">
-                <Trophy className="h-4 w-4 text-amber-300" />
-                <span className="text-xs font-semibold text-white uppercase tracking-wider">Competitive Rankings</span>
+              <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full mb-4 border border-orange-200/50">
+                <Trophy className="h-4 w-4 text-orange-600" />
+                <span className="text-xs font-bold text-orange-900 uppercase tracking-wide">Top Learners</span>
               </div>
-              <h1 className="text-5xl md:text-7xl font-black mb-4 text-white drop-shadow-2xl tracking-tight">
+              <h1 className="text-4xl md:text-6xl font-black mb-3 text-orange-900 tracking-tight">
                 Leaderboard
               </h1>
-              <p className="text-lg md:text-xl text-white/90 font-medium mb-6">
-                Compete with the best learners worldwide
+              <p className="text-base md:text-lg text-orange-800/80 font-medium mb-6">
+                See how you compare with other learners
               </p>
               
               {/* CTA Button */}
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button size="lg" className="bg-white text-purple-700 hover:bg-white/90 font-bold shadow-xl hover:shadow-2xl transition-all hover:scale-105">
+                  <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-md hover:shadow-lg transition-all">
                     <Upload className="h-5 w-5 mr-2" />
                     Submit Your Score
                   </Button>
@@ -294,7 +294,7 @@ const Leaderboard = () => {
                   </DialogHeader>
                   
                   <div className="space-y-4 py-4">
-                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white">
+                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-400 to-amber-400 rounded-lg text-white shadow-sm">
                       <span className="font-semibold">Current Score</span>
                       <div className="flex items-center gap-2">
                         <TrendingUp className="h-5 w-5" />
@@ -350,7 +350,7 @@ const Leaderboard = () => {
                     <Button
                       onClick={handleSubmit}
                       disabled={submitting || rating === 0 || !editName.trim()}
-                      className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold"
+                      className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold"
                       size="lg"
                     >
                       {userEntry ? "Update Entry" : "Submit to Leaderboard"}
@@ -361,15 +361,12 @@ const Leaderboard = () => {
             </div>
             
             {/* Mascot - Integrated */}
-            <div className="relative md:absolute md:right-8 md:bottom-0 z-20">
-              <div className="relative">
-                <div className="absolute inset-0 bg-white/20 blur-2xl rounded-full"></div>
-                <img 
-                  src={mascotImage} 
-                  alt="Mascot" 
-                  className="relative w-40 h-40 md:w-52 md:h-52 object-contain drop-shadow-2xl animate-bounce-slow" 
-                />
-              </div>
+            <div className="relative md:absolute md:right-4 md:bottom-0 z-20">
+              <img 
+                src={mascotImage} 
+                alt="Leaderboard mascot" 
+                className="w-32 h-32 md:w-48 md:h-48 object-contain drop-shadow-lg" 
+              />
             </div>
           </div>
         </div>
@@ -392,10 +389,10 @@ const Leaderboard = () => {
                   {/* 2nd Place */}
                   {entries[1] && (
                     <div className="flex flex-col items-center flex-1 max-w-[120px]">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-slate-300 to-slate-400 flex items-center justify-center mb-2 shadow-lg">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-300 to-orange-400 flex items-center justify-center mb-2 shadow-md">
                         <span className="text-2xl font-bold text-white">2</span>
                       </div>
-                      <div className="w-full bg-gradient-to-br from-slate-200 to-slate-300 rounded-t-2xl p-4 text-center shadow-md h-28 flex flex-col justify-between">
+                      <div className="w-full bg-gradient-to-br from-orange-100 to-orange-200 rounded-t-2xl p-4 text-center shadow-sm h-28 flex flex-col justify-between border border-orange-200/50">
                         <div>
                           <p className="font-bold text-sm truncate">{entries[1].user_name}</p>
                           <p className="text-xs text-muted-foreground mt-1">{entries[1].score} pts</p>
@@ -413,11 +410,11 @@ const Leaderboard = () => {
 
                   {/* 1st Place */}
                   <div className="flex flex-col items-center flex-1 max-w-[140px]">
-                    <Trophy className="h-8 w-8 text-amber-500 mb-2" />
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center mb-2 shadow-xl ring-4 ring-amber-200">
+                    <Trophy className="h-8 w-8 text-amber-600 mb-2" />
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center mb-2 shadow-lg ring-4 ring-amber-200/70">
                       <span className="text-3xl font-bold text-white">1</span>
                     </div>
-                    <div className="w-full bg-gradient-to-br from-amber-200 to-amber-300 rounded-t-2xl p-4 text-center shadow-lg h-36 flex flex-col justify-between">
+                    <div className="w-full bg-gradient-to-br from-amber-200/90 to-amber-300/80 rounded-t-2xl p-4 text-center shadow-md h-36 flex flex-col justify-between border border-amber-300/50">
                       <div>
                         <p className="font-bold text-base truncate">{entries[0].user_name}</p>
                         <p className="text-sm text-muted-foreground mt-1">{entries[0].score} pts</p>
@@ -435,10 +432,10 @@ const Leaderboard = () => {
                   {/* 3rd Place */}
                   {entries[2] && (
                     <div className="flex flex-col items-center flex-1 max-w-[120px]">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center mb-2 shadow-lg">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-300 to-amber-400 flex items-center justify-center mb-2 shadow-md">
                         <span className="text-2xl font-bold text-white">3</span>
                       </div>
-                      <div className="w-full bg-gradient-to-br from-orange-200 to-orange-300 rounded-t-2xl p-4 text-center shadow-md h-24 flex flex-col justify-between">
+                      <div className="w-full bg-gradient-to-br from-amber-100 to-amber-200 rounded-t-2xl p-4 text-center shadow-sm h-24 flex flex-col justify-between border border-amber-200/50">
                         <div>
                           <p className="font-bold text-sm truncate">{entries[2].user_name}</p>
                           <p className="text-xs text-muted-foreground mt-1">{entries[2].score} pts</p>
@@ -458,13 +455,13 @@ const Leaderboard = () => {
 
               {/* Rest of the list */}
               {entries.length > 3 && (
-                <Card className="p-4">
+                <Card className="p-4 bg-white/80 backdrop-blur-sm border-orange-100/50">
                   <div className="space-y-2">
                     {entries.slice(3).map((entry, index) => (
                       <div
                         key={entry.id}
-                        className={`p-4 rounded-lg transition-all hover:bg-muted/50 ${
-                          entry.user_id === user?.id ? 'bg-blue-50 dark:bg-blue-950/20 ring-1 ring-blue-200 dark:ring-blue-800' : ''
+                        className={`p-4 rounded-lg transition-all hover:bg-orange-50/50 ${
+                          entry.user_id === user?.id ? 'bg-orange-50/70 ring-1 ring-orange-200' : ''
                         }`}
                       >
                         <div className="flex items-center gap-4">
@@ -478,7 +475,7 @@ const Leaderboard = () => {
                             <div className="flex items-center gap-2 mb-1">
                               <p className="font-semibold text-sm truncate">{entry.user_name}</p>
                               {entry.user_id === user?.id && (
-                                <span className="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full font-medium">
+                                <span className="text-xs bg-orange-500 text-white px-2 py-0.5 rounded-full font-medium">
                                   You
                                 </span>
                               )}
