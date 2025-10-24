@@ -31,6 +31,7 @@ const AdminCodeEditor = () => {
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
   const [createWarningOpen, setCreateWarningOpen] = useState(false);
   const [pendingCreate, setPendingCreate] = useState(false);
+  const [previewGame, setPreviewGame] = useState<Game | null>(null);
   const [newGameData, setNewGameData] = useState({
     name: "",
     description: "",
@@ -232,11 +233,24 @@ const AdminCodeEditor = () => {
                       <p className="text-xs text-slate-500 font-mono">{game.component_name}</p>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between mt-4 text-xs">
+                  <div className="flex items-center justify-between mt-4 text-xs gap-2">
                     <span className="text-slate-500">
                       {game.code ? `${game.code.split('\n').length} lines` : 'No code yet'}
                     </span>
-                    <span className="text-blue-400 group-hover:text-blue-300">Edit Code →</span>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-xs bg-green-600/10 border-green-500 text-green-400 hover:bg-green-600/20"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPreviewGame(game);
+                        }}
+                      >
+                        Preview
+                      </Button>
+                      <span className="text-blue-400 group-hover:text-blue-300">Edit →</span>
+                    </div>
                   </div>
                 </button>
               ))}
@@ -671,6 +685,133 @@ const AdminCodeEditor = () => {
           onClose={() => setEditingCode(null)}
         />
       )}
+
+      {/* Game Preview Dialog */}
+      <Dialog open={!!previewGame} onOpenChange={() => setPreviewGame(null)}>
+        <DialogContent className="bg-slate-900 border-slate-800 text-slate-100 max-w-5xl max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle className="text-xl flex items-center gap-2">
+              <FileCode className="h-5 w-5 text-green-400" />
+              Game Preview: {previewGame?.name}
+            </DialogTitle>
+            <DialogDescription className="text-slate-400">
+              Testing area for {previewGame?.component_name}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <Alert className="bg-blue-500/10 border-blue-500/50">
+              <Info className="h-4 w-4 text-blue-500" />
+              <AlertDescription className="text-slate-300">
+                <strong>Preview Mode:</strong> This is a testing environment. Changes made here do not affect the live game. Use this to test functionality before deployment.
+              </AlertDescription>
+            </Alert>
+
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-slate-200 text-sm">Live Preview</CardTitle>
+                <CardDescription className="text-slate-400 text-xs">
+                  Interactive preview of the game component
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="min-h-[400px] bg-slate-950 rounded-lg p-6">
+                {previewGame?.code ? (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-center space-y-4">
+                      <FileCode className="h-16 w-16 text-slate-600 mx-auto" />
+                      <div>
+                        <p className="text-slate-400 mb-2">Preview Available</p>
+                        <p className="text-xs text-slate-500 max-w-md">
+                          Component: <span className="font-mono text-blue-400">{previewGame.component_name}</span>
+                        </p>
+                        <p className="text-xs text-slate-500 mt-2">
+                          Code lines: {previewGame.code.split('\n').length}
+                        </p>
+                      </div>
+                      <Alert className="bg-yellow-500/10 border-yellow-500/50 max-w-lg mx-auto">
+                        <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                        <AlertDescription className="text-xs text-slate-300">
+                          Note: Live rendering requires the component to be properly built and imported. 
+                          Use the Edit Code feature to modify and deploy the game.
+                        </AlertDescription>
+                      </Alert>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center h-full text-slate-500">
+                    <div className="text-center">
+                      <AlertTriangle className="h-12 w-12 mx-auto mb-3 text-slate-600" />
+                      <p>No code available for preview</p>
+                      <p className="text-xs mt-2">Add code to this game to enable preview</p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-slate-200 text-sm">Testing Checklist</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-xs text-slate-400 space-y-2">
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-400 mt-0.5">□</span>
+                      <span>Component renders without errors</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-400 mt-0.5">□</span>
+                      <span>All interactive elements work</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-400 mt-0.5">□</span>
+                      <span>Responsive on different screen sizes</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-400 mt-0.5">□</span>
+                      <span>No console errors or warnings</span>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-slate-200 text-sm">Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Button
+                    size="sm"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-xs"
+                    onClick={() => {
+                      setPreviewGame(null);
+                      setEditingCode(previewGame);
+                    }}
+                  >
+                    <Code className="h-3 w-3 mr-2" />
+                    Edit Code
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full bg-slate-900 border-slate-700 text-slate-300 text-xs"
+                    onClick={() => window.open(`/dashboard`, '_blank')}
+                  >
+                    Test in Dashboard
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button onClick={() => setPreviewGame(null)} className="bg-slate-800 border-slate-700">
+              Close Preview
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

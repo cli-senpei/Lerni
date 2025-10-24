@@ -168,6 +168,13 @@ const AdminLayout = () => {
               <Outlet />
             </div>
           </main>
+          
+          {/* Footer */}
+          <footer className="bg-slate-950 border-t border-slate-800 py-2 px-4">
+            <p className="text-xs text-slate-500 text-center">
+              coded by ruel mcneil
+            </p>
+          </footer>
         </div>
       </div>
       
