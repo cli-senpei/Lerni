@@ -17,24 +17,30 @@ const Header = ({ hideButton = false }: HeaderProps) => {
       <div className="mx-auto flex h-20 md:h-24 max-w-screen-2xl items-center justify-between px-4 md:px-12">
         <Link 
           to="/" 
-          className="relative flex items-center gap-2 group h-16 md:h-20"
+          className="relative flex items-center gap-2 group"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          <img 
-            src={logo} 
-            alt="Lerni Logo" 
-            className={`h-16 md:h-20 w-auto cursor-pointer transition-all duration-500 group-hover:scale-105 group-hover:-translate-y-1 ${
-              isHovered ? 'opacity-0' : 'opacity-100'
-            }`}
-          />
-          <img 
-            src={homeLogo} 
-            alt="Home" 
-            className={`absolute inset-0 h-16 md:h-20 w-auto cursor-pointer transition-all duration-500 group-hover:scale-105 group-hover:-translate-y-1 ${
-              isHovered ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
+          <div className="relative h-20 md:h-24 w-20 md:w-24 flex items-center justify-center">
+            <img 
+              src={logo} 
+              alt="Lerni Logo" 
+              className={`absolute inset-0 h-full w-full object-contain cursor-pointer transition-all duration-500 ease-in-out ${
+                isHovered 
+                  ? 'opacity-0 scale-90 rotate-12' 
+                  : 'opacity-100 scale-100 rotate-0 group-hover:scale-110 group-hover:-translate-y-1'
+              }`}
+            />
+            <img 
+              src={homeLogo} 
+              alt="Home" 
+              className={`absolute inset-0 h-full w-full object-contain cursor-pointer transition-all duration-500 ease-in-out ${
+                isHovered 
+                  ? 'opacity-100 scale-100 rotate-0 group-hover:scale-110 group-hover:-translate-y-1' 
+                  : 'opacity-0 scale-90 -rotate-12'
+              }`}
+            />
+          </div>
         </Link>
         
         {!hideButton && (
