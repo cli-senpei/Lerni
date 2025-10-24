@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Brain, Gamepad2, MessageCircle, Target } from "lucide-react";
+import assessmentIcon from "@/assets/assessment-icon.png";
+import playGameIcon from "@/assets/playagame-icon.png";
+import justTalkIcon from "@/assets/justtalk-icon.png";
 
 interface ActivityOptionsProps {
   onSelectActivity: (activity: 'assessment' | 'game' | 'casual') => void;
@@ -19,8 +21,8 @@ const ActivityOptions = ({ onSelectActivity, userName }: ActivityOptionsProps) =
           variant="outline"
           className="h-auto py-5 px-5 flex items-center justify-start gap-4 bg-card hover:bg-[hsl(142,76%,36%)]/10 hover:border-[hsl(142,76%,36%)] border-2 transition-all"
         >
-          <div className="bg-muted p-3 rounded-lg">
-            <Brain className="h-6 w-6 text-foreground" />
+          <div className="shrink-0">
+            <img src={assessmentIcon} alt="Assessment" className="h-16 w-16" />
           </div>
           <div className="text-left">
             <div className="font-bold text-base text-foreground">Take Assessment</div>
@@ -33,8 +35,8 @@ const ActivityOptions = ({ onSelectActivity, userName }: ActivityOptionsProps) =
           variant="outline"
           className="h-auto py-5 px-5 flex items-center justify-start gap-4 bg-card hover:bg-[hsl(142,76%,36%)]/10 hover:border-[hsl(142,76%,36%)] border-2 transition-all"
         >
-          <div className="bg-muted p-3 rounded-lg">
-            <Gamepad2 className="h-6 w-6 text-foreground" />
+          <div className="shrink-0">
+            <img src={playGameIcon} alt="Play a Game" className="h-16 w-16" />
           </div>
           <div className="text-left">
             <div className="font-bold text-base text-foreground">Play a Game</div>
@@ -47,8 +49,8 @@ const ActivityOptions = ({ onSelectActivity, userName }: ActivityOptionsProps) =
           variant="outline"
           className="h-auto py-5 px-5 flex items-center justify-start gap-4 bg-card hover:bg-[hsl(142,76%,36%)]/10 hover:border-[hsl(142,76%,36%)] border-2 transition-all"
         >
-          <div className="bg-muted p-3 rounded-lg">
-            <MessageCircle className="h-6 w-6 text-foreground" />
+          <div className="shrink-0">
+            <img src={justTalkIcon} alt="Just Chat" className="h-16 w-16" />
           </div>
           <div className="text-left">
             <div className="font-bold text-base text-foreground">Just Chat</div>
