@@ -4,8 +4,9 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Trophy, Star, MessageSquare, TrendingUp, Medal, Award } from "lucide-react";
+import { Trophy, Star, MessageSquare, TrendingUp, Sparkles } from "lucide-react";
 import { User } from "@supabase/supabase-js";
+import mascotImage from "@/assets/mascot.png";
 
 interface LeaderboardEntry {
   id: string;
@@ -214,28 +215,43 @@ const Leaderboard = () => {
     }
   };
 
-  const getRankIcon = (index: number) => {
-    if (index === 0) return <Trophy className="h-6 w-6 text-yellow-500" />;
-    if (index === 1) return <Medal className="h-6 w-6 text-gray-400" />;
-    if (index === 2) return <Award className="h-6 w-6 text-amber-700" />;
-    return <span className="text-lg font-bold text-muted-foreground">#{index + 1}</span>;
+  const getRankBadge = (index: number) => {
+    const badges = [
+      { bg: "bg-amber-500/20", text: "text-amber-700", label: "1st" },
+      { bg: "bg-slate-400/20", text: "text-slate-600", label: "2nd" },
+      { bg: "bg-orange-600/20", text: "text-orange-700", label: "3rd" },
+    ];
+    
+    if (index < 3) {
+      return (
+        <div className={`${badges[index].bg} ${badges[index].text} px-4 py-2 rounded-full font-bold text-lg flex items-center gap-2 min-w-[70px] justify-center`}>
+          {index === 0 && <Trophy className="h-5 w-5" />}
+          {badges[index].label}
+        </div>
+      );
+    }
+    return (
+      <div className="bg-muted px-4 py-2 rounded-full font-semibold text-muted-foreground min-w-[70px] text-center">
+        #{index + 1}
+      </div>
+    );
   };
 
   const renderStars = (count: number, interactive: boolean = false) => {
     return (
-      <div className="flex gap-1">
+      <div className="flex gap-1.5">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
             onClick={() => interactive && setRating(star)}
             disabled={!interactive}
-            className={`transition-all ${interactive ? 'cursor-pointer hover:scale-110' : ''}`}
+            className={`transition-all ${interactive ? 'cursor-pointer hover:scale-125' : ''}`}
           >
             <Star
-              className={`h-5 w-5 ${
+              className={`h-6 w-6 ${
                 star <= count
-                  ? 'fill-yellow-500 text-yellow-500'
-                  : 'fill-none text-muted-foreground'
+                  ? 'fill-orange-400 text-orange-400'
+                  : 'fill-none text-orange-200'
               }`}
             />
           </button>
@@ -245,151 +261,166 @@ const Leaderboard = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-4xl font-bold mb-2">Global Leaderboard</h1>
-          <p className="text-muted-foreground">Compete with learners worldwide!</p>
-        </div>
-        <Trophy className="h-16 w-16 text-primary" />
-      </div>
-
-      {/* Submit Score Card */}
-      <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-2">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Your Score</h2>
-            <div className="flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              <span className="text-2xl font-bold">{currentScore}</span>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <div>
-              <label className="text-sm font-medium mb-2 block">
-                Your Name (Required)
-              </label>
-              <input
-                type="text"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                placeholder="Enter your name"
-                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                maxLength={50}
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-2 block">
-                Rate Your Experience (Required)
-              </label>
-              {renderStars(rating, true)}
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-2 block flex items-center justify-between">
-                <span>Share Your Thoughts (Optional)</span>
-                {userEntry?.comment && (
-                  <button
-                    onClick={handleDeleteComment}
-                    className="text-xs text-destructive hover:underline"
-                  >
-                    Delete Comment
-                  </button>
-                )}
-              </label>
-              <Textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Tell us about your learning experience..."
-                className="min-h-[100px]"
-                maxLength={500}
-              />
-              <p className="text-xs text-muted-foreground mt-1">
-                {comment.length}/500 characters
+    <div className="min-h-screen bg-gradient-to-br from-orange-50/50 via-background to-peach-50/30">
+      <div className="max-w-6xl mx-auto space-y-8 p-6">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-100/80 via-peach-100/60 to-orange-50/80 p-8 md:p-12 border border-orange-200/50">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex-1 text-center md:text-left">
+              <h1 className="text-5xl md:text-6xl font-bold mb-3 bg-gradient-to-r from-orange-600 to-orange-800 bg-clip-text text-transparent">
+                Leaderboard
+              </h1>
+              <p className="text-lg text-orange-900/70 font-medium">
+                See how you rank among top learners!
               </p>
             </div>
-
-            <Button
-              onClick={handleSubmit}
-              disabled={submitting || rating === 0 || !editName.trim()}
-              className="w-full"
-              size="lg"
-            >
-              {userEntry ? "Update Entry" : "Submit to Leaderboard"}
-            </Button>
+            <div className="flex-shrink-0">
+              <img src={mascotImage} alt="Mascot" className="w-32 h-32 md:w-40 md:h-40 animate-bounce-slow" />
+            </div>
           </div>
         </div>
-      </Card>
 
-      {/* Leaderboard */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold">Top Performers</h2>
-        
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-          </div>
-        ) : entries.length === 0 ? (
-          <Card className="p-8 text-center">
-            <p className="text-muted-foreground">No entries yet. Be the first to submit your score!</p>
-          </Card>
-        ) : (
-          <div className="space-y-3">
-            {entries.map((entry, index) => (
-              <Card
-                key={entry.id}
-                className={`p-4 transition-all hover:shadow-lg ${
-                  entry.user_id === user?.id ? 'border-2 border-primary bg-primary/5' : ''
-                } ${
-                  index < 3 ? 'bg-gradient-to-r from-background to-accent/10' : ''
-                }`}
+        {/* Submit Score Card */}
+        <Card className="p-6 md:p-8 bg-white/80 backdrop-blur-sm border-orange-200/50 shadow-lg">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-3">
+                <Sparkles className="h-7 w-7 text-orange-500" />
+                Your Score
+              </h2>
+              <div className="flex items-center gap-2 bg-gradient-to-br from-orange-500 to-orange-600 text-white px-6 py-3 rounded-2xl shadow-lg">
+                <TrendingUp className="h-5 w-5" />
+                <span className="text-2xl font-bold">{currentScore}</span>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-semibold mb-2 block text-foreground">
+                  Your Name *
+                </label>
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Enter your name"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
+                  maxLength={50}
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-semibold mb-2 block text-foreground">
+                  Rate Your Experience *
+                </label>
+                {renderStars(rating, true)}
+              </div>
+
+              <div>
+                <label className="text-sm font-semibold mb-2 block flex items-center justify-between text-foreground">
+                  <span>Share Your Thoughts</span>
+                  {userEntry?.comment && (
+                    <button
+                      onClick={handleDeleteComment}
+                      className="text-xs text-destructive hover:underline font-medium"
+                    >
+                      Delete Comment
+                    </button>
+                  )}
+                </label>
+                <Textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Tell us about your learning experience..."
+                  className="min-h-[100px] border-2 border-orange-200 focus:ring-orange-400 focus:border-transparent rounded-xl"
+                  maxLength={500}
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  {comment.length}/500 characters
+                </p>
+              </div>
+
+              <Button
+                onClick={handleSubmit}
+                disabled={submitting || rating === 0 || !editName.trim()}
+                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
+                size="lg"
               >
-                <div className="flex items-start gap-4">
-                  <div className="flex items-center justify-center w-12">
-                    {getRankIcon(index)}
-                  </div>
-                  
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-bold text-lg">
-                          {entry.user_name}
-                          {entry.user_id === user?.id && (
-                            <span className="ml-2 text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">
-                              You
-                            </span>
-                          )}
-                        </h3>
-                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <TrendingUp className="h-4 w-4" />
-                            <span className="font-semibold">{entry.score} points</span>
-                          </div>
-                          {entry.rating && (
-                            <div className="flex items-center gap-1">
-                              {renderStars(entry.rating)}
-                            </div>
-                          )}
-                        </div>
-                      </div>
+                {userEntry ? "Update Entry" : "Submit to Leaderboard"}
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        {/* Leaderboard */}
+        <div className="space-y-6">
+          <h2 className="text-3xl font-bold flex items-center gap-3">
+            <Trophy className="h-8 w-8 text-orange-500" />
+            Top Performers
+          </h2>
+          
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : entries.length === 0 ? (
+            <Card className="p-12 text-center bg-white/80 backdrop-blur-sm border-orange-200/50">
+              <p className="text-muted-foreground text-lg">No entries yet. Be the first to submit your score!</p>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              {entries.map((entry, index) => (
+                <Card
+                  key={entry.id}
+                  className={`p-6 transition-all hover:shadow-xl hover:-translate-y-1 bg-white/80 backdrop-blur-sm border-orange-200/50 ${
+                    entry.user_id === user?.id ? 'ring-2 ring-orange-400 bg-orange-50/50' : ''
+                  }`}
+                >
+                  <div className="flex items-start gap-6">
+                    <div className="flex-shrink-0">
+                      {getRankBadge(index)}
                     </div>
                     
-                    {entry.comment && (
-                      <div className="flex gap-2 bg-muted/50 p-3 rounded-lg">
-                        <MessageSquare className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-foreground leading-relaxed">
-                          {entry.comment}
-                        </p>
+                    <div className="flex-1 space-y-3">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-xl text-foreground flex items-center gap-2 flex-wrap">
+                            {entry.user_name}
+                            {entry.user_id === user?.id && (
+                              <span className="text-xs bg-orange-500 text-white px-3 py-1 rounded-full font-semibold">
+                                You
+                              </span>
+                            )}
+                          </h3>
+                          <div className="flex items-center gap-4 mt-2 flex-wrap">
+                            <div className="flex items-center gap-2 bg-orange-100 px-3 py-1.5 rounded-lg">
+                              <TrendingUp className="h-4 w-4 text-orange-600" />
+                              <span className="font-bold text-orange-700">{entry.score} pts</span>
+                            </div>
+                            {entry.rating && (
+                              <div className="flex items-center gap-1">
+                                {renderStars(entry.rating)}
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    )}
+                      
+                      {entry.comment && (
+                        <div className="flex gap-3 bg-orange-50/50 p-4 rounded-xl border border-orange-100">
+                          <MessageSquare className="h-5 w-5 text-orange-500 mt-0.5 flex-shrink-0" />
+                          <p className="text-sm text-foreground/90 leading-relaxed">
+                            {entry.comment}
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
