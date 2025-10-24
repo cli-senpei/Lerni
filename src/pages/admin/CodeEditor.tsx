@@ -5,11 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Code, Plus, RefreshCw, FileCode, Upload } from "lucide-react";
+import { Code, Plus, RefreshCw, FileCode, Upload, HelpCircle, AlertTriangle, Info, BookOpen } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import CodeEditorWithSidebar from "@/components/CodeEditorWithSidebar";
 
 interface Game {
@@ -25,6 +28,9 @@ const AdminCodeEditor = () => {
   const [loading, setLoading] = useState(true);
   const [addGameDialogOpen, setAddGameDialogOpen] = useState(false);
   const [editingCode, setEditingCode] = useState<Game | null>(null);
+  const [helpDialogOpen, setHelpDialogOpen] = useState(false);
+  const [createWarningOpen, setCreateWarningOpen] = useState(false);
+  const [pendingCreate, setPendingCreate] = useState(false);
   const [newGameData, setNewGameData] = useState({
     name: "",
     description: "",
@@ -59,7 +65,7 @@ const AdminCodeEditor = () => {
     fetchGames();
   }, []);
 
-  const handleAddGame = async () => {
+  const handleAddGameClick = () => {
     if (!newGameData.name || !newGameData.component_name) {
       toast({
         title: "Error",
@@ -68,6 +74,13 @@ const AdminCodeEditor = () => {
       });
       return;
     }
+    setPendingCreate(true);
+    setCreateWarningOpen(true);
+  };
+
+  const handleAddGame = async () => {
+    setCreateWarningOpen(false);
+    setPendingCreate(false);
 
     try {
       const { data, error } = await supabase
@@ -144,10 +157,28 @@ const AdminCodeEditor = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-100">Code Editor</h1>
-          <p className="text-slate-400 mt-2">Create and edit game components</p>
+          <h1 className="text-3xl font-bold text-slate-100 flex items-center gap-3">
+            Code Editor
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => setHelpDialogOpen(true)}
+              className="text-blue-400 hover:text-blue-300 hover:bg-slate-800"
+            >
+              <HelpCircle className="h-6 w-6" />
+            </Button>
+          </h1>
+          <p className="text-slate-400 mt-2">Create and edit game components safely</p>
         </div>
         <div className="flex gap-2">
+          <Button 
+            onClick={() => setHelpDialogOpen(true)} 
+            variant="outline" 
+            className="bg-blue-600/10 border-blue-500 text-blue-400 hover:bg-blue-600/20"
+          >
+            <BookOpen className="h-4 w-4 mr-2" />
+            Help Guide
+          </Button>
           <Button onClick={fetchGames} variant="outline" className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700">
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
@@ -158,6 +189,16 @@ const AdminCodeEditor = () => {
           </Button>
         </div>
       </div>
+
+      {/* Warning Banner */}
+      <Alert className="bg-yellow-500/10 border-yellow-500/50">
+        <AlertTriangle className="h-5 w-5 text-yellow-500" />
+        <AlertTitle className="text-yellow-500">Critical System Area</AlertTitle>
+        <AlertDescription className="text-slate-300">
+          You are in the code editor. Changes made here directly affect your website's functionality. 
+          Always test changes thoroughly and keep backups. Incorrect code can break your application.
+        </AlertDescription>
+      </Alert>
 
       <Card className="bg-slate-900 border-slate-800">
         <CardHeader>
@@ -324,8 +365,297 @@ const AdminCodeEditor = () => {
             >
               Cancel
             </Button>
-            <Button onClick={handleAddGame} className="bg-red-600 hover:bg-red-700">
+            <Button onClick={handleAddGameClick} className="bg-red-600 hover:bg-red-700">
+              <AlertTriangle className="h-4 w-4 mr-2" />
               Create Game
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create Game Warning Dialog */}
+      <AlertDialog open={createWarningOpen} onOpenChange={setCreateWarningOpen}>
+        <AlertDialogContent className="bg-slate-900 border-red-500/50 max-w-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-red-500 flex items-center gap-2">
+              <AlertTriangle className="h-6 w-6" />
+              WARNING: Database & Code Modification
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-slate-300 space-y-3">
+              <p className="font-semibold text-lg">You are about to modify the database and website code!</p>
+              
+              <div className="space-y-2 bg-slate-800/50 p-4 rounded border border-red-500/30">
+                <p className="text-yellow-400 font-medium">⚠️ This action will:</p>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>Create a new entry in the games database table</li>
+                  <li>Store the provided code in the database</li>
+                  <li>Make this game available for editing and deployment</li>
+                  <li>Log this action in the admin activity log</li>
+                </ul>
+              </div>
+
+              <div className="space-y-2 bg-blue-500/10 p-4 rounded border border-blue-500/30">
+                <p className="text-blue-400 font-medium">📝 Important Notes:</p>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>Test the code thoroughly before making it active</li>
+                  <li>Ensure the component name follows React naming conventions</li>
+                  <li>Code errors can break the application</li>
+                  <li>Keep a backup of working code versions</li>
+                </ul>
+              </div>
+
+              <p className="text-red-400 font-semibold mt-4">
+                Do you want to proceed with creating this game?
+              </p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => {
+                setCreateWarningOpen(false);
+                setPendingCreate(false);
+              }}
+              className="bg-slate-800 border-slate-700"
+            >
+              Cancel - Go Back
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleAddGame}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Yes, Create Game
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Help Dialog */}
+      <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
+        <DialogContent className="bg-slate-900 border-slate-800 text-slate-100 max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl flex items-center gap-2">
+              <BookOpen className="h-6 w-6 text-blue-400" />
+              Code Editor Help Guide
+            </DialogTitle>
+            <DialogDescription className="text-slate-400">
+              Complete guide to using the code editor safely and effectively
+            </DialogDescription>
+          </DialogHeader>
+
+          <Accordion type="single" collapsible className="w-full space-y-2">
+            <AccordionItem value="overview" className="bg-slate-800 border-slate-700 rounded px-4">
+              <AccordionTrigger className="text-slate-200 hover:text-white">
+                <div className="flex items-center gap-2">
+                  <Info className="h-5 w-5 text-blue-400" />
+                  Overview - What is this?
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-slate-300 space-y-2">
+                <p>The Code Editor allows you to create and manage game components for your learning platform. Each game is a React component that can be customized and integrated into your application.</p>
+                <div className="bg-blue-500/10 border border-blue-500/30 rounded p-3 mt-2">
+                  <p className="font-semibold text-blue-400">Key Features:</p>
+                  <ul className="list-disc list-inside mt-2 space-y-1">
+                    <li>Create new game components with custom code</li>
+                    <li>Edit existing game code in a VS Code-like editor</li>
+                    <li>Paste code or upload files (.tsx, .ts, .jsx, .js)</li>
+                    <li>Preview changes before deployment</li>
+                  </ul>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="create" className="bg-slate-800 border-slate-700 rounded px-4">
+              <AccordionTrigger className="text-slate-200 hover:text-white">
+                <div className="flex items-center gap-2">
+                  <Plus className="h-5 w-5 text-green-400" />
+                  How to Create a New Game
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-slate-300 space-y-3">
+                <ol className="list-decimal list-inside space-y-3">
+                  <li>
+                    <span className="font-semibold">Click "New Game" button</span>
+                    <p className="ml-6 mt-1">Opens the creation dialog</p>
+                  </li>
+                  <li>
+                    <span className="font-semibold">Fill in game details:</span>
+                    <ul className="list-disc list-inside ml-6 mt-1 space-y-1">
+                      <li><strong>Game Name:</strong> User-friendly name (e.g., "Word Matching")</li>
+                      <li><strong>Component Name:</strong> React component name (e.g., "WordMatchGame") - must use PascalCase</li>
+                      <li><strong>Description:</strong> Brief explanation of the game</li>
+                      <li><strong>Difficulty:</strong> Beginner, Intermediate, or Advanced</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <span className="font-semibold">Add your code (choose one method):</span>
+                    <div className="ml-6 mt-2 space-y-2">
+                      <div className="bg-slate-900 p-3 rounded">
+                        <p className="font-medium text-green-400">Method 1: Paste Code</p>
+                        <p className="text-sm mt-1">Copy your React component code and paste it directly into the text area</p>
+                      </div>
+                      <div className="bg-slate-900 p-3 rounded">
+                        <p className="font-medium text-green-400">Method 2: Upload File</p>
+                        <p className="text-sm mt-1">Click "Choose File" and select a .tsx, .ts, .jsx, or .js file from your computer</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <span className="font-semibold">Review the warning dialog</span>
+                    <p className="ml-6 mt-1 text-yellow-400">Read carefully - this modifies your database!</p>
+                  </li>
+                  <li>
+                    <span className="font-semibold">Confirm creation</span>
+                    <p className="ml-6 mt-1">Click "Yes, Create Game" to proceed</p>
+                  </li>
+                </ol>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="edit" className="bg-slate-800 border-slate-700 rounded px-4">
+              <AccordionTrigger className="text-slate-200 hover:text-white">
+                <div className="flex items-center gap-2">
+                  <Code className="h-5 w-5 text-purple-400" />
+                  How to Edit Existing Code
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-slate-300 space-y-3">
+                <ol className="list-decimal list-inside space-y-3">
+                  <li>
+                    <span className="font-semibold">Click on a game card</span>
+                    <p className="ml-6 mt-1">Opens the VS Code-style editor</p>
+                  </li>
+                  <li>
+                    <span className="font-semibold">Navigate using the file explorer</span>
+                    <p className="ml-6 mt-1">Browse folders and files in the left sidebar</p>
+                  </li>
+                  <li>
+                    <span className="font-semibold">Edit the code</span>
+                    <ul className="list-disc list-inside ml-6 mt-1 space-y-1">
+                      <li>Full syntax highlighting and autocomplete</li>
+                      <li>Line numbers and error detection</li>
+                      <li>Search and replace functionality</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <span className="font-semibold">Save changes</span>
+                    <p className="ml-6 mt-1">Click the "Save" button - you'll see confirmation dialogs</p>
+                  </li>
+                </ol>
+                <Alert className="bg-yellow-500/10 border-yellow-500/50 mt-3">
+                  <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                  <AlertDescription className="text-slate-300">
+                    The editor shows multiple confirmation warnings before saving to prevent accidental changes
+                  </AlertDescription>
+                </Alert>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="best-practices" className="bg-slate-800 border-slate-700 rounded px-4">
+              <AccordionTrigger className="text-slate-200 hover:text-white">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-orange-400" />
+                  Best Practices & Safety
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-slate-300 space-y-3">
+                <div className="space-y-3">
+                  <div className="bg-green-500/10 border border-green-500/30 rounded p-3">
+                    <p className="font-semibold text-green-400">✅ DO:</p>
+                    <ul className="list-disc list-inside mt-2 space-y-1">
+                      <li>Test code locally before uploading</li>
+                      <li>Use proper React component structure</li>
+                      <li>Follow TypeScript typing conventions</li>
+                      <li>Keep backup copies of working code</li>
+                      <li>Read all warning dialogs carefully</li>
+                      <li>Start with simple components and iterate</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="bg-red-500/10 border border-red-500/30 rounded p-3">
+                    <p className="font-semibold text-red-400">❌ DON'T:</p>
+                    <ul className="list-disc list-inside mt-2 space-y-1">
+                      <li>Upload untested or unknown code</li>
+                      <li>Ignore TypeScript errors</li>
+                      <li>Use lowercase for component names</li>
+                      <li>Make multiple rapid changes without testing</li>
+                      <li>Skip the warning dialogs</li>
+                      <li>Edit production games during peak hours</li>
+                    </ul>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="warnings" className="bg-slate-800 border-slate-700 rounded px-4">
+              <AccordionTrigger className="text-slate-200 hover:text-white">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-red-400" />
+                  Understanding Warnings
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-slate-300 space-y-3">
+                <p>The editor shows multiple warning dialogs to protect your application:</p>
+                <div className="space-y-2">
+                  <div className="bg-slate-900 p-3 rounded border-l-4 border-yellow-500">
+                    <p className="font-semibold text-yellow-400">Database Modification Warning</p>
+                    <p className="text-sm mt-1">Appears when creating games - confirms you're adding data to the database</p>
+                  </div>
+                  <div className="bg-slate-900 p-3 rounded border-l-4 border-orange-500">
+                    <p className="font-semibold text-orange-400">Code Save Warning</p>
+                    <p className="text-sm mt-1">Appears when saving code changes - confirms you're modifying website functionality</p>
+                  </div>
+                  <div className="bg-slate-900 p-3 rounded border-l-4 border-red-500">
+                    <p className="font-semibold text-red-400">Final Confirmation</p>
+                    <p className="text-sm mt-1">Last chance to review before committing changes</p>
+                  </div>
+                </div>
+                <Alert className="bg-red-500/10 border-red-500/50 mt-3">
+                  <AlertTriangle className="h-4 w-4 text-red-500" />
+                  <AlertDescription className="text-slate-300">
+                    <strong>Never skip warnings!</strong> They exist to prevent breaking changes and data loss.
+                  </AlertDescription>
+                </Alert>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="troubleshooting" className="bg-slate-800 border-slate-700 rounded px-4">
+              <AccordionTrigger className="text-slate-200 hover:text-white">
+                <div className="flex items-center gap-2">
+                  <HelpCircle className="h-5 w-5 text-cyan-400" />
+                  Troubleshooting
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-slate-300 space-y-3">
+                <div className="space-y-3">
+                  <div>
+                    <p className="font-semibold text-cyan-400">Game not appearing after creation?</p>
+                    <p className="text-sm ml-4 mt-1">• Click the "Refresh" button to reload the game list</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-cyan-400">Code editor won't open?</p>
+                    <p className="text-sm ml-4 mt-1">• Clear your browser cache and try again</p>
+                    <p className="text-sm ml-4">• Check browser console for errors (F12)</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-cyan-400">Changes not saving?</p>
+                    <p className="text-sm ml-4 mt-1">• Ensure you have admin permissions</p>
+                    <p className="text-sm ml-4">• Check your network connection</p>
+                    <p className="text-sm ml-4">• Look for error messages in toast notifications</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-cyan-400">Game broke after edit?</p>
+                    <p className="text-sm ml-4 mt-1">• Check Activity logs to see what changed</p>
+                    <p className="text-sm ml-4">• Restore from backup if available</p>
+                    <p className="text-sm ml-4">• Review console errors in browser DevTools</p>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+
+          <DialogFooter>
+            <Button onClick={() => setHelpDialogOpen(false)} className="bg-blue-600 hover:bg-blue-700">
+              Got it, thanks!
             </Button>
           </DialogFooter>
         </DialogContent>

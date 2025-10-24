@@ -291,89 +291,149 @@ const CodeEditorWithSidebar = ({ code, gameName, componentName, onSave, onClose 
 
       {/* Warning Dialogs */}
       <AlertDialog open={showWarning1} onOpenChange={setShowWarning1}>
-        <AlertDialogContent className="bg-slate-900 border-slate-700">
+        <AlertDialogContent className="bg-slate-900 border-yellow-500/50">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-slate-100 flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-amber-500" />
-              Warning #1: Code Changes Will Affect Live Game
+            <AlertDialogTitle className="text-yellow-500 flex items-center gap-2">
+              <AlertTriangle className="h-6 w-6" />
+              WARNING #1: Database & Website Code Modification
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-slate-300">
-              You are about to modify the code for <span className="font-bold text-white">{gameName}</span>.
-              <br /><br />
-              This will:
-              <ul className="list-disc ml-6 mt-2 space-y-1">
-                <li>Update the game component in the project</li>
-                <li>Affect all users currently playing this game</li>
-                <li>Be committed to the GitHub repository</li>
-              </ul>
-              <br />
-              <span className="font-bold text-amber-400">Are you sure you want to continue?</span>
+            <AlertDialogDescription className="text-slate-300 space-y-3">
+              <p className="font-semibold text-lg">You are about to modify database-stored code for <span className="text-white">{gameName}</span>!</p>
+              
+              <div className="space-y-2 bg-slate-800/50 p-4 rounded border border-yellow-500/30">
+                <p className="text-yellow-400 font-medium">⚠️ This action will:</p>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>Update the game component code in the database</li>
+                  <li>Modify your website's functionality immediately</li>
+                  <li>Affect all users who access this game</li>
+                  <li>Log this change in the admin activity log</li>
+                </ul>
+              </div>
+
+              <div className="space-y-2 bg-orange-500/10 p-4 rounded border border-orange-500/30">
+                <p className="text-orange-400 font-medium">⚡ Impact:</p>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>Changes take effect after rebuild/deployment</li>
+                  <li>Broken code can crash the application</li>
+                  <li>No automatic rollback - manual restore required</li>
+                </ul>
+              </div>
+
+              <p className="text-yellow-400 font-semibold">
+                Have you tested this code and are you ready to proceed?
+              </p>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-slate-800 text-slate-300">Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleWarning1Confirm} className="bg-amber-600 hover:bg-amber-700">
-              Yes, Continue
+            <AlertDialogCancel className="bg-slate-800 text-slate-300">Cancel - Go Back</AlertDialogCancel>
+            <AlertDialogAction onClick={handleWarning1Confirm} className="bg-yellow-600 hover:bg-yellow-700">
+              Yes, Continue to Next Warning
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
       <AlertDialog open={showWarning2} onOpenChange={setShowWarning2}>
-        <AlertDialogContent className="bg-slate-900 border-slate-700">
+        <AlertDialogContent className="bg-slate-900 border-orange-500/50">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-slate-100 flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-orange-500" />
-              Warning #2: Consult Team Before Committing
+            <AlertDialogTitle className="text-orange-500 flex items-center gap-2">
+              <AlertTriangle className="h-6 w-6" />
+              WARNING #2: Pre-Save Checklist
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-slate-300">
-              <span className="font-bold text-orange-400">IMPORTANT:</span> Before saving these changes, you should:
-              <br /><br />
-              <ul className="list-disc ml-6 space-y-2">
-                <li>Consult with the development team</li>
-                <li>Review the code changes thoroughly</li>
-                <li>Test the game functionality</li>
-                <li>Ensure no breaking changes are introduced</li>
-                <li>Consider creating a backup of the current version</li>
-              </ul>
-              <br />
-              <span className="font-bold text-orange-400">Have you consulted with the team?</span>
+            <AlertDialogDescription className="text-slate-300 space-y-3">
+              <p className="font-semibold text-lg text-orange-400">Before you save, confirm you have:</p>
+              
+              <div className="space-y-2 bg-slate-800/50 p-4 rounded border border-orange-500/30">
+                <p className="text-orange-400 font-medium">✓ Pre-Save Checklist:</p>
+                <ul className="list-none space-y-2 text-sm">
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-400 mt-0.5">□</span>
+                    <span>Tested the code locally or in a development environment</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-400 mt-0.5">□</span>
+                    <span>Reviewed all changes for syntax errors and bugs</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-400 mt-0.5">□</span>
+                    <span>Verified TypeScript types are correct</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-400 mt-0.5">□</span>
+                    <span>Ensured imports and dependencies are available</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-400 mt-0.5">□</span>
+                    <span>Created a backup of the current working version</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-400 mt-0.5">□</span>
+                    <span>Consulted with team members if necessary</span>
+                  </li>
+                </ul>
+              </div>
+
+              <p className="text-orange-400 font-semibold">
+                Have you completed all checklist items?
+              </p>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="bg-slate-800 text-slate-300">No, Go Back</AlertDialogCancel>
             <AlertDialogAction onClick={handleWarning2Confirm} className="bg-orange-600 hover:bg-orange-700">
-              Yes, I've Consulted
+              Yes, Checklist Complete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
       <AlertDialog open={showFinalWarning} onOpenChange={setShowFinalWarning}>
-        <AlertDialogContent className="bg-slate-900 border-red-900/50 border-2">
+        <AlertDialogContent className="bg-slate-900 border-red-500 border-2 max-w-2xl">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-slate-100 flex items-center gap-2">
-              <AlertTriangle className="h-6 w-6 text-red-500" />
-              Final Warning: Last Chance to Cancel
+            <AlertDialogTitle className="text-red-500 flex items-center gap-2 text-xl">
+              <AlertTriangle className="h-7 w-7" />
+              FINAL WARNING: Last Chance to Cancel
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-slate-300">
-              <span className="font-bold text-red-400 text-lg">THIS IS YOUR LAST CHANCE!</span>
-              <br /><br />
-              Clicking "Save Now" will:
-              <ul className="list-disc ml-6 mt-2 space-y-1 text-red-300">
-                <li>Immediately update the game code</li>
-                <li>Push changes to GitHub</li>
-                <li>Affect all users in real-time</li>
-                <li>Cannot be easily undone</li>
-              </ul>
-              <br />
-              <span className="font-bold text-red-400">Are you ABSOLUTELY SURE?</span>
+            <AlertDialogDescription className="text-slate-300 space-y-3">
+              <p className="font-bold text-red-400 text-xl">⛔ THIS IS YOUR LAST CHANCE! ⛔</p>
+              
+              <div className="space-y-2 bg-red-500/10 p-4 rounded border border-red-500/50">
+                <p className="text-red-400 font-semibold text-lg">Clicking "SAVE NOW" will:</p>
+                <ul className="list-disc list-inside space-y-2 text-sm">
+                  <li className="text-red-300"><strong>IMMEDIATELY</strong> update the game code in the database</li>
+                  <li className="text-red-300"><strong>MODIFY</strong> your website's core functionality</li>
+                  <li className="text-red-300"><strong>AFFECT</strong> all users after next deployment</li>
+                  <li className="text-red-300"><strong>REQUIRE MANUAL</strong> rollback if something breaks</li>
+                  <li className="text-red-300"><strong>BE LOGGED</strong> in admin activity records</li>
+                </ul>
+              </div>
+
+              <div className="space-y-2 bg-slate-800/50 p-4 rounded border border-red-500/30">
+                <p className="text-red-400 font-medium">🚨 Potential Consequences:</p>
+                <ul className="list-disc list-inside space-y-1 text-sm text-slate-300">
+                  <li>Broken code will crash the game for all users</li>
+                  <li>TypeScript errors may prevent compilation</li>
+                  <li>Missing imports will cause runtime failures</li>
+                  <li>Logic errors may corrupt user data</li>
+                </ul>
+              </div>
+
+              <div className="bg-black/50 p-4 rounded border-2 border-red-500 mt-4">
+                <p className="font-bold text-red-400 text-center text-lg">
+                  ARE YOU ABSOLUTELY, POSITIVELY SURE?
+                </p>
+                <p className="text-center text-slate-400 text-sm mt-2">
+                  Think carefully - there's no undo button.
+                </p>
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="bg-slate-800 text-slate-300">Cancel - Don't Save</AlertDialogCancel>
-            <AlertDialogAction onClick={handleFinalConfirm} className="bg-red-600 hover:bg-red-700">
-              Save Now - I'm Sure
+          <AlertDialogFooter className="gap-2">
+            <AlertDialogCancel className="bg-slate-800 text-slate-300 hover:bg-slate-700">
+              🛑 Cancel - Don't Save
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleFinalConfirm} className="bg-red-600 hover:bg-red-700 font-bold">
+              💾 SAVE NOW - I'm Sure
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
