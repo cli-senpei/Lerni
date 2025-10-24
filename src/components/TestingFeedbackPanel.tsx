@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Star, CheckCircle2, AlertCircle, Save, Code, X } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -19,6 +20,7 @@ const TestingFeedbackPanel = ({ game, onClose, onEditCode }: TestingFeedbackPane
   const { toast } = useToast();
   const [startTime] = useState(Date.now());
   const [rating, setRating] = useState(0);
+  const [testerName, setTesterName] = useState("");
   const [checklist, setChecklist] = useState({
     loads_correctly: false,
     buttons_work: false,
@@ -44,7 +46,7 @@ const TestingFeedbackPanel = ({ game, onClose, onEditCode }: TestingFeedbackPane
           game_name: game.name,
           component_name: game.component_name,
           tester_id: userData.user?.id,
-          tester_email: userData.user?.email,
+          tester_email: testerName || userData.user?.email,
           ...checklist,
           feedback_text: feedback || null,
           bugs_found: bugs || null,
@@ -114,6 +116,24 @@ const TestingFeedbackPanel = ({ game, onClose, onEditCode }: TestingFeedbackPane
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {/* Tester Name */}
+        <Card className="bg-slate-800 border-slate-700">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm text-slate-200">Your Name</CardTitle>
+            <CardDescription className="text-xs text-slate-400">
+              Optional - helps identify feedback
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Input
+              value={testerName}
+              onChange={(e) => setTesterName(e.target.value)}
+              placeholder="Enter your name..."
+              className="bg-slate-900 border-slate-700 text-slate-200 text-sm"
+            />
+          </CardContent>
+        </Card>
+
         {/* Progress */}
         <Card className="bg-slate-800 border-slate-700">
           <CardContent className="pt-4">
