@@ -37,7 +37,7 @@ const Learning = () => {
               <img 
                 src={learningGameImage} 
                 alt="Learning Game Character" 
-                className="w-64 md:w-80 h-auto drop-shadow-2xl"
+                className="w-64 md:w-80 h-auto drop-shadow-2xl rounded-3xl transition-transform duration-300 hover:scale-110 hover:drop-shadow-[0_25px_50px_rgba(251,146,60,0.6)]"
               />
             </div>
             
