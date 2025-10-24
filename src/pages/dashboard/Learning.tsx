@@ -15,38 +15,43 @@ const Learning = () => {
   }
 
   return (
-    <div className="relative h-[calc(100vh-8rem)] w-full overflow-hidden">
-      {/* Background Video */}
-      <video
-        src={marioVideo}
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-      
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80" />
-      
-      {/* Content */}
-      <div className="relative flex h-full items-center justify-center px-6">
-        <div className="flex flex-col items-center space-y-8 text-center animate-fade-in">
-          <h2 className="max-w-2xl text-3xl font-bold leading-tight text-foreground md:text-4xl lg:text-5xl">
-            Start Learning with AI
-          </h2>
-          
-          <p className="max-w-xl text-lg text-muted-foreground md:text-xl">
-            Your personal reading coach is ready!
-          </p>
-          
-          <Button
-            onClick={() => setShowChat(true)}
-            size="lg"
-            className="bg-[hsl(142,76%,36%)] hover:bg-[hsl(142,76%,30%)] text-white font-bold text-xl h-16 px-12 transition-all hover:scale-110 hover:shadow-2xl"
-          >
-            Let's Go!
-          </Button>
+    <div className="min-h-screen bg-gradient-to-br from-green-50/30 via-background to-emerald-50/20">
+      <div className="max-w-5xl mx-auto space-y-6 p-4 md:p-6">
+        {/* Hero Card - Clean & Accessible */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-green-100/60 to-emerald-100/50 p-6 md:p-10 border border-green-200/40 shadow-lg">
+          <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-8">
+            {/* Video - Contained */}
+            <div className="w-full md:w-1/2 flex justify-center">
+              <div className="w-full max-w-[280px] md:max-w-[320px]">
+                <video
+                  src={marioVideo}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full rounded-2xl shadow-md border border-green-200/30"
+                />
+              </div>
+            </div>
+            
+            {/* Content */}
+            <div className="flex-1 text-center md:text-left">
+              <h1 className="text-3xl md:text-5xl font-black mb-4 text-green-900 tracking-tight">
+                Start Learning
+              </h1>
+              <p className="text-base md:text-lg text-green-800/80 font-medium mb-6">
+                Your personal reading coach is ready!
+              </p>
+              
+              <Button
+                onClick={() => setShowChat(true)}
+                size="lg"
+                className="bg-green-600 hover:bg-green-700 text-white font-bold shadow-md hover:shadow-lg transition-all hover:scale-105"
+              >
+                Let's Go!
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
