@@ -4,6 +4,16 @@ import { Home, LogOut, User as UserIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import ProfileModal from "@/components/ProfileModal";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import learningIcon from "@/assets/learning-icon.png";
 import leaderboardIcon from "@/assets/leaderboard-icon.png";
 import {
@@ -28,6 +38,7 @@ const DashboardLayout = () => {
   const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [signOutDialogOpen, setSignOutDialogOpen] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -50,6 +61,7 @@ const DashboardLayout = () => {
   }, [navigate]);
 
   const handleLogout = async () => {
+    setSignOutDialogOpen(false);
     await supabase.auth.signOut();
     toast({
       title: "Logged out successfully",
@@ -129,10 +141,10 @@ const DashboardLayout = () => {
 
             <SidebarFooter className="p-6 pb-8">
               <button
-                onClick={handleLogout}
-                className="flex items-center gap-5 w-full px-6 py-6 text-base font-semibold rounded-3xl bg-red-50 text-red-600 hover:bg-gradient-to-br hover:from-red-100 hover:to-pink-100 hover:text-red-700 transition-all hover:scale-102"
+                onClick={() => setSignOutDialogOpen(true)}
+                className="flex items-center gap-3 w-full px-4 py-3 text-sm font-semibold rounded-2xl bg-red-50 text-red-600 hover:bg-gradient-to-br hover:from-red-100 hover:to-pink-100 hover:text-red-700 transition-all hover:scale-102"
               >
-                <LogOut className="h-14 w-14 stroke-[2.5]" />
+                <LogOut className="h-5 w-5 stroke-[2.5]" />
                 <span className="tracking-wide">Sign Out</span>
               </button>
             </SidebarFooter>
@@ -146,7 +158,24 @@ const DashboardLayout = () => {
           </main>
         </div>
       </div>
-      {user && <ProfileModal open={profileOpen} onOpenChange={setProfileOpen} user={user} />}
+      {user && <ProfileModal open={profileOpen} onOpenChange={setProfileOpen} user={user} onSignOut={() => setSignOutDialogOpen(true)} />}
+      
+      <AlertDialog open={signOutDialogOpen} onOpenChange={setSignOutDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to sign out?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You will be logged out of your account and redirected to the home page.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleLogout} className="bg-red-600 hover:bg-red-700">
+              Sign Out
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </SidebarProvider>
   );
 };

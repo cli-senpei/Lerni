@@ -11,15 +11,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { User as UserIcon } from "lucide-react";
+import { User as UserIcon, LogOut } from "lucide-react";
 
 interface ProfileModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   user: User;
+  onSignOut: () => void;
 }
 
-const ProfileModal = ({ open, onOpenChange, user }: ProfileModalProps) => {
+const ProfileModal = ({ open, onOpenChange, user, onSignOut }: ProfileModalProps) => {
   const { toast } = useToast();
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -105,6 +106,18 @@ const ProfileModal = ({ open, onOpenChange, user }: ProfileModalProps) => {
 
           <Button onClick={handleSave} disabled={loading} className="w-full">
             {loading ? "Saving..." : "Save Changes"}
+          </Button>
+
+          <Button 
+            onClick={() => {
+              onOpenChange(false);
+              onSignOut();
+            }}
+            variant="destructive" 
+            className="w-full flex items-center gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign Out
           </Button>
         </div>
       </DialogContent>
