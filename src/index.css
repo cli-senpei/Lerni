@@ -23,13 +23,13 @@ All colors MUST be HSL.
     --primary-hover: 142 76% 30%;
     --primary-hover-foreground: 0 0% 100%;
 
-    --secondary: 220 10% 50%;
+    --secondary: 142 69% 48%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 40%;
 
-    --accent: 220 10% 50%;
+    --accent: 142 69% 48%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 70% 50%;
@@ -80,13 +80,13 @@ All colors MUST be HSL.
     --primary-hover: 142 76% 30%;
     --primary-hover-foreground: 0 0% 100%;
 
-    --secondary: 220 10% 55%;
+    --secondary: 142 69% 48%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 18%;
     --muted-foreground: 0 0% 65%;
 
-    --accent: 220 10% 55%;
+    --accent: 142 69% 48%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62% 50%;
