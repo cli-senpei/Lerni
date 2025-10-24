@@ -159,6 +159,11 @@ const AdminLayout = () => {
                 <LogOut className="h-5 w-5" />
                 <span>Sign Out</span>
               </button>
+              <div className="mt-3 pt-3 border-t border-slate-800">
+                <p className="text-[10px] text-slate-600 text-center font-mono">
+                  &lt;/coded by rm/&gt;
+                </p>
+              </div>
             </SidebarFooter>
           </Sidebar>
 
@@ -168,13 +173,6 @@ const AdminLayout = () => {
               <Outlet />
             </div>
           </main>
-          
-          {/* Footer */}
-          <footer className="bg-slate-950 border-t border-slate-800 py-2 px-4">
-            <p className="text-xs text-slate-500 text-center">
-              coded by ruel mcneil
-            </p>
-          </footer>
         </div>
       </div>
       

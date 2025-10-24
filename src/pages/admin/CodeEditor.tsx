@@ -45,7 +45,7 @@ const AdminCodeEditor = () => {
     try {
       const { data, error } = await supabase
         .from("games")
-        .select("id, name, component_name, code")
+        .select("id, name, component_name, code, description, difficulty_level")
         .order("display_order");
 
       if (error) throw error;
@@ -715,24 +715,32 @@ const AdminCodeEditor = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="min-h-[400px] bg-slate-950 rounded-lg p-6">
-                {previewGame?.code ? (
+                {previewGame?.code && previewGame.code.trim() ? (
                   <div className="flex items-center justify-center h-full">
                     <div className="text-center space-y-4">
-                      <FileCode className="h-16 w-16 text-slate-600 mx-auto" />
+                      <FileCode className="h-16 w-16 text-green-500 mx-auto" />
                       <div>
-                        <p className="text-slate-400 mb-2">Preview Available</p>
+                        <p className="text-slate-300 font-semibold mb-2">Code Loaded Successfully</p>
                         <p className="text-xs text-slate-500 max-w-md">
                           Component: <span className="font-mono text-blue-400">{previewGame.component_name}</span>
                         </p>
                         <p className="text-xs text-slate-500 mt-2">
-                          Code lines: {previewGame.code.split('\n').length}
+                          Code lines: <span className="text-green-400">{previewGame.code.split('\n').length}</span>
+                        </p>
+                        <p className="text-xs text-slate-500 mt-1">
+                          Characters: <span className="text-green-400">{previewGame.code.length}</span>
                         </p>
                       </div>
-                      <Alert className="bg-yellow-500/10 border-yellow-500/50 max-w-lg mx-auto">
-                        <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                      <div className="mt-4 p-4 bg-slate-900 rounded border border-slate-700 max-w-lg mx-auto">
+                        <p className="text-xs text-slate-400 font-mono text-left overflow-x-auto whitespace-pre-wrap max-h-48 overflow-y-auto">
+                          {previewGame.code.substring(0, 500)}...
+                        </p>
+                      </div>
+                      <Alert className="bg-blue-500/10 border-blue-500/50 max-w-lg mx-auto">
+                        <Info className="h-4 w-4 text-blue-500" />
                         <AlertDescription className="text-xs text-slate-300">
-                          Note: Live rendering requires the component to be properly built and imported. 
-                          Use the Edit Code feature to modify and deploy the game.
+                          Full preview rendering will be available after the component is built and deployed. 
+                          Use the Edit Code feature to modify the game code.
                         </AlertDescription>
                       </Alert>
                     </div>
@@ -741,8 +749,19 @@ const AdminCodeEditor = () => {
                   <div className="flex items-center justify-center h-full text-slate-500">
                     <div className="text-center">
                       <AlertTriangle className="h-12 w-12 mx-auto mb-3 text-slate-600" />
-                      <p>No code available for preview</p>
-                      <p className="text-xs mt-2">Add code to this game to enable preview</p>
+                      <p className="text-slate-400 font-semibold">No code available for preview</p>
+                      <p className="text-xs mt-2 text-slate-500">Add code to this game to enable preview</p>
+                      <Button
+                        className="mt-4 bg-blue-600 hover:bg-blue-700"
+                        size="sm"
+                        onClick={() => {
+                          setPreviewGame(null);
+                          setEditingCode(previewGame);
+                        }}
+                      >
+                        <Code className="h-4 w-4 mr-2" />
+                        Add Code Now
+                      </Button>
                     </div>
                   </div>
                 )}

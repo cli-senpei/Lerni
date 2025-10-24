@@ -87,7 +87,7 @@ const AdminUsers = () => {
     if (!selectedUser) return;
 
     // Prevent deleting or demoting admin user
-    if ((actionType === "delete" || actionType === "demote") && selectedUser.email === "admin@lerni.com") {
+    if ((actionType === "delete" || actionType === "demote") && selectedUser.email === "admin@gmail.com") {
       toast({
         title: "Action Blocked",
         description: "Cannot delete or demote the primary admin account",
@@ -273,7 +273,7 @@ const AdminUsers = () => {
         <AlertTitle className="text-yellow-500">User Database Management</AlertTitle>
         <AlertDescription className="text-slate-300">
           You are managing user accounts and permissions. Changes affect user access and data. 
-          The primary admin account (admin@lerni.com) is protected and cannot be deleted or demoted.
+          The primary admin account (admin@gmail.com) is protected and cannot be deleted or demoted.
         </AlertDescription>
       </Alert>
 
@@ -346,8 +346,8 @@ const AdminUsers = () => {
                               setSelectedUser(user);
                               setActionType("demote");
                             }}
-                            disabled={user.email === "admin@lerni.com"}
-                            title={user.email === "admin@lerni.com" ? "Cannot demote primary admin" : "Remove admin role"}
+                            disabled={user.email === "admin@gmail.com"}
+                            title={user.email === "admin@gmail.com" ? "Cannot demote primary admin" : "Remove admin role"}
                           >
                             <ShieldOff className="h-4 w-4" />
                           </Button>
@@ -372,8 +372,8 @@ const AdminUsers = () => {
                             setSelectedUser(user);
                             setActionType("delete");
                           }}
-                          disabled={user.email === "admin@lerni.com"}
-                          title={user.email === "admin@lerni.com" ? "Cannot delete primary admin" : "Delete user"}
+                          disabled={user.email === "admin@gmail.com"}
+                          title={user.email === "admin@gmail.com" ? "Cannot delete primary admin" : "Delete user"}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -620,7 +620,7 @@ const AdminUsers = () => {
                 <Alert className="bg-red-500/10 border-red-500/50">
                   <AlertTriangle className="h-4 w-4 text-red-500" />
                   <AlertDescription className="text-slate-300">
-                    <strong className="text-red-400">Critical Security Feature:</strong> The primary admin account (admin@lerni.com) is permanently protected and cannot be deleted or demoted.
+                    <strong className="text-red-400">Critical Security Feature:</strong> The primary admin account (admin@gmail.com) is permanently protected and cannot be deleted or demoted.
                   </AlertDescription>
                 </Alert>
                 <div className="mt-3 space-y-2">
