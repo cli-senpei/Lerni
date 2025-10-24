@@ -21,7 +21,7 @@ const Header = ({ hideButton = false }: HeaderProps) => {
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          <div className="relative h-20 md:h-24 w-20 md:w-24 flex items-center justify-center">
+          <div className="relative h-24 md:h-28 w-24 md:w-28 flex items-center justify-center">
             <img 
               src={logo} 
               alt="Lerni Logo" 
