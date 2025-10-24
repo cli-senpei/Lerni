@@ -98,18 +98,18 @@ const AdminLayout = () => {
             <div className="flex items-center gap-2">
               <SidebarTrigger className="hover:bg-slate-800 rounded-md transition-colors p-2 text-white" />
               <Link to="/admin" className="flex items-center gap-3">
-                <img src={logo} alt="Lerni Admin" className="h-8 md:h-12 w-auto brightness-0 invert" />
+                <img src={logo} alt="Lerni Admin" className="h-12 md:h-16 w-auto brightness-0 invert" />
                 <div className="flex items-center gap-2">
-                  <Code className="h-5 w-5 text-white" />
-                  <span className="text-white font-bold text-lg">ADMIN</span>
+                  <Code className="h-6 w-6 md:h-7 md:w-7 text-white" />
+                  <span className="text-white font-bold text-xl md:text-2xl">ADMIN</span>
                 </div>
               </Link>
             </div>
             
             <div className="flex items-center gap-2 md:gap-3">
-              <Avatar className="h-8 w-8 md:h-10 md:w-10 hover:ring-2 hover:ring-red-500 transition-all">
+              <Avatar className="h-10 w-10 md:h-12 md:w-12 hover:ring-2 hover:ring-red-500 transition-all">
                 <AvatarFallback className="bg-red-500/10 text-red-500">
-                  <Code className="h-4 w-4 md:h-5 md:w-5" />
+                  <Code className="h-5 w-5 md:h-6 md:w-6" />
                 </AvatarFallback>
               </Avatar>
               <span className="text-xs md:text-sm font-medium hidden sm:block text-white">{user.email}</span>
@@ -121,9 +121,9 @@ const AdminLayout = () => {
         <div className="flex flex-1 w-full overflow-hidden">
           {/* Sidebar */}
           <Sidebar collapsible="offcanvas" className="border-r border-slate-900 bg-black h-full" variant="sidebar">
-            <SidebarContent className="pt-4 bg-black">
+            <SidebarContent className="pt-8 bg-black">
               <SidebarGroup className="bg-black">
-                <SidebarGroupLabel className="text-white px-4">Admin Panel</SidebarGroupLabel>
+                <SidebarGroupLabel className="text-white px-4 mb-2">Admin Panel</SidebarGroupLabel>
                 <SidebarGroupContent className="bg-black">
                   <SidebarMenu className="space-y-2 px-2 bg-black">
                     {menuItems.map((item) => (
