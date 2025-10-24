@@ -47,6 +47,68 @@ export type Database = {
         }
         Relationships: []
       }
+      game_testing_feedback: {
+        Row: {
+          bugs_found: string | null
+          buttons_work: boolean | null
+          component_name: string
+          created_at: string | null
+          feedback_text: string | null
+          game_id: string | null
+          game_name: string
+          gameplay_works: boolean | null
+          id: string
+          loads_correctly: boolean | null
+          no_visual_glitches: boolean | null
+          rating: number | null
+          test_duration_seconds: number | null
+          tester_email: string | null
+          tester_id: string | null
+        }
+        Insert: {
+          bugs_found?: string | null
+          buttons_work?: boolean | null
+          component_name: string
+          created_at?: string | null
+          feedback_text?: string | null
+          game_id?: string | null
+          game_name: string
+          gameplay_works?: boolean | null
+          id?: string
+          loads_correctly?: boolean | null
+          no_visual_glitches?: boolean | null
+          rating?: number | null
+          test_duration_seconds?: number | null
+          tester_email?: string | null
+          tester_id?: string | null
+        }
+        Update: {
+          bugs_found?: string | null
+          buttons_work?: boolean | null
+          component_name?: string
+          created_at?: string | null
+          feedback_text?: string | null
+          game_id?: string | null
+          game_name?: string
+          gameplay_works?: boolean | null
+          id?: string
+          loads_correctly?: boolean | null
+          no_visual_glitches?: boolean | null
+          rating?: number | null
+          test_duration_seconds?: number | null
+          tester_email?: string | null
+          tester_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_testing_feedback_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       games: {
         Row: {
           code: string | null
