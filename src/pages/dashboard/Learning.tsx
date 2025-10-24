@@ -1,24 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import LearningChat from "@/components/dashboard/LearningChat";
 import marioVideo from "@/assets/mario.mp4";
-import { useSidebar } from "@/components/ui/sidebar";
 
 const Learning = () => {
   const [showChat, setShowChat] = useState(false);
-  const { setOpen } = useSidebar();
-
-  useEffect(() => {
-    if (showChat) {
-      setOpen(false); // Collapse sidebar when chat starts
-    } else {
-      setOpen(true); // Expand sidebar when returning to landing
-    }
-  }, [showChat, setOpen]);
 
   if (showChat) {
     return (
-      <div className="h-[calc(100vh-12rem)] animate-fade-in">
+      <div className="h-[calc(100vh-8rem)] w-full animate-fade-in">
         <LearningChat />
       </div>
     );
