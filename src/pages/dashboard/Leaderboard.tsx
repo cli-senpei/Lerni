@@ -4,9 +4,17 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Trophy, Star, MessageSquare, TrendingUp, Sparkles } from "lucide-react";
+import { Trophy, Star, MessageSquare, TrendingUp, Sparkles, Upload } from "lucide-react";
 import { User } from "@supabase/supabase-js";
 import mascotImage from "@/assets/mascot.png";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface LeaderboardEntry {
   id: string;
@@ -29,6 +37,7 @@ const Leaderboard = () => {
   const [currentScore, setCurrentScore] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [editName, setEditName] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     loadUser();
@@ -151,6 +160,7 @@ const Leaderboard = () => {
           title: "Entry updated!",
           description: "Your leaderboard entry has been updated successfully",
         });
+        setDialogOpen(false);
         loadLeaderboard();
         loadUserEntry(user.id);
       }
@@ -177,6 +187,7 @@ const Leaderboard = () => {
           title: "Submitted to leaderboard!",
           description: "Your score has been added to the leaderboard",
         });
+        setDialogOpen(false);
         loadLeaderboard();
         loadUserEntry(user.id);
       }
@@ -240,91 +251,128 @@ const Leaderboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-background to-slate-50/20">
-      <div className="max-w-5xl mx-auto space-y-6 p-4 md:p-6">
-        {/* Header */}
-        <div className="text-center py-4">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <img src={mascotImage} alt="Mascot" className="w-12 h-12" />
-            <h1 className="text-3xl font-bold text-foreground">
-              Leaderboard
-            </h1>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            See how you rank among top learners
-          </p>
-        </div>
-
-        {/* Submit Score Card */}
-        <Card className="p-6 bg-card border shadow-sm">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
-                Your Score
-              </h2>
-              <div className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg shadow-md">
-                <TrendingUp className="h-4 w-4" />
-                <span className="text-xl font-bold">{currentScore}</span>
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-background">
+      <div className="max-w-6xl mx-auto space-y-6 p-4 md:p-6">
+        {/* Hero Banner - AAA Game Style */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 p-8 md:p-12 shadow-2xl">
+          {/* Animated Background Effects */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
+          
+          {/* Content */}
+          <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex-1 text-center md:text-left z-10">
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-4 border border-white/20">
+                <Trophy className="h-4 w-4 text-amber-300" />
+                <span className="text-xs font-semibold text-white uppercase tracking-wider">Competitive Rankings</span>
               </div>
-            </div>
+              <h1 className="text-5xl md:text-7xl font-black mb-4 text-white drop-shadow-2xl tracking-tight">
+                Leaderboard
+              </h1>
+              <p className="text-lg md:text-xl text-white/90 font-medium mb-6">
+                Compete with the best learners worldwide
+              </p>
+              
+              {/* CTA Button */}
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button size="lg" className="bg-white text-purple-700 hover:bg-white/90 font-bold shadow-xl hover:shadow-2xl transition-all hover:scale-105">
+                    <Upload className="h-5 w-5 mr-2" />
+                    Submit Your Score
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                      Submit Your Score
+                    </DialogTitle>
+                    <DialogDescription>
+                      Share your achievement with the community
+                    </DialogDescription>
+                  </DialogHeader>
+                  
+                  <div className="space-y-4 py-4">
+                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white">
+                      <span className="font-semibold">Current Score</span>
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="h-5 w-5" />
+                        <span className="text-2xl font-bold">{currentScore}</span>
+                      </div>
+                    </div>
 
-            <div className="space-y-3">
-              <div>
-                <label className="text-xs font-medium mb-1.5 block text-muted-foreground">
-                  Your Name *
-                </label>
-                <input
-                  type="text"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  placeholder="Enter your name"
-                  className="w-full px-3 py-2 text-sm rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                  maxLength={50}
-                />
-              </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">
+                        Your Name *
+                      </label>
+                      <input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        placeholder="Enter your name"
+                        className="w-full px-3 py-2 text-sm rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                        maxLength={50}
+                      />
+                    </div>
 
-              <div>
-                <label className="text-xs font-medium mb-1.5 block text-muted-foreground">
-                  Rate Your Experience *
-                </label>
-                {renderStars(rating, true)}
-              </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">
+                        Rate Your Experience *
+                      </label>
+                      {renderStars(rating, true)}
+                    </div>
 
-              <div>
-                <label className="text-xs font-medium mb-1.5 block flex items-center justify-between text-muted-foreground">
-                  <span>Share Your Thoughts</span>
-                  {userEntry?.comment && (
-                    <button
-                      onClick={handleDeleteComment}
-                      className="text-xs text-destructive hover:underline font-medium"
+                    <div>
+                      <label className="text-sm font-medium mb-2 block flex items-center justify-between">
+                        <span>Share Your Thoughts</span>
+                        {userEntry?.comment && (
+                          <button
+                            onClick={handleDeleteComment}
+                            className="text-xs text-destructive hover:underline"
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </label>
+                      <Textarea
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        placeholder="Tell us about your learning experience..."
+                        className="min-h-[100px] text-sm"
+                        maxLength={500}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {comment.length}/500 characters
+                      </p>
+                    </div>
+
+                    <Button
+                      onClick={handleSubmit}
+                      disabled={submitting || rating === 0 || !editName.trim()}
+                      className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold"
+                      size="lg"
                     >
-                      Delete Comment
-                    </button>
-                  )}
-                </label>
-                <Textarea
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  placeholder="Tell us about your learning experience..."
-                  className="min-h-[80px] text-sm rounded-lg"
-                  maxLength={500}
+                      {userEntry ? "Update Entry" : "Submit to Leaderboard"}
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+            
+            {/* Mascot - Integrated */}
+            <div className="relative md:absolute md:right-8 md:bottom-0 z-20">
+              <div className="relative">
+                <div className="absolute inset-0 bg-white/20 blur-2xl rounded-full"></div>
+                <img 
+                  src={mascotImage} 
+                  alt="Mascot" 
+                  className="relative w-40 h-40 md:w-52 md:h-52 object-contain drop-shadow-2xl animate-bounce-slow" 
                 />
-                <p className="text-xs text-muted-foreground mt-1">
-                  {comment.length}/500 characters
-                </p>
               </div>
-
-              <Button
-                onClick={handleSubmit}
-                disabled={submitting || rating === 0 || !editName.trim()}
-                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-5 rounded-lg shadow-md hover:shadow-lg transition-all"
-              >
-                {userEntry ? "Update Entry" : "Submit to Leaderboard"}
-              </Button>
             </div>
           </div>
-        </Card>
+        </div>
 
         {/* Leaderboard */}
         <div className="space-y-4">
