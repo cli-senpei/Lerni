@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Code, Plus, RefreshCw, FileCode } from "lucide-react";
+import { Code, Plus, RefreshCw, FileCode, Upload } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import CodeEditorWithSidebar from "@/components/CodeEditorWithSidebar";
 
 interface Game {
@@ -28,6 +30,7 @@ const AdminCodeEditor = () => {
     description: "",
     component_name: "",
     difficulty_level: "beginner",
+    code: "",
   });
 
   const fetchGames = async () => {
@@ -89,7 +92,7 @@ const AdminCodeEditor = () => {
 
       toast({ title: "Game created successfully" });
       setAddGameDialogOpen(false);
-      setNewGameData({ name: "", description: "", component_name: "", difficulty_level: "beginner" });
+      setNewGameData({ name: "", description: "", component_name: "", difficulty_level: "beginner", code: "" });
       fetchGames();
     } catch (error) {
       console.error("Error creating game:", error);
@@ -203,34 +206,36 @@ const AdminCodeEditor = () => {
 
       {/* Add Game Dialog */}
       <Dialog open={addGameDialogOpen} onOpenChange={setAddGameDialogOpen}>
-        <DialogContent className="bg-slate-900 border-slate-800 text-slate-100">
+        <DialogContent className="bg-slate-900 border-slate-800 text-slate-100 max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Create New Game</DialogTitle>
             <DialogDescription className="text-slate-400">
-              Add a new game component to the system
+              Add a new game component with code
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="name" className="text-slate-300">Game Name *</Label>
-              <Input
-                id="name"
-                value={newGameData.name}
-                onChange={(e) => setNewGameData({ ...newGameData, name: e.target.value })}
-                className="bg-slate-800 border-slate-700 text-slate-200"
-                placeholder="e.g., Word Matching Game"
-              />
-            </div>
-            <div>
-              <Label htmlFor="component" className="text-slate-300">Component Name *</Label>
-              <Input
-                id="component"
-                value={newGameData.component_name}
-                onChange={(e) => setNewGameData({ ...newGameData, component_name: e.target.value })}
-                className="bg-slate-800 border-slate-700 text-slate-200"
-                placeholder="e.g., WordMatchGame"
-              />
-              <p className="text-xs text-slate-500 mt-1">Must be a valid React component name</p>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="name" className="text-slate-300">Game Name *</Label>
+                <Input
+                  id="name"
+                  value={newGameData.name}
+                  onChange={(e) => setNewGameData({ ...newGameData, name: e.target.value })}
+                  className="bg-slate-800 border-slate-700 text-slate-200"
+                  placeholder="e.g., Word Matching Game"
+                />
+              </div>
+              <div>
+                <Label htmlFor="component" className="text-slate-300">Component Name *</Label>
+                <Input
+                  id="component"
+                  value={newGameData.component_name}
+                  onChange={(e) => setNewGameData({ ...newGameData, component_name: e.target.value })}
+                  className="bg-slate-800 border-slate-700 text-slate-200"
+                  placeholder="e.g., WordMatchGame"
+                />
+                <p className="text-xs text-slate-500 mt-1">Valid React component name</p>
+              </div>
             </div>
             <div>
               <Label htmlFor="description" className="text-slate-300">Description</Label>
@@ -258,13 +263,62 @@ const AdminCodeEditor = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            <Tabs defaultValue="paste" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 bg-slate-800">
+                <TabsTrigger value="paste" className="data-[state=active]:bg-slate-700">Paste Code</TabsTrigger>
+                <TabsTrigger value="upload" className="data-[state=active]:bg-slate-700">Upload File</TabsTrigger>
+              </TabsList>
+              <TabsContent value="paste" className="space-y-2">
+                <Label htmlFor="code" className="text-slate-300">Game Code (TypeScript/React)</Label>
+                <Textarea
+                  id="code"
+                  value={newGameData.code}
+                  onChange={(e) => setNewGameData({ ...newGameData, code: e.target.value })}
+                  className="bg-slate-800 border-slate-700 text-slate-200 font-mono text-sm min-h-[300px]"
+                  placeholder="Paste your React component code here..."
+                />
+                <p className="text-xs text-slate-500">Paste the complete React component code</p>
+              </TabsContent>
+              <TabsContent value="upload" className="space-y-2">
+                <Label htmlFor="file-upload" className="text-slate-300">Upload Code File</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="file-upload"
+                    type="file"
+                    accept=".ts,.tsx,.js,.jsx"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          const content = event.target?.result as string;
+                          setNewGameData({ ...newGameData, code: content });
+                        };
+                        reader.readAsText(file);
+                      }
+                    }}
+                    className="bg-slate-800 border-slate-700 text-slate-200"
+                  />
+                  <Button variant="outline" size="icon" className="bg-slate-800 border-slate-700">
+                    <Upload className="h-4 w-4" />
+                  </Button>
+                </div>
+                {newGameData.code && (
+                  <div className="p-3 bg-slate-800 rounded border border-slate-700">
+                    <p className="text-xs text-green-400">✓ File loaded ({newGameData.code.split('\n').length} lines)</p>
+                  </div>
+                )}
+                <p className="text-xs text-slate-500">Upload .ts, .tsx, .js, or .jsx files</p>
+              </TabsContent>
+            </Tabs>
           </div>
           <DialogFooter>
             <Button 
               variant="outline" 
               onClick={() => {
                 setAddGameDialogOpen(false);
-                setNewGameData({ name: "", description: "", component_name: "", difficulty_level: "beginner" });
+                setNewGameData({ name: "", description: "", component_name: "", difficulty_level: "beginner", code: "" });
               }} 
               className="bg-slate-800 border-slate-700 text-slate-300"
             >
