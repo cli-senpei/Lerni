@@ -99,7 +99,7 @@ const AdminLayout = () => {
               <Link to="/admin" className="flex items-center gap-3">
                 <img src={logo} alt="Lerni Admin" className="h-12 md:h-16 w-auto brightness-0 invert" />
                 <div className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-red-500" />
+                  <Shield className="h-5 w-5 text-white" />
                   <span className="text-white font-bold text-lg">ADMIN</span>
                 </div>
               </Link>
@@ -151,7 +151,7 @@ const AdminLayout = () => {
             </SidebarContent>
 
             <div className="px-6 mb-4 bg-black">
-              <div className="border-t border-slate-900" />
+              {/* Removed divider line */}
             </div>
 
             <SidebarFooter className="p-4 pb-6 bg-black">

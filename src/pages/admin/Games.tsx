@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import GameCodeEditor from "@/components/GameCodeEditor";
+import CodeEditorWithSidebar from "@/components/CodeEditorWithSidebar";
 
 interface Game {
   id: string;
@@ -478,9 +479,10 @@ const AdminGames = () => {
 
       {/* Code Editor Modal */}
       {editingCode && (
-        <GameCodeEditor
+        <CodeEditorWithSidebar
           code={editingCode.code || ""}
           gameName={editingCode.name}
+          componentName={editingCode.component_name}
           onSave={handleSaveCode}
           onClose={() => setEditingCode(null)}
         />
