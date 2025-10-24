@@ -66,11 +66,34 @@ const DashboardLayout = () => {
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="flex min-h-screen w-full">
-        {/* Sidebar */}
-        <div className="flex-shrink-0">
-          <div className="h-16 md:h-20" /> {/* Spacer for header height */}
-          <Sidebar collapsible="offcanvas" className="border-r bg-sidebar fixed top-16 md:top-20 h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)]" variant="sidebar">
+      <div className="flex min-h-screen w-full flex-col">
+        {/* Header - Fixed at top */}
+        <header className="w-full border-b border-border bg-background sticky top-0 z-50">
+          <div className="flex h-16 md:h-20 items-center justify-between px-4 md:px-12">
+            <div className="flex items-center gap-2">
+              <SidebarTrigger className="hover:bg-accent rounded-md transition-colors p-2" />
+              <Link to="/dashboard" className="flex items-center">
+                <img src={logo} alt="Lerni Logo" className="h-12 md:h-16 w-auto" />
+              </Link>
+            </div>
+            
+            <div className="flex items-center gap-2 md:gap-3">
+              <button onClick={() => setProfileOpen(true)} className="cursor-pointer">
+                <Avatar className="h-8 w-8 md:h-10 md:w-10 hover:ring-2 hover:ring-primary transition-all">
+                  <AvatarFallback className="bg-primary/10 text-primary">
+                    <UserIcon className="h-4 w-4 md:h-5 md:w-5" />
+                  </AvatarFallback>
+                </Avatar>
+              </button>
+              <span className="text-xs md:text-sm font-medium hidden sm:block">{user.email}</span>
+            </div>
+          </div>
+        </header>
+
+        {/* Sidebar and Content Container */}
+        <div className="flex flex-1 w-full overflow-hidden">
+          {/* Sidebar */}
+          <Sidebar collapsible="offcanvas" className="border-r bg-sidebar" variant="sidebar">
             <SidebarContent className="pt-8">
               <SidebarGroup>
                 <SidebarGroupContent>
@@ -114,32 +137,6 @@ const DashboardLayout = () => {
               </button>
             </SidebarFooter>
           </Sidebar>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0">
-          {/* Header */}
-          <header className="w-full border-b border-border bg-background sticky top-0 z-50">
-            <div className="flex h-16 md:h-20 items-center justify-between px-4 md:px-12">
-              <div className="flex items-center gap-2">
-                <SidebarTrigger className="hover:bg-accent rounded-md transition-colors p-2" />
-                <Link to="/dashboard" className="flex items-center">
-                  <img src={logo} alt="Lerni Logo" className="h-12 md:h-20 w-auto" />
-                </Link>
-              </div>
-              
-              <div className="flex items-center gap-2 md:gap-3">
-                <button onClick={() => setProfileOpen(true)} className="cursor-pointer">
-                  <Avatar className="h-8 w-8 md:h-10 md:w-10 hover:ring-2 hover:ring-primary transition-all">
-                    <AvatarFallback className="bg-primary/10 text-primary">
-                      <UserIcon className="h-4 w-4 md:h-5 md:w-5" />
-                    </AvatarFallback>
-                  </Avatar>
-                </button>
-                <span className="text-xs md:text-sm font-medium hidden sm:block">{user.email}</span>
-              </div>
-            </div>
-          </header>
 
           {/* Main Content */}
           <main className="flex-1 overflow-auto w-full">
