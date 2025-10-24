@@ -58,9 +58,8 @@ const DashboardLayout = () => {
   };
 
   const menuItems = [
-    { title: "Home", url: "/dashboard", icon: Home, isLucide: true },
     { title: "Learning", url: "/dashboard/learning", iconSrc: learningIcon, isLucide: false },
-    { title: "Leaderboard", url: "/dashboard/leaderboard", iconSrc: leaderboardIcon, isLucide: false },
+    { title: "Highscore", url: "/dashboard/leaderboard", iconSrc: leaderboardIcon, isLucide: false },
   ];
 
   if (!user) return null;
@@ -105,18 +104,14 @@ const DashboardLayout = () => {
                             to={item.url}
                             end={item.url === "/dashboard"}
                             className={({ isActive }) =>
-                              `flex items-center gap-5 px-6 py-6 rounded-3xl text-xl font-bold transition-all ${
+                              `flex items-center gap-5 px-6 py-6 rounded-3xl text-base font-semibold transition-all ${
                                 isActive
-                                  ? "bg-gradient-to-br from-pink-100 to-purple-100 text-pink-600 shadow-lg scale-105"
-                                  : "bg-white/80 text-gray-700 hover:bg-gradient-to-br hover:from-pink-50 hover:to-purple-50 hover:shadow-md hover:scale-102"
+                                  ? "bg-gradient-to-br from-pink-100 to-purple-100 text-pink-600 scale-105"
+                                  : "bg-white/80 text-gray-700 hover:bg-gradient-to-br hover:from-pink-50 hover:to-purple-50 hover:scale-102"
                               }`
                             }
                           >
-                            {item.isLucide ? (
-                              <item.icon className="h-10 w-10 stroke-[2.5]" />
-                            ) : (
-                              <img src={item.iconSrc} alt={item.title} className="h-10 w-10 object-contain" />
-                            )}
+                            <img src={item.iconSrc} alt={item.title} className="h-14 w-14 object-contain" />
                             <span className="tracking-wide">{item.title}</span>
                           </NavLink>
                         </SidebarMenuButton>
@@ -134,9 +129,9 @@ const DashboardLayout = () => {
             <SidebarFooter className="p-6 pb-8">
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-5 w-full px-6 py-6 text-xl font-bold rounded-3xl bg-red-50 text-red-600 hover:bg-gradient-to-br hover:from-red-100 hover:to-pink-100 hover:text-red-700 transition-all hover:shadow-lg hover:scale-102"
+                className="flex items-center gap-5 w-full px-6 py-6 text-base font-semibold rounded-3xl bg-red-50 text-red-600 hover:bg-gradient-to-br hover:from-red-100 hover:to-pink-100 hover:text-red-700 transition-all hover:scale-102"
               >
-                <LogOut className="h-10 w-10 stroke-[2.5]" />
+                <LogOut className="h-14 w-14 stroke-[2.5]" />
                 <span className="tracking-wide">Sign Out</span>
               </button>
             </SidebarFooter>
